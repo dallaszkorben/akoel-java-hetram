@@ -186,10 +186,12 @@ public class ThermicPoint {
 
 		if( c instanceof DThermicConnector ){
 			
-			return ((DThermicConnector) c).getDelta()/((DThermicConnector) c).getDelta();
+			return ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta();
 			
 		}else if( c instanceof AThermicConnector ){
+			
 			return ((AThermicConnector) c).getAlpha();
+			
 		}else{
 			
 			//TODO valojaban hiba. Ez nem lehet
