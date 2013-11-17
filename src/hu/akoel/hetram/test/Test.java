@@ -3,6 +3,7 @@ package hu.akoel.hetram.test;
 import hu.akoel.hetram.Position;
 import hu.akoel.hetram.ThermicPoint;
 import hu.akoel.hetram.ThermicPoint.Orientation;
+import hu.akoel.hetram.ThermicPointList;
 
 public class Test {
 
@@ -123,7 +124,7 @@ public class Test {
 		T15.connectTo(Orientation.WEST, alfaE, temperatureE);
 
 		ThermicPoint T25 = new ThermicPoint(new Position(0.05, 0.2));
-		T24.connectTo(T15, Orientation.WEST, lambda2);
+		T25.connectTo(T15, Orientation.WEST, lambda2);
 		T25.connectTo(T24, Orientation.SOUTH, lambda2);
 
 		ThermicPoint T35 = new ThermicPoint(new Position(0.1, 0.2));
@@ -175,7 +176,57 @@ public class Test {
 		T66.connectTo(T61, Orientation.NORTH, lambda2);
 		T66.connectTo(Orientation.EAST, alfaI, temperatureI);
 
-		System.err.println( T22.toString() );
+		ThermicPointList list = new ThermicPointList(36);
+		
+		list.add( T11 );
+		list.add( T21 );
+		list.add( T31 );
+		list.add( T41 );
+		list.add( T51 );
+		list.add( T61 );
+		
+		list.add( T12 );
+		list.add( T22 );
+		list.add( T32 );
+		list.add( T42 );
+		list.add( T52 );
+		list.add( T62 );
+		
+		list.add( T13 );
+		list.add( T23 );
+		list.add( T33 );
+		list.add( T43 );
+		list.add( T53 );
+		list.add( T63 );
+		
+		list.add( T14 );
+		list.add( T24 );
+		list.add( T34 );
+		list.add( T44 );
+		list.add( T54 );
+		list.add( T64 );
+		
+		list.add( T15 );
+		list.add( T25 );
+		list.add( T35 );
+		list.add( T45 );
+		list.add( T55 );
+		list.add( T65 );
+		
+		list.add( T16 );
+		list.add( T26 );
+		list.add( T36 );
+		list.add( T46 );
+		list.add( T56 );
+		list.add( T66 );
+		
+		for( int i = 1; i < 100; i ++ ){
+			list.doIteration();
+			//System.err.println( T11.toString() );
+		}
+		for( int i = 0; i < list.getSize(); i++ ){
+			System.out.println( list.get(i) );
+		}
 		
 	}
 }

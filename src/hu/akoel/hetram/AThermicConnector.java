@@ -10,13 +10,13 @@ public class AThermicConnector implements ThermicConnector{
 		this.airTemperature = airTemperature;
 	}
 	
-	public double getAlfa() {
+	public double getAlpha() {
 		return alfa;
 	}
 	public void setAlfa(double alfa) {
 		this.alfa = alfa;
 	}
-	public double getTemperature() {
+	public double getAirTemperature() {
 		return airTemperature;
 	}
 	public void setTemperature(double temperature) {

@@ -1,8 +1,11 @@
 package hu.akoel.hetram;
 
+import java.text.DecimalFormat;
+
 public class Position {
 	private double x;
 	private double y;
+	private DecimalFormat format = new DecimalFormat("0.00");
 	
 	public Position( double x, double y ){
 		this.x = x;
@@ -23,6 +26,6 @@ public class Position {
 	}
 	
 	public String toString(){
-		return "[" + this.x + ", " + this.y + "]";
+		return "[" + format.format( this.x ) + ", " + format.format( this.y ) + "]";
 	}
 }
