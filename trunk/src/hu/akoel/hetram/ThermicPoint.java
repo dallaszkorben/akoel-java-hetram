@@ -1,5 +1,7 @@
 package hu.akoel.hetram;
 
+import java.text.DecimalFormat;
+
 public class ThermicPoint {
 	
 	public static enum Orientation{
@@ -9,6 +11,8 @@ public class ThermicPoint {
 		WEST
 	}
 	
+	private int positionInTheList;
+	private double actualTemperature;
 	private Position position;
 	private ThermicConnector northThermicConnector;
 	private ThermicConnector eastThermicConnector;
@@ -161,44 +165,102 @@ public class ThermicPoint {
 		}
 	}
 	
+	public double getNorthTag(){
+		return getTag( getNorthThermicConnector() );
+	}
+
+	public double getEastTag(){
+		return getTag( getEastThermicConnector() );
+	}
+
+	public double getSouthTag(){
+		return getTag( getSouthThermicConnector() );
+	}
+	
+	public double getWestTag(){
+		return getTag( getWestThermicConnector() );
+	}
+
+
+	private double getTag( ThermicConnector c ){
+
+		if( c instanceof DThermicConnector ){
+			
+			return ((DThermicConnector) c).getDelta()/((DThermicConnector) c).getDelta();
+			
+		}else if( c instanceof AThermicConnector ){
+			return ((AThermicConnector) c).getAlpha();
+		}else{
+			
+			//TODO valojaban hiba. Ez nem lehet
+			return 0;
+		}
+	}
+	
+	public double getActualTemperature() {
+		return actualTemperature;
+	}
+
+
+	public void setActualTemperature(double actualTemperature) {
+		this.actualTemperature = actualTemperature;
+	}
+
+	public int getOrderInTheList() {
+		return positionInTheList;
+	}
+
+
+	public void setPositionInTheList(int orderInTheList) {
+		this.positionInTheList = orderInTheList;
+	}
+
+
 	public String toString(){
-		String back = this.getPosition() + " -> " + "N: ";
+		DecimalFormat temperatureFormat = new DecimalFormat("00.00");
+		DecimalFormat deltaFormat = new DecimalFormat("#.####");
+		
+		String back = "T=" + temperatureFormat.format( getActualTemperature() ) + " " + this.getPosition() + " -> " + "N: ";
 		
 		if( null == getNorthPair() ){
-			back += "NULL";
+			back += "(α=" + ((AThermicConnector)getNorthThermicConnector()).getAlpha() + " ";
+			back += "T=" + ((AThermicConnector)getNorthThermicConnector()).getAirTemperature() + ")";
 		}else{
 			back += "(λ=" + ((DThermicConnector)getNorthThermicConnector()).getLambda() + " ";
-			back += "δ=" + ((DThermicConnector)getNorthThermicConnector()).getDelta() + " ";
+			back += "δ=" + deltaFormat.format( ((DThermicConnector)getNorthThermicConnector()).getDelta() ) + " ";
 			back += getNorthPair().getPosition() + ")";
 		}
 		
 		back += " E: ";
 		
 		if( null == getEastPair() ){
-			back += "NULL";
+			back += "(α=" + ((AThermicConnector)getEastThermicConnector()).getAlpha() + " ";
+			back += "T=" + ((AThermicConnector)getEastThermicConnector()).getAirTemperature() + ")";
 		}else{
 			back += "(λ=" + ((DThermicConnector)getEastThermicConnector()).getLambda() + " ";
-			back += "δ=" + ((DThermicConnector)getEastThermicConnector()).getDelta() + " ";
+			back += "δ=" + deltaFormat.format( ((DThermicConnector)getEastThermicConnector()).getDelta() )+ " ";
 			back += getEastPair().getPosition() + ")";
 		}
 		
 		back += " S: ";
 		
 		if( null == getSouthPair() ){
-			back += "NULL";
+			back += "(α=" + ((AThermicConnector)getSouthThermicConnector()).getAlpha() + " ";
+			back += "T=" + ((AThermicConnector)getSouthThermicConnector()).getAirTemperature() + ")";
 		}else{
 			back += "(λ=" + ((DThermicConnector)getSouthThermicConnector()).getLambda() + " ";
-			back += "δ=" + ((DThermicConnector)getSouthThermicConnector()).getDelta() + " ";
+			back += "δ=" + deltaFormat.format( ((DThermicConnector)getSouthThermicConnector()).getDelta() ) + " ";
 			back += getSouthPair().getPosition() + ")";
 		}
 		
 		back += " W: ";
 		
 		if( null == getWestPair() ){
-			back += "NULL";
+			back += "(α=" + ((AThermicConnector)getWestThermicConnector()).getAlpha() + " ";
+			back += "T=" + ((AThermicConnector)getWestThermicConnector()).getAirTemperature() + ")";
 		}else{
 			back += "(λ=" + ((DThermicConnector)getWestThermicConnector()).getLambda() + " ";
-			back += "δ=" + ((DThermicConnector)getWestThermicConnector()).getDelta() + " ";
+			back += "δ=" + deltaFormat.format( ((DThermicConnector)getWestThermicConnector()).getDelta() ) + " ";
 			back += getWestPair().getPosition() + ")";
 		}
 		
