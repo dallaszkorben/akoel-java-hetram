@@ -11,6 +11,7 @@ public class ThermicPoint {
 		WEST
 	}
 	
+	private double tempDifference;
 	private int positionInTheList;
 	private double actualTemperature;
 	private Position position;
@@ -205,18 +206,19 @@ public class ThermicPoint {
 
 
 	public void setActualTemperature(double actualTemperature) {
+		
+		this.tempDifference = Math.abs( this.actualTemperature-actualTemperature );
+
 		this.actualTemperature = actualTemperature;
 	}
-
-	public int getOrderInTheList() {
-		return positionInTheList;
-	}
-
 
 	public void setPositionInTheList(int orderInTheList) {
 		this.positionInTheList = orderInTheList;
 	}
-
+	
+	public double getTempDifference() {
+		return tempDifference;
+	}
 
 	public String toString(){
 		DecimalFormat temperatureFormat = new DecimalFormat("00.00");

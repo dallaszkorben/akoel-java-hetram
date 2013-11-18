@@ -12,8 +12,8 @@ public class Test {
 	}
 
 	public Test() {
-		double lambda1 = 0.45;
-		double lambda2 = 0.03;
+		double lambda1 = 0.01;
+		double lambda2 = 0.45;
 		double alfaE = 24;
 		double alfaI = 8;
 		double temperatureE = 0;
@@ -31,7 +31,7 @@ public class Test {
 
 		ThermicPoint T41 = new ThermicPoint(new Position(0.15, 0));
 		T41.connectTo(T31, Orientation.WEST, lambda2);
-
+//T41.connectTo(Orientation.EAST, alfaI, temperatureI);
 		ThermicPoint T51 = new ThermicPoint(new Position(0.2, 0));
 		T51.connectTo(T41, Orientation.WEST, lambda2);
 
@@ -55,6 +55,7 @@ public class Test {
 		ThermicPoint T42 = new ThermicPoint(new Position(0.15, 0.05));
 		T42.connectTo(T32, Orientation.WEST, lambda2);
 		T42.connectTo(T41, Orientation.SOUTH, lambda2);
+//T42.connectTo(Orientation.EAST, alfaI, temperatureI);		
 
 		ThermicPoint T52 = new ThermicPoint(new Position(0.2, 0.05));
 		T52.connectTo(T42, Orientation.WEST, lambda2);
@@ -82,7 +83,7 @@ public class Test {
 		ThermicPoint T43 = new ThermicPoint(new Position(0.15, 0.1));
 		T43.connectTo(T33, Orientation.WEST, lambda2);
 		T43.connectTo(T42, Orientation.SOUTH, lambda2);
-
+//T43.connectTo(Orientation.EAST, alfaI, temperatureI);
 		ThermicPoint T53 = new ThermicPoint(new Position(0.2, 0.1));
 		T53.connectTo(T43, Orientation.WEST, lambda2);
 		T53.connectTo(T52, Orientation.SOUTH, lambda2);
@@ -95,20 +96,26 @@ public class Test {
 		// 4. sor
 		ThermicPoint T14 = new ThermicPoint(new Position(0, 0.15));
 		T14.connectTo(T13, Orientation.SOUTH, lambda1);
+//T14.connectTo(T11, Orientation.NORTH, lambda1);		
 		T14.connectTo(Orientation.WEST, alfaE, temperatureE);
 
 		ThermicPoint T24 = new ThermicPoint(new Position(0.05, 0.15));
 		T24.connectTo(T14, Orientation.WEST, lambda1);
 		T24.connectTo(T23, Orientation.SOUTH, lambda1);
+//T24.connectTo(T21, Orientation.NORTH, lambda1);		
 
 		ThermicPoint T34 = new ThermicPoint(new Position(0.1, 0.15));
 		T34.connectTo(T24, Orientation.WEST, lambda1);
 		T34.connectTo(T33, Orientation.SOUTH, lambda1);
+//T34.connectTo(T31, Orientation.NORTH, lambda1);		
 
 		ThermicPoint T44 = new ThermicPoint(new Position(0.15, 0.15));
 		T44.connectTo(T34, Orientation.WEST, lambda2);
 		T44.connectTo(T43, Orientation.SOUTH, lambda2);
-
+//T44.connectTo(T41, Orientation.NORTH, lambda2);
+//T44.connectTo(Orientation.EAST, alfaI, temperatureI);
+		
+		
 		ThermicPoint T54 = new ThermicPoint(new Position(0.2, 0.15));
 		T54.connectTo(T44, Orientation.WEST, lambda2);
 		T54.connectTo(T53, Orientation.SOUTH, lambda2);
@@ -220,10 +227,12 @@ public class Test {
 		list.add( T56 );
 		list.add( T66 );
 		
-		for( int i = 1; i < 100; i ++ ){
+/*		for( int i = 1; i < 50; i ++ ){
 			list.doIteration();
 			//System.err.println( T11.toString() );
 		}
+*/
+		list.solve(0.001);
 		for( int i = 0; i < list.getSize(); i++ ){
 			System.out.println( list.get(i) );
 		}
