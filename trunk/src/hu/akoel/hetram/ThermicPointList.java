@@ -10,14 +10,58 @@ public class ThermicPointList{
 		
 	}
 	
+	/**
+	 * Termikus Pont hozzaadasa a listahoz
+	 * 
+	 * @param thermicPoint
+	 */
 	public void add( ThermicPoint thermicPoint ){
+		
+		//A Termikus pont lista-poziciojanak beallitasa
 		thermicPoint.setPositionInTheList( position );
+		
+		//A Termikus pont Kezdeti erteke - Gauss iteracio kezdeti erteke
 		thermicPoint.setActualTemperature( 1 );
+		
+		//A Termikus Pont elhelyezese a listaban
 		list[position] = thermicPoint;
+		
+		//Lista mutatojanak novelese
 		position++;
 	}
 	
-	public void doIteration(){
+	/**
+	 * A sokismeretlenes egyenletrendszer megoldasa 
+	 * eredmenye a Termikus Pontok homerseklete
+	 * 
+	 * @param minDifference
+	 */
+	public void solve( double minDifference ){
+		
+		double difference = -1;
+	
+		//Addig vegzi az iteraciot, amik a Termikus Pontok iteraciot megelozo
+		//homersekletenek es az iteraciot koveto homersekletenek kulonbsege kisebb
+		//nem lesz a parameterkent megadott engedelyezett elteresnel
+		do{
+
+			difference = -1;
+			doIteration();
+			
+			for( int i = 0; i < getSize(); i++ ){
+				difference = Math.max( difference, list[i].getTempDifference() );
+			}
+			
+		}while( difference  > minDifference || difference < 0 );
+
+	}
+	
+	/**
+	 * 
+	 * Egy iteracio elvegzese a lista teljes allomanyan
+	 * 
+	 */
+	private void doIteration(){
 		
 		for( int i = 0; i < position; i++ ){
 			
@@ -83,10 +127,21 @@ public class ThermicPointList{
 		
 	}
 	
+	/**
+	 * Visszaadja a lista meretet
+	 * 
+	 * @return
+	 */
 	public int getSize(){
 		return position;
 	}
 	
+	/**
+	 * Visszaadja az adott lista-pozicioban levo Termikus Pontot
+	 * 
+	 * @param position
+	 * @return
+	 */
 	public ThermicPoint get( int position ){
 		return list[position];
 	}
