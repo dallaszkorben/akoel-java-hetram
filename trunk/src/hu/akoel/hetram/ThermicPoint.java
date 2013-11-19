@@ -63,10 +63,8 @@ public class ThermicPoint {
 	public void connectTo( ThermicPoint pairThermicPoint, Orientation orientation, double lambda ){
 		
 		if( orientation.equals(Orientation.WEST) ){
-			
-			//TODO vizsgalat hogy van-e EAST iranyu kapcsolata. Ha van, Throw Exception
 		
-			XDThermicConnector connector = new XDThermicConnector( pairThermicPoint, this, lambda );
+			XDThermicConnector connector = new XDThermicConnector( pairThermicPoint, this, lambda );			
 			this.westThermicConnector = connector;
 			pairThermicPoint.eastThermicConnector = connector;
 			
@@ -78,7 +76,7 @@ public class ThermicPoint {
 			
 		}else if( orientation.equals( Orientation.NORTH ) ){
 			
-			YDThermicConnector connector = new YDThermicConnector( pairThermicPoint, this, lambda );
+			YDThermicConnector connector = new YDThermicConnector( pairThermicPoint, this, lambda );			
 			this.northThermicConnector = connector;
 			pairThermicPoint.southThermicConnector = connector;
 			

@@ -11,6 +11,10 @@ public class XDThermicConnector extends DThermicConnector{
 		this.westThermicPoint = westThermicPoint;
 		this.eastThermicPoint = eastThermicPoint;
 		
+		if( westThermicPoint.getPosition().getX() > eastThermicPoint.getPosition().getX() ){
+			setLoop( true );
+		}
+		
 	}
 
 	public ThermicPoint getWestThermicPoint() {
