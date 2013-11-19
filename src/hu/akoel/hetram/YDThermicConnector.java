@@ -10,6 +10,10 @@ public class YDThermicConnector extends DThermicConnector {
 		
 		this.northThermicPoint = northThermicPoint;
 		this.southThermicPoint = southThermicPoint;
+		
+		if( northThermicPoint.getPosition().getY() < southThermicPoint.getPosition().getY() ){
+			setLoop( true );
+		}
 	}
 
 	public ThermicPoint getNorthThermicPoint() {
