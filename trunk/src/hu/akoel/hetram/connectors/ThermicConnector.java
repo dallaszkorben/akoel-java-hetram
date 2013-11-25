@@ -1,4 +1,4 @@
-package hu.akoel.hetram;
+package hu.akoel.hetram.connectors;
 
 public interface ThermicConnector {
 

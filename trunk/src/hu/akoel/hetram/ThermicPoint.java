@@ -1,5 +1,11 @@
 package hu.akoel.hetram;
 
+import hu.akoel.hetram.connectors.OThermicConnector;
+import hu.akoel.hetram.connectors.DThermicConnector;
+import hu.akoel.hetram.connectors.SThermicConnector;
+import hu.akoel.hetram.connectors.ThermicConnector;
+import hu.akoel.hetram.connectors.XDThermicConnector;
+import hu.akoel.hetram.connectors.YDThermicConnector;
 import java.text.DecimalFormat;
 
 public class ThermicPoint {
@@ -29,17 +35,46 @@ public class ThermicPoint {
 		this.position = new Position(position);	
 	}
 	
-
 	/**
-	 * Termikus Pont szelso pontkent valo megjelolese
+	 * Termikus Pont szimmetria elkent valo megjelolese
+	 * 
+	 * @param backThermicPoint
+	 * @param orientation
+	 */
+	public void connectToS( ThermicPointOrientation orientation ){
+		
+		SThermicConnector connector = new SThermicConnector( );	
+		
+		if( orientation.equals(ThermicPointOrientation.WEST) ){
+
+			this.westThermicConnector = connector;			
+			
+		}else if( orientation.equals( ThermicPointOrientation.EAST ) ){
+			
+			this.eastThermicConnector = connector;
+			
+		}else if( orientation.equals( ThermicPointOrientation.NORTH ) ){
+			
+			this.northThermicConnector = connector;
+			
+		}else if( orientation.equals( ThermicPointOrientation.SOUTH ) ){
+			
+			this.southThermicConnector = connector;
+			
+		}
+		
+	}
+	
+	/**
+	 * Termikus Pont szabad feluleti pontkent valo megjelolese
 	 * 
 	 * @param orientation
 	 * @param alfa
 	 * @param airTemperature
 	 */
-	public void connectTo( ThermicPointOrientation orientation, double alfa, double airTemperature ){
+	public void connectToO( ThermicPointOrientation orientation, double alfa, double airTemperature ){
 		
-		 AThermicConnector connector = new AThermicConnector( alfa, airTemperature );
+		 OThermicConnector connector = new OThermicConnector( alfa, airTemperature );
 		
 		if( orientation.equals( ThermicPointOrientation.NORTH ) ){
 			northThermicConnector = connector;
@@ -60,7 +95,7 @@ public class ThermicPoint {
 	 * @param delta
 	 * @param lambda
 	 */
-	public void connectTo( ThermicPoint pairThermicPoint, ThermicPointOrientation orientation, double lambda ){
+	public void connectToD( ThermicPoint pairThermicPoint, ThermicPointOrientation orientation, double lambda ){
 		
 		if( orientation.equals(ThermicPointOrientation.WEST) ){
 		
@@ -189,49 +224,61 @@ public class ThermicPoint {
 	public String toString(){
 		DecimalFormat temperatureFormat = new DecimalFormat("00.00");
 		DecimalFormat deltaFormat = new DecimalFormat("#.####");
+		ThermicConnector tc;
 		
-		String back = "T=" + temperatureFormat.format( getActualTemperature() ) + " " + this.getPosition() + " -> " + "N: ";
+		String back = "T=" + temperatureFormat.format( getActualTemperature() ) + " " + this.getPosition() + " -> "; 
 		
-		if( null == getNorthPair() ){
-			back += "(α=" + ((AThermicConnector)getNorthThermicConnector()).getAlpha() + " ";
-			back += "T=" + ((AThermicConnector)getNorthThermicConnector()).getAirTemperature() + ")";
-		}else{
-			back += "(λ=" + ((DThermicConnector)getNorthThermicConnector()).getLambda() + " ";
-			back += "δ=" + deltaFormat.format( ((DThermicConnector)getNorthThermicConnector()).getDelta() ) + " ";
+				
+		back += " N: ";
+		tc = getNorthThermicConnector();
+		if( tc instanceof YDThermicConnector ){
+			back += "(λ=" + ((DThermicConnector)tc).getLambda() + " ";
+			back += "δ=" + deltaFormat.format( ((DThermicConnector)tc).getDelta() ) + " ";
 			back += getNorthPair().getPosition() + ")";
+		}else if( tc instanceof OThermicConnector ){
+			back += "(α=" + ((OThermicConnector)tc).getAlpha() + " ";
+			back += "T=" + ((OThermicConnector)tc).getAirTemperature() + ")";
+		}else if( tc instanceof SThermicConnector ){
+			back += "_";
 		}
 		
 		back += " E: ";
-		
-		if( null == getEastPair() ){
-			back += "(α=" + ((AThermicConnector)getEastThermicConnector()).getAlpha() + " ";
-			back += "T=" + ((AThermicConnector)getEastThermicConnector()).getAirTemperature() + ")";
-		}else{
-			back += "(λ=" + ((DThermicConnector)getEastThermicConnector()).getLambda() + " ";
-			back += "δ=" + deltaFormat.format( ((DThermicConnector)getEastThermicConnector()).getDelta() )+ " ";
+		tc = getEastThermicConnector();
+		if( tc instanceof XDThermicConnector ){
+			back += "(λ=" + ((DThermicConnector)tc).getLambda() + " ";
+			back += "δ=" + deltaFormat.format( ((DThermicConnector)tc).getDelta() ) + " ";
 			back += getEastPair().getPosition() + ")";
+		}else if( tc instanceof OThermicConnector ){
+			back += "(α=" + ((OThermicConnector)tc).getAlpha() + " ";
+			back += "T=" + ((OThermicConnector)tc).getAirTemperature() + ")";
+		}else if( tc instanceof SThermicConnector ){
+			back += "|";
 		}
 		
 		back += " S: ";
-		
-		if( null == getSouthPair() ){
-			back += "(α=" + ((AThermicConnector)getSouthThermicConnector()).getAlpha() + " ";
-			back += "T=" + ((AThermicConnector)getSouthThermicConnector()).getAirTemperature() + ")";
-		}else{
-			back += "(λ=" + ((DThermicConnector)getSouthThermicConnector()).getLambda() + " ";
-			back += "δ=" + deltaFormat.format( ((DThermicConnector)getSouthThermicConnector()).getDelta() ) + " ";
+		tc = getSouthThermicConnector();
+		if( tc instanceof YDThermicConnector ){
+			back += "(λ=" + ((DThermicConnector)tc).getLambda() + " ";
+			back += "δ=" + deltaFormat.format( ((DThermicConnector)tc).getDelta() ) + " ";
 			back += getSouthPair().getPosition() + ")";
+		}else if( tc instanceof OThermicConnector ){
+			back += "(α=" + ((OThermicConnector)tc).getAlpha() + " ";
+			back += "T=" + ((OThermicConnector)tc).getAirTemperature() + ")";
+		}else if( tc instanceof SThermicConnector ){
+			back += "_";
 		}
 		
-		back += " W: ";
-		
-		if( null == getWestPair() ){
-			back += "(α=" + ((AThermicConnector)getWestThermicConnector()).getAlpha() + " ";
-			back += "T=" + ((AThermicConnector)getWestThermicConnector()).getAirTemperature() + ")";
-		}else{
-			back += "(λ=" + ((DThermicConnector)getWestThermicConnector()).getLambda() + " ";
-			back += "δ=" + deltaFormat.format( ((DThermicConnector)getWestThermicConnector()).getDelta() ) + " ";
+		back += " W: ";		
+		tc = getWestThermicConnector();
+		if( tc instanceof XDThermicConnector ){
+			back += "(λ=" + ((DThermicConnector)tc).getLambda() + " ";
+			back += "δ=" + deltaFormat.format( ((DThermicConnector)tc).getDelta() ) + " ";
 			back += getWestPair().getPosition() + ")";
+		}else if( tc instanceof OThermicConnector ){
+			back += "(α=" + ((OThermicConnector)tc).getAlpha() + " ";
+			back += "T=" + ((OThermicConnector)tc).getAirTemperature() + ")";
+		}else if( tc instanceof SThermicConnector ){
+			back += "|";
 		}
 		
 		return back;

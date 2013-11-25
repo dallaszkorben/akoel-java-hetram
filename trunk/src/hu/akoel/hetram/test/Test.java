@@ -8,17 +8,20 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.text.DecimalFormat;
 import java.util.Collection;
+
+import javax.lang.model.util.Elements;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 
-import hu.akoel.hetram.DThermicConnector;
 import hu.akoel.hetram.Element;
 import hu.akoel.hetram.Element.SideOrientation;
+import hu.akoel.hetram.connectors.DThermicConnector;
+import hu.akoel.hetram.connectors.ThermicConnector;
 import hu.akoel.hetram.ElementSet;
 import hu.akoel.hetram.Length;
 import hu.akoel.hetram.Position;
 import hu.akoel.hetram.SurfaceClose;
-import hu.akoel.hetram.ThermicConnector;
+import hu.akoel.hetram.SymmetricClose;
 import hu.akoel.hetram.ThermicPoint;
 import hu.akoel.hetram.ThermicPointList;
 import hu.akoel.mgu.MCanvas;
@@ -72,9 +75,9 @@ public class Test extends JFrame {
 	private double startScale = 9;
 	private double rate = 1.2;
 
-	private double lambda1 = 0.24;
+	private double lambda1 = 0.2;
 	private double lambda2 = 0.45;
-	private double lambda3 = 1.5;
+	private double lambda3 = 15.5;
 	private double alfaE = 24;
 	private double alfaI = 8;
 	private double temperatureE = -13;
@@ -145,30 +148,22 @@ public class Test extends JFrame {
 						
 						c = thermicPointList.get(j).getNorthThermicConnector();
 						if (c instanceof DThermicConnector) {
-							if( !((DThermicConnector) c).isLoop() ){				
-								dNorth = ((DThermicConnector) c).getDelta() / 2;
-							}
+							dNorth = ((DThermicConnector) c).getDelta() / 2;							
 						}
 
 						c = thermicPointList.get(j).getEastThermicConnector();
 						if (c instanceof DThermicConnector) {
-							if( !((DThermicConnector) c).isLoop() ){				
-								dEast = ((DThermicConnector) c).getDelta() / 2;
-							}
+							dEast = ((DThermicConnector) c).getDelta() / 2;
 						}
 
 						c = thermicPointList.get(j).getSouthThermicConnector();
 						if (c instanceof DThermicConnector) {
-							if( !((DThermicConnector) c).isLoop() ){
-								dSouth = ((DThermicConnector) c).getDelta() / 2;
-							}
+							dSouth = ((DThermicConnector) c).getDelta() / 2;
 						}
 
 						c = thermicPointList.get(j).getWestThermicConnector();
 						if (c instanceof DThermicConnector) {
-							if( !((DThermicConnector) c).isLoop() ){
-								dWest = ((DThermicConnector) c).getDelta() / 2;
-							}
+							dWest = ((DThermicConnector) c).getDelta() / 2;
 						}
 
 						double xStart = position.getX() - dWest;
@@ -193,8 +188,7 @@ public class Test extends JFrame {
 						TextLayout(String.valueOf( numericFormat.format(
 						thermicPointList.get( j ).getActualTemperature() ) ),
 						font, frc );
-						g2.drawFont( textLayout, position.getX(),
-						position.getY());
+//						g2.drawFont( textLayout, position.getX(), position.getY());
 					}
 				}
 			}
@@ -268,23 +262,59 @@ public class Test extends JFrame {
 
 	private ThermicPointList getResult() {
 
-		Element pillar1 = new Element( lambda3, new Position(0,0), new Position( 0.5,0.3 ));
+/*		Element pillar1 = new Element( lambda1, new Position(0,0), new Position( 0.3,0.3 ));
 		
-		pillar1.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 5.0), alfaE, temperatureE ) );
-		pillar1.setCloseElement(new SurfaceClose( SideOrientation.SOUTH, new Length( 0.0, 5.0), alfaI, temperatureI ) );
+		pillar1.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 3.0), alfaE, temperatureE ) );
+		pillar1.setCloseElement(new SurfaceClose( SideOrientation.SOUTH, new Length( 0.0, 3.0), alfaI, temperatureI ) );
 		
-//		pillar1.setCloseElement(new SymmetricClose(	SideOrientation.WEST, new Length( 0.0, 3.0 ) ) );
-//		pillar1.setCloseElement(new SymmetricClose( SideOrientation.EAST, new Length( 0.0, 3.0) ) );
+		pillar1.setCloseElement(new SymmetricClose(	SideOrientation.WEST, new Length( 0.0, 3.0 ) ) );
+		pillar1.setCloseElement(new SymmetricClose( SideOrientation.EAST, new Length( 0.0, 3.0) ) );
+		//pillar1.setCloseElement(new SurfaceClose( SideOrientation.EAST, new Length( 0.0, 3.0), alfaI, temperatureI ) );
 		
-		pillar1.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0.0, 3.0), alfaI, temperatureI ) );		
-		pillar1.setCloseElement(new SurfaceClose( SideOrientation.EAST, new Length( 0.0, 3.0), alfaI, temperatureI ) );
+//		pillar1.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0.0, 3.0), alfaI, temperatureI ) );		
+//		pillar1.setCloseElement(new SurfaceClose( SideOrientation.EAST, new Length( 0.0, 3.0), alfaI, temperatureI ) );
 		
 		ElementSet elementSet = new ElementSet();
 		elementSet.add( pillar1);
+*/
+		
+		
+		
+		Element e1 = new Element( lambda2, new Position(0,0), new Position(0.3, 0.3));
+		//e1.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0,0.3), alfaE, temperatureE ) );
+		e1.setCloseElement(new SurfaceClose(SideOrientation.SOUTH, new Length(0,0.3), alfaI, temperatureI ) );		
+		e1.setCloseElement(new SymmetricClose( SideOrientation.WEST, new Length( 0.0, 3.0 ) ) );
+		
+		Element e2 = new Element( lambda3, new Position(0.3,0), new Position(0.5, 0.3));
+		//e2.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0.3,0.5), alfaE, temperatureE ) );
+		e2.setCloseElement(new SurfaceClose(SideOrientation.SOUTH, new Length(0.3,0.5), alfaI, temperatureI ) );
+		
+		
+		Element e3 = new Element( lambda2, new Position(0.5,0), new Position(0.8, 0.3));
+		//e3.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0.5,0.8), alfaE, temperatureE ) );
+		e3.setCloseElement(new SurfaceClose(SideOrientation.SOUTH, new Length(0.5,0.8), alfaI, temperatureI ) );
+		e3.setCloseElement(new SymmetricClose( SideOrientation.EAST, new Length( 0.0, 3.0 ) ) );
+		
+		
+		Element e4 = new Element( lambda1, new Position(0,0.3), new Position(0.8, 0.4));
+		e4.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0,0.8), alfaE, temperatureE ) );
+		e4.setCloseElement(new SymmetricClose( SideOrientation.EAST, new Length( 0.3, 4.0 ) ) );
+		e4.setCloseElement(new SymmetricClose( SideOrientation.WEST, new Length( 0.3, 4.0 ) ) );
+		
+		ElementSet elementSet = new ElementSet();
+		elementSet.add(e1);
+System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());		
+		elementSet.add(e2);
+System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());		
+		elementSet.add(e3);
+System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());
+		elementSet.add(e4);
+System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());		
+//System.err.println(elementSet.getHorizontalMaximumDifference() + ", " + elementSet.getVerticalMaximumDifference() );
+//ThermicPointList list = elementSet.divideElements( 0.01, 0.01 );	
 
-System.err.println(elementSet.getHorizontalMaximumDifference() + ", " + elementSet.getVerticalMaximumDifference() );
-Collection<ThermicPoint> tps = elementSet.doValami(0.1, 0.1);
-ThermicPointList list = new ThermicPointList(tps);		
+ThermicPointList list = elementSet.divideElements( 0.01, 0.01 );
+
 list.solve(0.001);		
 		
 		return list;

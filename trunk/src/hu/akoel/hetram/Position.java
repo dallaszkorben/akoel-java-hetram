@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 public class Position {
 	private double x;
 	private double y;
-	private DecimalFormat format = new DecimalFormat("0.00");
+	private DecimalFormat format = new DecimalFormat("0.000");
 	
 	public Position( double x, double y ){
 		this.x = x;
