@@ -1,10 +1,10 @@
-package hu.akoel.hetram;
+package hu.akoel.hetram.connectors;
+
 
 public abstract class DThermicConnector implements ThermicConnector{
 
 	private double lambda;
 	private double delta;
-	private boolean isLoop = false;
 	
 	public DThermicConnector( double delta, double lambda ){
 		this.delta = delta;
@@ -17,14 +17,6 @@ public abstract class DThermicConnector implements ThermicConnector{
 	
 	public double getDelta() {
 		return delta;
-	}
-
-	public boolean isLoop() {
-		return isLoop;
-	}
-
-	public void setLoop(boolean isLoop) {
-		this.isLoop = isLoop;
 	}
 
 }

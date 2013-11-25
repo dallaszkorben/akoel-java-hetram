@@ -2,9 +2,9 @@ package hu.akoel.hetram;
 
 import hu.akoel.hetram.Element.SideOrientation;
 import hu.akoel.hetram.ThermicPoint.ThermicPointOrientation;
+import hu.akoel.hetram.connectors.DThermicConnector;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ElementSet{
 
-	private double precisionInM = 0.0001;
+	private double precision = 10000;
 	private HashSet<Element> elementSet = new HashSet<>();	
 	private double verticalMaximumDifference = -1;
 	private double horizontalMaximumDifference = -1;
@@ -28,13 +28,13 @@ public class ElementSet{
 	 */
 	public boolean add( Element element ){
 		boolean result = elementSet.add( element );		
-		doGenerateMinimalDifference();		
+		doGenerateMaximumDifference();		
 		return result;
 	}
 	
 	public boolean remove( Element element){
 		boolean result = elementSet.remove(element);
-		doGenerateMinimalDifference();		
+		doGenerateMaximumDifference();		
 		return result;
 	}	
 	
@@ -71,15 +71,28 @@ public class ElementSet{
 		}
 	}
 	
-	public Collection<ThermicPoint> doValami( double askedHorizontalDifference, double askedVerticalDifference ){
+	
+	/**
+	 * Automatikusan felbontja kis differencialis negyzetekre az osszes elemet
+	 * es legyartja hozza a termikus pontokat
+	 * 
+	 * @param askedHorizontalDifference
+	 * @param askedVerticalDifference
+	 * @return
+	 */
+	public ThermicPointList divideElements( double askedHorizontalDifference, double askedVerticalDifference ){
 		
 		double dv = getVerticalSuggestedDifference(askedVerticalDifference);
 		double dh = getHorizontalSuggestedDifference(askedHorizontalDifference);
 		
 		HashMap<Position, ThermicPoint> thermicPointMap = new HashMap<>();
 		
-//System.err.println("dv: " + dv + " dh: " + dh);		
+//System.err.println("dv: " + dv + " dh: " + dh);
+		
+		//
 		//Minden elemen vegig megyek
+		//Elso korben a DThermicConnector-okat osztja ki
+		//
 		for( Element element: elementSet ){
 			
 			Position startPoint = element.getStartPosition();
@@ -89,12 +102,14 @@ public class ElementSet{
 			double y = startPoint.getY();
 			int iSteps = (int)Math.round((endPoint.getY() - y) / dv );
 			for( int i = 0; i <= iSteps; i++){
-				y = (double)Math.round( (startPoint.getY() + i * dv ) / precisionInM ) * precisionInM;
+				y = (double)Math.round( (startPoint.getY() + i * dv ) * precision ) / precision;
 				
 				double x = startPoint.getX();				
 				int jSteps = (int)Math.round((endPoint.getX() - x) / dh);
 				for( int j = 0; j <= jSteps; j++ ){
-					x = (double)Math.round( ( startPoint.getX() + j * dh ) / precisionInM ) * precisionInM;
+					
+					
+					x = (double)Math.round( ( startPoint.getX() + j * dh ) * precision ) / precision;
 
 					Position position = new Position(x, y);
 
@@ -107,13 +122,14 @@ public class ElementSet{
 					double previousX;
 					double previousY;
 
-					//Az elobbb elmentett pont visszaolvasasa. Mert lehet, hogy mar letezett ezzel a kulcsal
+					//Az elobbb elmentett pont visszaolvasasa. Mert lehet, hogy mar letezett ezzel a kulcsal, 
+					//ezert csak egy peldanyban letezhet es a lambdat atlagolni kell 
 					ThermicPoint actualTermalPoint = thermicPointMap.get( position );
 					
 					//Ha nem az elso elem balrol
 					if( x != 0 ){
 						
-						//Biztos, hogy DThermicConnector WEST fele, mert belso pont 
+						//Biztos, hogy letezik WEST fele egy ThermicConnector es az DThermicConnector, mert belso pont 
 						DThermicConnector oldWestConnector = (DThermicConnector)actualTermalPoint.getWestThermicConnector();
 						double lambda = element.getLambda();
 						
@@ -125,15 +141,26 @@ public class ElementSet{
 						}
 							
 						//Ha volt mar, ha nem, a WEST iranyu kapcsolatot letrehozom/felulirom
-						previousX = (double)Math.round( ( startPoint.getX() + (j - 1) * dh ) / precisionInM ) * precisionInM;
-						tp.connectTo(thermicPointMap.get(new Position(previousX, y)), ThermicPointOrientation.WEST, lambda );
+						previousX = (double)Math.round( ( startPoint.getX() + (j - 1) * dh ) * precision ) / precision;
+		
+
+	
+						
+System.err.println("previousX: " + previousX);	
+Iterator it = thermicPointMap.keySet().iterator();
+while(it.hasNext()){
+	System.out.println(it.next());
+}
+System.err.println();
+
+						tp.connectToD(thermicPointMap.get(new Position(previousX, y)), ThermicPointOrientation.WEST, lambda );
 					
 					}
 					
 					//Ha nem az elso elem lentrol
 					if( y != 0 ){
 						
-						//Biztos, hogy DThermicConnector SOUTH fele, mert belso pont 
+						//Biztos, hogy letezik SOUTH fele egy ThermicConnector es az DThermicConnector, mert belso pont 
 						DThermicConnector oldSouthConnector = (DThermicConnector)actualTermalPoint.getSouthThermicConnector();
 						double lambda = element.getLambda();
 						
@@ -145,15 +172,13 @@ public class ElementSet{
 						}
 						
 						//Ha volt mar, ha nem, a SOUTH iranyu kapcsolatot letrehozom/felulirom
-						previousY = (double)Math.round( ( startPoint.getY() + (i - 1) * dv ) / precisionInM ) * precisionInM;
-						tp.connectTo(thermicPointMap.get(new Position(x, previousY)), ThermicPointOrientation.SOUTH, lambda );
+						previousY = (double)Math.round( ( startPoint.getY() + (i - 1) * dv ) * precision ) / precision;
+						tp.connectToD(thermicPointMap.get(new Position(x, previousY)), ThermicPointOrientation.SOUTH, lambda );
 					}
 					
 //System.out.println("("+x + ", " + y+")" + " " + actualTermalPoint.getActualTemperature());					
 				}
-			}
-			
-//System.err.println();			
+			}		
 		}
 		
 		//
@@ -170,21 +195,19 @@ public class ElementSet{
 			double y = startPoint.getY();
 			int iSteps = (int)Math.round((endPoint.getY() - y) / dv );
 			for( int i = 0; i <= iSteps; i++){
-				y = (double)Math.round( (startPoint.getY() + i * dv ) / precisionInM ) * precisionInM;
+				y = (double)Math.round( (startPoint.getY() + i * dv ) * precision ) / precision;
 				
 				double x = startPoint.getX();				
 				int jSteps = (int)Math.round((endPoint.getX() - x) / dh);
 				for( int j = 0; j <= jSteps; j++ ){
-					x = (double)Math.round( ( startPoint.getX() + j * dh ) / precisionInM ) * precisionInM;
-					
-					double lambda = element.getLambda();
+					x = (double)Math.round( ( startPoint.getX() + j * dh ) * precision ) / precision;
 					
 					Position position = new Position(x, y);
 
-					ThermicPoint actualThermalPoint = thermicPointMap.get( position );
+					ThermicPoint actualThermicPoint = thermicPointMap.get( position );
 								
 					//Bal szelso
-					//ThermicPoint es van AThermicConnector definialva szamara, vagyis szelso elem
+					//ThermicPoint es van OThermicConnector definialva szamara, vagyis szelso elem
 					if( j == 0 ){
 						
 						for( CloseElement closeElement: closeElements ){
@@ -196,16 +219,13 @@ public class ElementSet{
 								if( closeElement instanceof SurfaceClose ){
 
 									//Alfa es homerseklet kapcsolasa
-									actualThermalPoint.connectTo(ThermicPointOrientation.WEST, ((SurfaceClose)closeElement).getAlpha(), ((SurfaceClose)closeElement).getAirTemperature() );		
+									actualThermicPoint.connectToO(ThermicPointOrientation.WEST, ((SurfaceClose)closeElement).getAlpha(), ((SurfaceClose)closeElement).getAirTemperature() );		
 									break;
 								
-								//Metszet ami szimmetrikus
+								//Szimmetria el
 								}else if( closeElement instanceof SymmetricClose ){
 									
-									double x1 = (double)Math.round( ( startPoint.getX() + ( (j + 1 ) * dh ) ) / precisionInM ) * precisionInM;
-									Position p1 = new Position( x1, y );
-									ThermicPoint tp1 = thermicPointMap.get( p1 );
-									actualThermalPoint.connectTo(tp1, ThermicPointOrientation.WEST, lambda );
+									actualThermicPoint.connectToS( ThermicPointOrientation.WEST);
 									break;
 								
 								}									
@@ -226,16 +246,13 @@ public class ElementSet{
 								if( closeElement instanceof SurfaceClose ){
 								
 									//Alfa es homerseklet kapcsolasa
-									actualThermalPoint.connectTo(ThermicPointOrientation.EAST, ((SurfaceClose)closeElement).getAlpha(), ((SurfaceClose)closeElement).getAirTemperature() );
+									actualThermicPoint.connectToO(ThermicPointOrientation.EAST, ((SurfaceClose)closeElement).getAlpha(), ((SurfaceClose)closeElement).getAirTemperature() );
 									break;
 									
-								//Metszet ami szimmetrikus
+								//Szimmetria el
 								}else if( closeElement instanceof SymmetricClose ){
-									
-									double x1 = (double)Math.round( ( startPoint.getX() + ( ( j - 1 ) * dh ) ) / precisionInM ) * precisionInM;
-									Position p1 = new Position( x1, y );
-									ThermicPoint tp1 = thermicPointMap.get( p1 );
-									actualThermalPoint.connectTo(tp1, ThermicPointOrientation.EAST, lambda );
+	
+									actualThermicPoint.connectToS( ThermicPointOrientation.EAST );
 									break;
 									
 								}
@@ -256,16 +273,13 @@ public class ElementSet{
 								if( closeElement instanceof SurfaceClose ){
 								
 									//Alfa es homerseklet kapcsolasa
-									actualThermalPoint.connectTo(ThermicPointOrientation.SOUTH, ((SurfaceClose)closeElement).getAlpha(), ((SurfaceClose)closeElement).getAirTemperature() );
+									actualThermicPoint.connectToO(ThermicPointOrientation.SOUTH, ((SurfaceClose)closeElement).getAlpha(), ((SurfaceClose)closeElement).getAirTemperature() );
 									break;
 										
-								//Metszet ami szimmetrikus
+								//Szimmetria el
 								}else if( closeElement instanceof SymmetricClose ){
 									
-									double y1 = (double)Math.round( (startPoint.getY() + ( ( i + 1 ) * dv ) ) / precisionInM ) * precisionInM;
-									Position p1 = new Position( x, y1 );
-									ThermicPoint tp1 = thermicPointMap.get( p1 );
-									actualThermalPoint.connectTo(tp1, ThermicPointOrientation.SOUTH, lambda );
+									actualThermicPoint.connectToS( ThermicPointOrientation.SOUTH );
 									break;
 									
 								}
@@ -282,18 +296,18 @@ public class ElementSet{
 							//Megfelelo pozicio
 							if( closeElement.getOrientation().equals(SideOrientation.NORTH ) && x >= closeElement.getLength().getStart() && x <= closeElement.getLength().getEnd() ){
 							
-								actualThermalPoint.connectTo(ThermicPointOrientation.NORTH, ((SurfaceClose)closeElement).getAlpha(), ((SurfaceClose)closeElement).getAirTemperature() );
-								break;
+								//Fal felulet
+								if( closeElement instanceof SurfaceClose ){								
+								
+									actualThermicPoint.connectToO(ThermicPointOrientation.NORTH, ((SurfaceClose)closeElement).getAlpha(), ((SurfaceClose)closeElement).getAirTemperature() );
+									break;
 							
-							//Metszet ami szimmetrikus
-							}else if( closeElement instanceof SymmetricClose ){
+								//Szimmetria el
+								}else if( closeElement instanceof SymmetricClose ){
 								
-								double y1 = (double)Math.round( (startPoint.getY() + ( ( i - 1 ) * dv ) ) / precisionInM ) * precisionInM;
-								Position p1 = new Position( x, y1 );
-								ThermicPoint tp1 = thermicPointMap.get( p1 );
-								actualThermalPoint.connectTo(tp1, ThermicPointOrientation.SOUTH, lambda );
-								break;
-								
+									actualThermicPoint.connectToS( ThermicPointOrientation.NORTH);
+									break;
+								}
 							}
 							
 						}
@@ -311,12 +325,14 @@ public class ElementSet{
 			double y = startPoint.getY();
 			int iSteps = (int)Math.round((endPoint.getY() - y) / dv );
 			for( int i = 0; i <= iSteps; i++){
-				y = (double)Math.round( (startPoint.getY() + i * dv ) / precisionInM ) * precisionInM;
+				y = (double)Math.round( (startPoint.getY() + i * dv ) * precision ) / precision;
 				
 				double x = startPoint.getX();				
 				int jSteps = (int)Math.round((endPoint.getX() - x) / dh);
 				for( int j = 0; j <= jSteps; j++ ){
-					x = (double)Math.round( ( startPoint.getX() + j * dh ) / precisionInM ) * precisionInM;
+					x = (double)Math.round( ( startPoint.getX() + j * dh ) * precision ) / precision;
+					
+					
 					
 					ThermicPoint actualThermalPoint = thermicPointMap.get( new Position(x,y) );
 System.out.println("("+x + ", " + y+")" + " " + actualThermalPoint );
@@ -324,13 +340,16 @@ System.out.println("("+x + ", " + y+")" + " " + actualThermalPoint );
 				}
 			}
 		}
-
 		
-		return thermicPointMap.values();
+		return new ThermicPointList( thermicPointMap.values() );
 		
 	}
 	
-	private void doGenerateMinimalDifference(){
+	/**
+	 * Megallapitja a lehetseges legnagyobb differencia ertekeket vizszitnes illetve fuggoleges iranyban
+	 * 
+	 */
+	private void doGenerateMaximumDifference(){
 		
 		ElementDoubleComparator elementDoubleComparator = new ElementDoubleComparator();
 		
@@ -381,8 +400,8 @@ System.out.println("("+x + ", " + y+")" + " " + actualThermalPoint );
 		Collections.sort(verticalDifferencesList, elementDoubleComparator );
 		Collections.sort(horizontalDifferencesList, elementDoubleComparator );
 		
-		verticalMaximumDifference = getMinimalDifference( verticalDifferencesList );
-		horizontalMaximumDifference = getMinimalDifference( horizontalDifferencesList );
+		verticalMaximumDifference = getMaximumDifference( verticalDifferencesList );
+		horizontalMaximumDifference = getMaximumDifference( horizontalDifferencesList );
 		
 	}
 	
@@ -393,7 +412,7 @@ System.out.println("("+x + ", " + y+")" + " " + actualThermalPoint );
 	 * @param sourceList
 	 * @return
 	 */
-	private double getMinimalDifference( List<Double> sourceList ){
+	private double getMaximumDifference( List<Double> sourceList ){
 				
 		//Az elso osztaskoz-tavolsag
 		double pr = 1;
@@ -404,11 +423,11 @@ System.out.println("("+x + ", " + y+")" + " " + actualThermalPoint );
 			boolean ok = false;
 			
 			//Probalgatas
-			for( int k = 0; k<= 1/precisionInM; k++){			
+			for( int k = 0; k<= precision; k++){			
 				double n = (k+pr)*b/a;
 				
 				//Ha nagyjabol egesz szamra jon ki
-				if( (int)n < n + precisionInM &&  (int)n > n - precisionInM ){
+				if( (int)n < n + 1/precision &&  (int)n > n - 1/precision ){
 
 					a = b;
 					pr = n;

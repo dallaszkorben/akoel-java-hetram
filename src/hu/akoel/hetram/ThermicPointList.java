@@ -1,5 +1,12 @@
 package hu.akoel.hetram;
 
+import hu.akoel.hetram.connectors.OThermicConnector;
+import hu.akoel.hetram.connectors.DThermicConnector;
+import hu.akoel.hetram.connectors.SThermicConnector;
+import hu.akoel.hetram.connectors.ThermicConnector;
+import hu.akoel.hetram.connectors.XDThermicConnector;
+import hu.akoel.hetram.connectors.YDThermicConnector;
+
 import java.util.Collection;
 
 public class ThermicPointList{
@@ -78,7 +85,7 @@ public class ThermicPointList{
 		for( int i = 0; i < position; i++ ){
 			
 			ThermicConnector c;
-	
+			
 			double nevezo = 0;
 			double szamlalo = 0;
 			double temperature;
@@ -86,58 +93,101 @@ public class ThermicPointList{
 			//NORTH
 			c = list[i].getNorthThermicConnector();			
 			//nevezo += list[i].getNorthThermicSurface();
+			
+			//Termikus Pont-Termikus Pont
 			if( c instanceof YDThermicConnector ){
 				
-				szamlalo += ( ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta() ) * ((YDThermicConnector)c).getNorthThermicPoint().getActualTemperature();
-				nevezo += ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta();
+				YDThermicConnector dtc = (YDThermicConnector)c;
+				szamlalo += ( dtc.getLambda()/dtc.getDelta()/2 ) * dtc.getNorthThermicPoint().getActualTemperature();
+				nevezo += dtc.getLambda()/dtc.getDelta()/2;
 				
-			}else if( c instanceof AThermicConnector ){
+			//Termikus Pont - szimmetrikus kapcsoalt
+			}else if( c instanceof SThermicConnector ){
 			
-				szamlalo += ((AThermicConnector)c).getAlpha() * ((AThermicConnector)c).getAirTemperature(); 
-				nevezo += ((AThermicConnector)c).getAlpha();
+				YDThermicConnector cp = (YDThermicConnector)list[i].getSouthThermicConnector();
+				szamlalo += ( cp.getLambda()/cp.getDelta()/2 ) * cp.getSouthThermicPoint().getActualTemperature();
+				nevezo += cp.getLambda()/cp.getDelta()/2;
+				
+			//Termikus Pont - Szabad felszin
+			}else if( c instanceof OThermicConnector ){
+			
+				szamlalo += ((OThermicConnector)c).getAlpha() * ((OThermicConnector)c).getAirTemperature(); 
+				nevezo += ((OThermicConnector)c).getAlpha();
 			}
 			
 			//EAST
 			c = list[i].getEastThermicConnector();
 			//nevezo += list[i].getEastThermicSurface();
+			
+			//Termikus Pont-Termikus Pont
 			if( c instanceof XDThermicConnector ){
 								
-				szamlalo += ( ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta() ) * ((XDThermicConnector)c).getEastThermicPoint().getActualTemperature();
-				nevezo += ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta();
-				
-			}else if( c instanceof AThermicConnector ){
+				szamlalo += ( ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta()/2 ) * ((XDThermicConnector)c).getEastThermicPoint().getActualTemperature();
+				nevezo += ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta()/2;
+			
+			//Termikus Pont - szimmetrikus kapcsoalt
+			}else if( c instanceof SThermicConnector ){
+			
+				ThermicConnector cp = list[i].getWestThermicConnector();
+					
+				szamlalo += ( ((DThermicConnector) cp).getLambda()/((DThermicConnector) cp).getDelta()/2 ) * ((XDThermicConnector)cp).getWestThermicPoint().getActualTemperature();
+				nevezo += ((DThermicConnector) cp).getLambda()/((DThermicConnector) cp).getDelta()/2;
+					
+			//Termikus Pont - Szabad felszin
+			}else if( c instanceof OThermicConnector ){
 				
 				//szamlalo += list[i].getEastThermicSurface() * ((AThermicConnector)c).getAirTemperature();
-				szamlalo += ((AThermicConnector)c).getAlpha() * ((AThermicConnector)c).getAirTemperature();
-				nevezo += ((AThermicConnector)c).getAlpha();
+				szamlalo += ((OThermicConnector)c).getAlpha() * ((OThermicConnector)c).getAirTemperature();
+				nevezo += ((OThermicConnector)c).getAlpha();
 			}
 			
 			//SOUTH
 			c = list[i].getSouthThermicConnector();
 			//nevezo += list[i].getSouthThermicSurface();
+			
+			//Termikus Pont-Termikus Pont
 			if( c instanceof YDThermicConnector ){
 				
-				szamlalo += ( ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta() ) * ((YDThermicConnector)c).getSouthThermicPoint().getActualTemperature();
-				nevezo += ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta();
+				szamlalo += ( ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta()/2 ) * ((YDThermicConnector)c).getSouthThermicPoint().getActualTemperature();
+				nevezo += ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta()/2;
+
+			//Termikus Pont - szimmetrikus kapcsoalt
+			}else if( c instanceof SThermicConnector ){
 				
-			}else if( c instanceof AThermicConnector ){
+				ThermicConnector cp = list[i].getNorthThermicConnector();		
+				szamlalo += ( ((DThermicConnector) cp).getLambda()/((DThermicConnector) cp).getDelta()/2 ) * ((YDThermicConnector)cp).getNorthThermicPoint().getActualTemperature();
+				nevezo += ((DThermicConnector) cp).getLambda()/((DThermicConnector) cp).getDelta()/2;
+						
+			//Termikus Pont - Szabad felszin
+			}else if( c instanceof OThermicConnector ){
 				
-				szamlalo += ((AThermicConnector)c).getAlpha() * ((AThermicConnector)c).getAirTemperature();
-				nevezo += ((AThermicConnector)c).getAlpha();
+				szamlalo += ((OThermicConnector)c).getAlpha() * ((OThermicConnector)c).getAirTemperature();
+				nevezo += ((OThermicConnector)c).getAlpha();
 			}
 						
 			//WEST
 			c = list[i].getWestThermicConnector();
 			//nevezo += list[i].getWestThermicSurface();
+			
+			//Termikus Pont-Termikus Pont
 			if( c instanceof XDThermicConnector ){
 				
-				szamlalo += ( ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta() ) * ((XDThermicConnector)c).getWestThermicPoint().getActualTemperature();
-				nevezo += ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta();
+				szamlalo += ( ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta()/2 ) * ((XDThermicConnector)c).getWestThermicPoint().getActualTemperature();
+				nevezo += ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta()/2;
 				
-			}else if( c instanceof AThermicConnector ){
+			//Termikus Pont - szimmetrikus kapcsoalt
+			}else if( c instanceof SThermicConnector ){
 				
-				szamlalo += ((AThermicConnector)c).getAlpha() * ((AThermicConnector)c).getAirTemperature();
-				nevezo += ((AThermicConnector)c).getAlpha();
+				ThermicConnector cp = list[i].getEastThermicConnector();
+				
+				szamlalo += ( ((DThermicConnector) cp).getLambda()/((DThermicConnector) cp).getDelta()/2 ) * ((XDThermicConnector)cp).getEastThermicPoint().getActualTemperature();
+				nevezo += ((DThermicConnector) cp).getLambda()/((DThermicConnector) cp).getDelta()/2;
+			
+			//Termikus Pont - Szabad felszin
+			}else if( c instanceof OThermicConnector ){
+				
+				szamlalo += ((OThermicConnector)c).getAlpha() * ((OThermicConnector)c).getAirTemperature();
+				nevezo += ((OThermicConnector)c).getAlpha();
 				
 			}
 			

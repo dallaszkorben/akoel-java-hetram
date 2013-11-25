@@ -1,4 +1,6 @@
-package hu.akoel.hetram;
+package hu.akoel.hetram.connectors;
+
+import hu.akoel.hetram.ThermicPoint;
 
 public class YDThermicConnector extends DThermicConnector {
 
@@ -11,9 +13,6 @@ public class YDThermicConnector extends DThermicConnector {
 		this.northThermicPoint = northThermicPoint;
 		this.southThermicPoint = southThermicPoint;
 		
-		if( northThermicPoint.getPosition().getY() < southThermicPoint.getPosition().getY() ){
-			setLoop( true );
-		}
 	}
 
 	public ThermicPoint getNorthThermicPoint() {
