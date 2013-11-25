@@ -1,5 +1,7 @@
 package hu.akoel.hetram;
 
+import java.util.Collection;
+
 public class ThermicPointList{
 	private ThermicPoint[] list;
 	private int position = 0;
@@ -8,6 +10,15 @@ public class ThermicPointList{
 	
 		list = new ThermicPoint[size];
 		
+	}
+	
+	public ThermicPointList(Collection<ThermicPoint> thermicPointCollection ){
+		
+		list = new ThermicPoint[6000];
+		
+		for( ThermicPoint tp :thermicPointCollection){
+			add( tp );
+		}
 	}
 	
 	/**
@@ -29,6 +40,7 @@ public class ThermicPointList{
 		//Lista mutatojanak novelese
 		position++;
 	}
+	
 	
 	/**
 	 * A sokismeretlenes egyenletrendszer megoldasa 
@@ -73,50 +85,59 @@ public class ThermicPointList{
 			
 			//NORTH
 			c = list[i].getNorthThermicConnector();			
-			nevezo += list[i].getNorthTag();
+			//nevezo += list[i].getNorthThermicSurface();
 			if( c instanceof YDThermicConnector ){
 				
-				szamlalo += list[i].getNorthTag() * ((YDThermicConnector)c).getNorthThermicPoint().getActualTemperature();		
+				szamlalo += ( ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta() ) * ((YDThermicConnector)c).getNorthThermicPoint().getActualTemperature();
+				nevezo += ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta();
 				
 			}else if( c instanceof AThermicConnector ){
 			
-				szamlalo += list[i].getNorthTag() * ((AThermicConnector)c).getAirTemperature(); 
+				szamlalo += ((AThermicConnector)c).getAlpha() * ((AThermicConnector)c).getAirTemperature(); 
+				nevezo += ((AThermicConnector)c).getAlpha();
 			}
 			
 			//EAST
 			c = list[i].getEastThermicConnector();
-			nevezo += list[i].getEastTag();
+			//nevezo += list[i].getEastThermicSurface();
 			if( c instanceof XDThermicConnector ){
 								
-				szamlalo += list[i].getEastTag() * ((XDThermicConnector)c).getEastThermicPoint().getActualTemperature();
+				szamlalo += ( ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta() ) * ((XDThermicConnector)c).getEastThermicPoint().getActualTemperature();
+				nevezo += ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta();
 				
 			}else if( c instanceof AThermicConnector ){
 				
-				szamlalo += list[i].getEastTag() * ((AThermicConnector)c).getAirTemperature();
+				//szamlalo += list[i].getEastThermicSurface() * ((AThermicConnector)c).getAirTemperature();
+				szamlalo += ((AThermicConnector)c).getAlpha() * ((AThermicConnector)c).getAirTemperature();
+				nevezo += ((AThermicConnector)c).getAlpha();
 			}
 			
 			//SOUTH
 			c = list[i].getSouthThermicConnector();
-			nevezo += list[i].getSouthTag();
+			//nevezo += list[i].getSouthThermicSurface();
 			if( c instanceof YDThermicConnector ){
 				
-				szamlalo += list[i].getSouthTag() * ((YDThermicConnector)c).getSouthThermicPoint().getActualTemperature();
+				szamlalo += ( ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta() ) * ((YDThermicConnector)c).getSouthThermicPoint().getActualTemperature();
+				nevezo += ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta();
 				
 			}else if( c instanceof AThermicConnector ){
 				
-				szamlalo += list[i].getSouthTag() * ((AThermicConnector)c).getAirTemperature();
+				szamlalo += ((AThermicConnector)c).getAlpha() * ((AThermicConnector)c).getAirTemperature();
+				nevezo += ((AThermicConnector)c).getAlpha();
 			}
 						
 			//WEST
 			c = list[i].getWestThermicConnector();
-			nevezo += list[i].getWestTag();
+			//nevezo += list[i].getWestThermicSurface();
 			if( c instanceof XDThermicConnector ){
 				
-				szamlalo += list[i].getWestTag() * ((XDThermicConnector)c).getWestThermicPoint().getActualTemperature();
+				szamlalo += ( ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta() ) * ((XDThermicConnector)c).getWestThermicPoint().getActualTemperature();
+				nevezo += ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta();
 				
 			}else if( c instanceof AThermicConnector ){
 				
-				szamlalo += list[i].getWestTag() * ((AThermicConnector)c).getAirTemperature();
+				szamlalo += ((AThermicConnector)c).getAlpha() * ((AThermicConnector)c).getAirTemperature();
+				nevezo += ((AThermicConnector)c).getAlpha();
 				
 			}
 			

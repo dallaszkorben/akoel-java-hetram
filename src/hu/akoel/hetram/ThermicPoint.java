@@ -164,39 +164,7 @@ public class ThermicPoint {
 		}
 	}
 	
-	public double getNorthTag(){
-		return getTag( getNorthThermicConnector() );
-	}
-
-	public double getEastTag(){
-		return getTag( getEastThermicConnector() );
-	}
-
-	public double getSouthTag(){
-		return getTag( getSouthThermicConnector() );
-	}
-	
-	public double getWestTag(){
-		return getTag( getWestThermicConnector() );
-	}
-
-
-	private double getTag( ThermicConnector c ){
-
-		if( c instanceof DThermicConnector ){
-			
-			return ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta();
-			
-		}else if( c instanceof AThermicConnector ){
-			
-			return ((AThermicConnector) c).getAlpha();
-			
-		}else{
-			
-			//TODO valojaban hiba. Ez nem lehet
-			return 0;
-		}
-	}
+	//return ((DThermicConnector) c).getLambda()/((DThermicConnector) c).getDelta();
 	
 	public double getActualTemperature() {
 		return actualTemperature;

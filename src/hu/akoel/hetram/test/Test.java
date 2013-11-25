@@ -7,13 +7,22 @@ import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.text.DecimalFormat;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 
+import hu.akoel.hetram.AThermicConnector;
 import hu.akoel.hetram.DThermicConnector;
+import hu.akoel.hetram.Element;
+import hu.akoel.hetram.ElementSet;
 import hu.akoel.hetram.Position;
 import hu.akoel.hetram.ThermicConnector;
 import hu.akoel.hetram.ThermicPoint;
+import hu.akoel.hetram.Element.AlphaOrientation;
 import hu.akoel.hetram.ThermicPoint.Orientation;
 import hu.akoel.hetram.ThermicPointList;
 import hu.akoel.mgu.MCanvas;
@@ -64,12 +73,12 @@ public class Test extends JFrame {
 	private Scale myScale;
 	private double pixelPerCm = 42.1;
 	private Scale.UNIT unit = Scale.UNIT.m;
-	private double startScale = 10;
+	private double startScale = 9;
 	private double rate = 1.2;
 
-	private double lambda1 = 0.1;
+	private double lambda1 = 0.24;
 	private double lambda2 = 0.45;
-	private double lambda3 = 0.45;
+	private double lambda3 = 1.5;
 	private double alfaE = 24;
 	private double alfaI = 8;
 	private double temperatureE = -13;
@@ -171,7 +180,14 @@ public class Test extends JFrame {
 
 						//g2.setStroke(new BasicStroke(1));
 						g2.setColor(getRedBluByPercent((thermicPointList.get(j).getActualTemperature() - minimumTemperature) / deltaTemperature));
-						g2.fillRectangle(xStart, yStart, dWest + dEast, dSouth + dNorth);
+						g2.fillRectangle(xStart, yStart, xStart + dWest + dEast, yStart + dSouth + dNorth);
+
+/*System.err.println( 
+		(int)Math.round((float)canvas.getPixelXPositionByWorldBeforeTranslate(xStart)) + "   " + 
+		(int)Math.round((float)canvas.getPixelXPositionByWorldBeforeTranslate((xStart + dEast + dWest)))
+);
+*/								
+//System.err.println(xStart + "   " + (xStart + dEast + dWest));						
 
 						//g2.setStroke(new BasicStroke(5));
 						//g2.drawLine(position.getX(), position.getY(), position.getX(), position.getY());
@@ -255,7 +271,28 @@ public class Test extends JFrame {
 	}
 
 	private ThermicPointList getResult() {
+
+		Element pillar1 = new Element( lambda3, new Position(0,0), new Position( 0.5,0.3 ));		
+		pillar1.setAlpha( AlphaOrientation.SOUTH, new AThermicConnector(alfaI, temperatureI));
+		pillar1.setAlpha( AlphaOrientation.EAST, new AThermicConnector(alfaI, temperatureI));
+		pillar1.setAlpha( AlphaOrientation.WEST, new AThermicConnector(alfaI, temperatureI));
+				
+		Element pillar2 = new Element( lambda1, new Position(0,0.3), new Position( 0.5,0.4 ));
+		pillar2.setAlpha(AlphaOrientation.NORTH, new AThermicConnector( alfaE, temperatureE ) );
+		pillar2.setAlpha(AlphaOrientation.EAST, new AThermicConnector( alfaE, temperatureE ) );
+		pillar2.setAlpha(AlphaOrientation.WEST, new AThermicConnector( alfaE, temperatureE ) );
 		
+		ElementSet elementSet = new ElementSet();
+		elementSet.add( pillar1);
+		elementSet.add( pillar2);
+
+System.err.println(elementSet.getHorizontalMaximumDifference() + ", " + elementSet.getVerticalMaximumDifference() );
+Collection<ThermicPoint> tps = elementSet.doValami(0.01, 0.01);
+ThermicPointList list = new ThermicPointList(tps);		
+list.solve(0.001);		
+		
+		
+/*		
 		// 1. sor
 		ThermicPoint T11 = new ThermicPoint(new Position(0, 0.));
 		T11.connectTo(Orientation.WEST, alfaE, temperatureE);
@@ -577,8 +614,10 @@ public class Test extends JFrame {
 		list.add(T106);
 
 		list.solve(0.001);
-
+*/
 		return list;
 	}
 
 }
+
+
