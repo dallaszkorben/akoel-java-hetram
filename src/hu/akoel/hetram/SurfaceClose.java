@@ -1,11 +1,14 @@
 package hu.akoel.hetram;
 
-public class ThermicSurface {
+import hu.akoel.hetram.Element.SideOrientation;
 
+public class SurfaceClose extends CloseElement{
+	
 	private double alpha;
 	private double airTemperature;
-	
-	public ThermicSurface( double alpha, double airTemperature ){
+		
+	public SurfaceClose( SideOrientation orientation, Length length, double alpha, double airTemperature ){
+		super( orientation, length );		
 		this.alpha = alpha;
 		this.airTemperature = airTemperature;
 	}
@@ -17,4 +20,5 @@ public class ThermicSurface {
 	public double getAirTemperature() {
 		return airTemperature;
 	}
+
 }

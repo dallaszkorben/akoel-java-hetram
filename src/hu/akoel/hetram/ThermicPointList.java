@@ -12,9 +12,9 @@ public class ThermicPointList{
 		
 	}
 	
-	public ThermicPointList(Collection<ThermicPoint> thermicPointCollection ){
+	public ThermicPointList( Collection<ThermicPoint> thermicPointCollection ){
 		
-		list = new ThermicPoint[6000];
+		list = new ThermicPoint[ thermicPointCollection.size() ];
 		
 		for( ThermicPoint tp :thermicPointCollection){
 			add( tp );
