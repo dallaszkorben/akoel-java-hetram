@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 
 public class ThermicPoint {
 	
-	public static enum Orientation{
+	public static enum ThermicPointOrientation{
 		NORTH,
 		EAST,
 		SOUTH,
@@ -37,17 +37,17 @@ public class ThermicPoint {
 	 * @param alfa
 	 * @param airTemperature
 	 */
-	public void connectTo( Orientation orientation, double alfa, double airTemperature ){
+	public void connectTo( ThermicPointOrientation orientation, double alfa, double airTemperature ){
 		
 		 AThermicConnector connector = new AThermicConnector( alfa, airTemperature );
 		
-		if( orientation.equals( Orientation.NORTH ) ){
+		if( orientation.equals( ThermicPointOrientation.NORTH ) ){
 			northThermicConnector = connector;
-		}else if( orientation.equals( Orientation.EAST ) ){
+		}else if( orientation.equals( ThermicPointOrientation.EAST ) ){
 			eastThermicConnector = connector;
-		}else if( orientation.equals( Orientation.SOUTH ) ){
+		}else if( orientation.equals( ThermicPointOrientation.SOUTH ) ){
 			southThermicConnector = connector;
-		}else if( orientation.equals( Orientation.WEST ) ){
+		}else if( orientation.equals( ThermicPointOrientation.WEST ) ){
 			westThermicConnector = connector;
 		}		
 	}
@@ -60,27 +60,27 @@ public class ThermicPoint {
 	 * @param delta
 	 * @param lambda
 	 */
-	public void connectTo( ThermicPoint pairThermicPoint, Orientation orientation, double lambda ){
+	public void connectTo( ThermicPoint pairThermicPoint, ThermicPointOrientation orientation, double lambda ){
 		
-		if( orientation.equals(Orientation.WEST) ){
+		if( orientation.equals(ThermicPointOrientation.WEST) ){
 		
 			XDThermicConnector connector = new XDThermicConnector( pairThermicPoint, this, lambda );			
 			this.westThermicConnector = connector;
 			pairThermicPoint.eastThermicConnector = connector;
 			
-		}else if( orientation.equals( Orientation.EAST ) ){
+		}else if( orientation.equals( ThermicPointOrientation.EAST ) ){
 			
 			XDThermicConnector connector = new XDThermicConnector( this, pairThermicPoint, lambda );
 			this.eastThermicConnector = connector;
 			pairThermicPoint.westThermicConnector = connector;
 			
-		}else if( orientation.equals( Orientation.NORTH ) ){
+		}else if( orientation.equals( ThermicPointOrientation.NORTH ) ){
 			
 			YDThermicConnector connector = new YDThermicConnector( pairThermicPoint, this, lambda );			
 			this.northThermicConnector = connector;
 			pairThermicPoint.southThermicConnector = connector;
 			
-		}else if( orientation.equals( Orientation.SOUTH ) ){
+		}else if( orientation.equals( ThermicPointOrientation.SOUTH ) ){
 			
 			YDThermicConnector connector = new YDThermicConnector( this, pairThermicPoint, lambda );
 			this.southThermicConnector = connector;

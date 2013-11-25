@@ -1,7 +1,10 @@
 package hu.akoel.hetram;
 
+import java.util.HashSet;
+
 public class Element {
-	public static enum AlphaOrientation{
+	
+	public static enum SideOrientation{
 		NORTH,
 		EAST,
 		SOUTH,
@@ -11,11 +14,7 @@ public class Element {
 	private double lambda;
 	private Position startPosition;
 	private Position endPosition;
-	private AThermicConnector northThermicConnector = null;
-	private AThermicConnector eastThermicConnector = null;
-	private AThermicConnector southThermicConnector = null;
-	private AThermicConnector westThermicConnector = null;
-	
+	private HashSet<CloseElement> closeElementSet = new HashSet<>();
 	
 	public Element( double lambda, Position startPosition, Position endPosition ){
 		this.setLambda(lambda);
@@ -23,32 +22,12 @@ public class Element {
 		this.endPosition = new Position( endPosition );
 	}
 
-	public void setAlpha( AlphaOrientation alphaOrientation, AThermicConnector thermicConnector ){
-		if( alphaOrientation.equals( AlphaOrientation.NORTH ) ){
-			northThermicConnector = thermicConnector;
-		}else if( alphaOrientation.equals( AlphaOrientation.EAST ) ){
-			eastThermicConnector = thermicConnector;
-		}else if( alphaOrientation.equals( AlphaOrientation.SOUTH ) ){
-			southThermicConnector = thermicConnector;			
-		}else if( alphaOrientation.equals( AlphaOrientation.WEST ) ){
-			westThermicConnector = thermicConnector;
-		}
-	}	
+	public void setCloseElement( CloseElement closeElement ){
+		closeElementSet.add( closeElement );
+	}
 	
-	public AThermicConnector getNorthAThermicConnector() {
-		return northThermicConnector;
-	}
-
-	public AThermicConnector getEastAThermicConnector() {
-		return eastThermicConnector;
-	}
-
-	public AThermicConnector getSouthAThermicConnector() {
-		return southThermicConnector;
-	}
-
-	public AThermicConnector getWestAThermicConnector() {
-		return westThermicConnector;
+	public HashSet<CloseElement> getCloseElements(){
+		return closeElementSet;
 	}
 
 	public double getLambda() {

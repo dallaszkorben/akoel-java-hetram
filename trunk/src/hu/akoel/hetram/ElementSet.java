@@ -1,6 +1,7 @@
 package hu.akoel.hetram;
 
-import hu.akoel.hetram.ThermicPoint.Orientation;
+import hu.akoel.hetram.Element.SideOrientation;
+import hu.akoel.hetram.ThermicPoint.ThermicPointOrientation;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -125,7 +126,7 @@ public class ElementSet{
 							
 						//Ha volt mar, ha nem, a WEST iranyu kapcsolatot letrehozom/felulirom
 						previousX = (double)Math.round( ( startPoint.getX() + (j - 1) * dh ) / precisionInM ) * precisionInM;
-						tp.connectTo(thermicPointMap.get(new Position(previousX, y)), Orientation.WEST, lambda );
+						tp.connectTo(thermicPointMap.get(new Position(previousX, y)), ThermicPointOrientation.WEST, lambda );
 					
 					}
 					
@@ -145,7 +146,7 @@ public class ElementSet{
 						
 						//Ha volt mar, ha nem, a SOUTH iranyu kapcsolatot letrehozom/felulirom
 						previousY = (double)Math.round( ( startPoint.getY() + (i - 1) * dv ) / precisionInM ) * precisionInM;
-						tp.connectTo(thermicPointMap.get(new Position(x, previousY)), Orientation.SOUTH, lambda );
+						tp.connectTo(thermicPointMap.get(new Position(x, previousY)), ThermicPointOrientation.SOUTH, lambda );
 					}
 					
 //System.out.println("("+x + ", " + y+")" + " " + actualTermalPoint.getActualTemperature());					
@@ -161,11 +162,8 @@ public class ElementSet{
 		//Minden elemen vegig megyek megegyszer
 		for( Element element: elementSet ){
 		
-			AThermicConnector ntc = element.getNorthAThermicConnector();
-			AThermicConnector etc = element.getEastAThermicConnector();
-			AThermicConnector stc = element.getSouthAThermicConnector();
-			AThermicConnector wtc = element.getWestAThermicConnector();
-						
+			HashSet<CloseElement> closeElements = element.getCloseElements();
+			
 			Position startPoint = element.getStartPosition();
 			Position endPoint = element.getEndPosition();		
 
@@ -185,33 +183,120 @@ public class ElementSet{
 
 					ThermicPoint actualThermalPoint = thermicPointMap.get( position );
 								
-					//Bal szelso ThermicPoint es van AThermicConnector definialva szamara, vagyis szelso elem
-					if( j == 0 && null != wtc ){
-						actualThermalPoint.connectTo(Orientation.WEST, wtc.getAlpha(), wtc.getAirTemperature() );
-					}
-					//Jobb szelso ThermicPoint es van AThermicConnector definialva
-					if( j == jSteps && null != etc ){
-						actualThermalPoint.connectTo(Orientation.EAST, etc.getAlpha(), etc.getAirTemperature() );
-					}
-					//Deli ThermicPoint es van AThermicConnector definialva
-					if( i == 0 && null != stc ){
-						actualThermalPoint.connectTo(Orientation.SOUTH, stc.getAlpha(), stc.getAirTemperature() );
-					}
-					//Eszaki ThermicPoint es van AThermicConnector definialva
-					if( i == iSteps && null != ntc ){
-						actualThermalPoint.connectTo(Orientation.NORTH, ntc.getAlpha(), ntc.getAirTemperature() );
+					//Bal szelso
+					//ThermicPoint es van AThermicConnector definialva szamara, vagyis szelso elem
+					if( j == 0 ){
+						
+						for( CloseElement closeElement: closeElements ){
+
+							//Megfelelo pozicio
+							if( closeElement.getOrientation().equals(SideOrientation.WEST ) && y >= closeElement.getLength().getStart() && y <= closeElement.getLength().getEnd() ){
+
+								//Fal felulet
+								if( closeElement instanceof SurfaceClose ){
+
+									//Alfa es homerseklet kapcsolasa
+									actualThermalPoint.connectTo(ThermicPointOrientation.WEST, ((SurfaceClose)closeElement).getAlpha(), ((SurfaceClose)closeElement).getAirTemperature() );		
+									break;
+								
+								//Metszet ami szimmetrikus
+								}else if( closeElement instanceof SymmetricClose ){
+									
+									double x1 = (double)Math.round( ( startPoint.getX() + ( (j + 1 ) * dh ) ) / precisionInM ) * precisionInM;
+									Position p1 = new Position( x1, y );
+									ThermicPoint tp1 = thermicPointMap.get( p1 );
+									actualThermalPoint.connectTo(tp1, ThermicPointOrientation.WEST, lambda );
+									break;
+								
+								}									
+							}
+						}
 					}
 					
-//!!!!!!!!!!!!
-//Ezt parameterezni kell !!!\
-//!!!!!!!!!!!
-					
+					//Jobb szelso
+					//ThermicPoint es van AThermicConnector definialva
 					if( j == jSteps ){
 						
-//						double x0 = (double)Math.round( ( startPoint.getX() + 0 * dh ) / precisionInM ) * precisionInM;
-//						ThermicPoint tp0 = thermicPointMap.get( new Position( x0, y) );
+						for( CloseElement closeElement: closeElements ){
 						
-//						actualThermalPoint.connectTo(tp0, Orientation.EAST, lambda);
+							//Megfelelo pozicio
+							if( closeElement.getOrientation().equals(SideOrientation.EAST ) && y >= closeElement.getLength().getStart() && y <= closeElement.getLength().getEnd() ){
+							
+								//Fal felulet
+								if( closeElement instanceof SurfaceClose ){
+								
+									//Alfa es homerseklet kapcsolasa
+									actualThermalPoint.connectTo(ThermicPointOrientation.EAST, ((SurfaceClose)closeElement).getAlpha(), ((SurfaceClose)closeElement).getAirTemperature() );
+									break;
+									
+								//Metszet ami szimmetrikus
+								}else if( closeElement instanceof SymmetricClose ){
+									
+									double x1 = (double)Math.round( ( startPoint.getX() + ( ( j - 1 ) * dh ) ) / precisionInM ) * precisionInM;
+									Position p1 = new Position( x1, y );
+									ThermicPoint tp1 = thermicPointMap.get( p1 );
+									actualThermalPoint.connectTo(tp1, ThermicPointOrientation.EAST, lambda );
+									break;
+									
+								}
+							}
+						}						
+					}
+					
+					//Deli
+					//ThermicPoint es van AThermicConnector definialva
+					if( i == 0 ){
+						
+						for( CloseElement closeElement: closeElements ){
+						
+							//Megfelelo pozicio
+							if( closeElement.getOrientation().equals(SideOrientation.SOUTH ) && x >= closeElement.getLength().getStart() && x <= closeElement.getLength().getEnd() ){
+							
+								//Fal felulet
+								if( closeElement instanceof SurfaceClose ){
+								
+									//Alfa es homerseklet kapcsolasa
+									actualThermalPoint.connectTo(ThermicPointOrientation.SOUTH, ((SurfaceClose)closeElement).getAlpha(), ((SurfaceClose)closeElement).getAirTemperature() );
+									break;
+										
+								//Metszet ami szimmetrikus
+								}else if( closeElement instanceof SymmetricClose ){
+									
+									double y1 = (double)Math.round( (startPoint.getY() + ( ( i + 1 ) * dv ) ) / precisionInM ) * precisionInM;
+									Position p1 = new Position( x, y1 );
+									ThermicPoint tp1 = thermicPointMap.get( p1 );
+									actualThermalPoint.connectTo(tp1, ThermicPointOrientation.SOUTH, lambda );
+									break;
+									
+								}
+							}
+						}
+					}
+					
+					//Eszaki 
+					//ThermicPoint es van AThermicConnector definialva
+					if( i == iSteps ){
+						
+						for( CloseElement closeElement: closeElements ){
+						
+							//Megfelelo pozicio
+							if( closeElement.getOrientation().equals(SideOrientation.NORTH ) && x >= closeElement.getLength().getStart() && x <= closeElement.getLength().getEnd() ){
+							
+								actualThermalPoint.connectTo(ThermicPointOrientation.NORTH, ((SurfaceClose)closeElement).getAlpha(), ((SurfaceClose)closeElement).getAirTemperature() );
+								break;
+							
+							//Metszet ami szimmetrikus
+							}else if( closeElement instanceof SymmetricClose ){
+								
+								double y1 = (double)Math.round( (startPoint.getY() + ( ( i - 1 ) * dv ) ) / precisionInM ) * precisionInM;
+								Position p1 = new Position( x, y1 );
+								ThermicPoint tp1 = thermicPointMap.get( p1 );
+								actualThermalPoint.connectTo(tp1, ThermicPointOrientation.SOUTH, lambda );
+								break;
+								
+							}
+							
+						}
 					}
 				}
 			}

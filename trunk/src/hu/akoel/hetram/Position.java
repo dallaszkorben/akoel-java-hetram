@@ -42,7 +42,13 @@ public class Position {
 	}
 	
 	 @Override
-	    public int hashCode() {
-	        return (String.valueOf(x) + String.valueOf(y)).hashCode();
-	    }
+	 public int hashCode() {
+		 final int prime = 31;
+		 int result = 1;
+		 
+		 result = result * prime + Double.valueOf(x).hashCode();
+		 result = result * prime + Double.valueOf(y).hashCode();
+		 
+		 return result;
+	 }
 }
