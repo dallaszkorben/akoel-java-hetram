@@ -25,7 +25,24 @@ public class Position {
 		return y;
 	}
 	
+	@Override
 	public String toString(){
 		return "[" + format.format( this.x ) + ", " + format.format( this.y ) + "]";
 	}
+	
+	@Override
+	public boolean equals(Object o){
+		if( (o instanceof Position) ){
+
+			if( ((Position)o).x == this.x && ((Position)o).y == this.y ){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	 @Override
+	    public int hashCode() {
+	        return (String.valueOf(x) + String.valueOf(y)).hashCode();
+	    }
 }
