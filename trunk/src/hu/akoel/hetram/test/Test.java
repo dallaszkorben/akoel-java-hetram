@@ -288,14 +288,14 @@ public class Test extends JFrame {
 		Element e2 = new Element( lambda3, new Position(0.3,0), new Position(0.5, 0.3));
 e2.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0.3,0.5), alfaE, temperatureE ) );
 		e2.setCloseElement(new SurfaceClose(SideOrientation.SOUTH, new Length(0.3,0.5), alfaI, temperatureI ) );
-//e2.setCloseElement(new SymmetricClose( SideOrientation.WEST, new Length( 0.0, 3.0 ) ) );
+
 		
-/*		
+		
 		Element e3 = new Element( lambda2, new Position(0.5,0), new Position(0.8, 0.3));
 e3.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0.5,0.8), alfaE, temperatureE ) );
 		e3.setCloseElement(new SurfaceClose(SideOrientation.SOUTH, new Length(0.5,0.8), alfaI, temperatureI ) );
 		e3.setCloseElement(new SymmetricClose( SideOrientation.EAST, new Length( 0.0, 3.0 ) ) );
-*/		
+		
 		
 /*		Element e4 = new Element( lambda1, new Position(0,0.3), new Position(0.8, 0.4));
 		e4.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0,0.8), alfaE, temperatureE ) );
@@ -307,15 +307,15 @@ e3.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0.5,0.8), 
 System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());		
 		elementSet.add(e2);
 System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());		
-//		elementSet.add(e3);
-//System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());
+		elementSet.add(e3);
+System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());
 //		elementSet.add(e4);
 //System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());		
 
 //System.err.println(elementSet.getHorizontalMaximumDifference() + ", " + elementSet.getVerticalMaximumDifference() );
 //ThermicPointList list = elementSet.divideElements( 0.01, 0.01 );	
 
-ThermicPointList list = elementSet.divideElements( 0.01, 0.01 );
+ThermicPointList list = elementSet.divideElements( 0.1, 0.1 );
 
 list.solve(0.001);		
 		

@@ -232,9 +232,12 @@ public class ElementSet{
 					//ThermicPoint es van AThermicConnector definialva
 					if( j == jSteps ){
 						
+						
+						//Ha a Point kesobb lett lehelyezve mint a jobb oldali szomszedja, akkor nincs hozzakotve. Ezt potolni kell
 						double nextX = CommonOperations.get3Decimals( startPoint.getX() + (j + 1) * dh );
 						ThermicPoint nextThermicPoint = thermicPointMap.get(new Position(nextX, y));
 						if( null != nextThermicPoint ){
+System.err.println(actualThermicPoint);							
 							actualThermicPoint.connectToD(nextThermicPoint, ThermicPointOrientation.EAST, lambda );
 
 						}else{
@@ -319,7 +322,7 @@ public class ElementSet{
 				}
 			}
 			
-System.err.println();			
+			
 		}
 
 		
