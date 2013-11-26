@@ -87,10 +87,13 @@ public class ElementSet{
 		
 		HashMap<Position, ThermicPoint> thermicPointMap = new HashMap<>();
 		
+		//----------------------------------------------
 		//
+		// Elso korben a DThermicConnector-okat osztja ki
+		//
+		//----------------------------------------------
+		
 		//Minden elemen vegig megyek
-		//Elso korben a DThermicConnector-okat osztja ki
-		//
 		for( Element element: elementSet ){
 			
 			Position startPoint = element.getStartPosition();
@@ -172,38 +175,40 @@ public class ElementSet{
 			}		
 		}
 		
+		//--------------------------------------------------
 		//
-		//Kimaradt adatkapcsolatok potlasa
+		// Masodik korben a kimaradt adatkapcsolatok potlasa
+		// -A kulso korvonalat lezaro Connectorok 
+		//  (Szabad feluletet biztosito konnektor es a Szimmetria lezarast biztosito konnektor)
 		//
+		//--------------------------------------------------
+		
 		//Minden elemen vegig megyek megegyszer
 		for( Element element: elementSet ){
 		
 			HashSet<CloseElement> closeElements = element.getCloseElements();
 			
 			Position startPoint = element.getStartPosition();
-			Position endPoint = element.getEndPosition();	
-			double lambda = element.getLambda();
+			Position endPoint = element.getEndPosition();			
 
 			double y = startPoint.getY();
 			int iSteps = (int)Math.round((endPoint.getY() - y) / dv );
 			for( int i = 0; i <= iSteps; i++){
-				//y = (double)Math.round( (startPoint.getY() + i * dv ) * precision ) / precision;
+
 				y = CommonOperations.get3Decimals( startPoint.getY() + i * dv );				
 				
 				double x = startPoint.getX();				
 				int jSteps = (int)Math.round((endPoint.getX() - x) / dh);
 				for( int j = 0; j <= jSteps; j++ ){
 					
-					//x = (double)Math.round( ( startPoint.getX() + j * dh ) * precision ) / precision;
 					x = CommonOperations.get3Decimals( startPoint.getX() + j * dh );
 					
 					Position position = new Position(x, y);
 
 					ThermicPoint actualThermicPoint = thermicPointMap.get( position );
 								
-					//Bal szelso
-					//ThermicPoint es van OThermicConnector definialva szamara, vagyis szelso elem
-					if( j == 0 ){
+					//Ha bal-szelso Pont es a Pont-nak nincs WEST iranyu DThermicConnector-a
+					if( j == 0 && null == actualThermicPoint.getWestThermicConnector() ){
 						
 						for( CloseElement closeElement: closeElements ){
 
@@ -227,22 +232,10 @@ public class ElementSet{
 							}
 						}
 					}
-					
-					//Jobb szelso
-					//ThermicPoint es van AThermicConnector definialva
-					if( j == jSteps ){
-						
-						
-						//Ha a Point kesobb lett lehelyezve mint a jobb oldali szomszedja, akkor nincs hozzakotve. Ezt potolni kell
-						double nextX = CommonOperations.get3Decimals( startPoint.getX() + (j + 1) * dh );
-						ThermicPoint nextThermicPoint = thermicPointMap.get(new Position(nextX, y));
-						if( null != nextThermicPoint ){
-System.err.println(actualThermicPoint);							
-							actualThermicPoint.connectToD(nextThermicPoint, ThermicPointOrientation.EAST, lambda );
+										
+					//Ha jobb-szelso Pont es a Pont-nak nincs EAST iranyu DThermicConnector-a
+					if( j == jSteps && null == actualThermicPoint.getEastThermicConnector() ){
 
-						}else{
-	
-						
 						for( CloseElement closeElement: closeElements ){
 						
 							//Megfelelo pozicio
@@ -264,12 +257,10 @@ System.err.println(actualThermicPoint);
 								}
 							}
 						}
-						}
 					}
 					
-					//Deli
-					//ThermicPoint es van AThermicConnector definialva
-					if( i == 0 ){
+					//Ha also-szelso Pont es a Pont-nak nincs SOUTH iranyu DThermicConnector-a
+					if( i == 0 && null == actualThermicPoint.getSouthThermicConnector()){
 						
 						for( CloseElement closeElement: closeElements ){
 						
@@ -294,9 +285,8 @@ System.err.println(actualThermicPoint);
 						}
 					}
 					
-					//Eszaki 
-					//ThermicPoint es van AThermicConnector definialva
-					if( i == iSteps ){
+					//Ha felso-szelso Pont es a Pont-nak nincs NORTH iranyu DThermicConnector-a
+					if( i == iSteps && null == actualThermicPoint.getNorthThermicConnector() ){
 						
 						for( CloseElement closeElement: closeElements ){
 						
@@ -343,8 +333,8 @@ System.err.println(actualThermicPoint);
 					//x = (double)Math.round( ( startPoint.getX() + j * dh ) * precision ) / precision;
 					x = CommonOperations.get3Decimals( startPoint.getX() + j * dh );
 					
-ThermicPoint actualThermalPoint = thermicPointMap.get( new Position(x,y) );
-System.out.println(actualThermalPoint);
+//ThermicPoint actualThermalPoint = thermicPointMap.get( new Position(x,y) );
+//System.out.println(actualThermalPoint);
 					
 				}
 			}

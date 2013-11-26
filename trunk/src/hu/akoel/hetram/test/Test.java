@@ -80,7 +80,7 @@ public class Test extends JFrame {
 
 	private double lambda1 = 0.45;
 	private double lambda2 = 0.45;
-	private double lambda3 = 3.0;
+	private double lambda3 = 1.0;
 	private double alfaE = 24;
 	private double alfaI = 8;
 	private double temperatureE = -13;
@@ -262,6 +262,20 @@ public class Test extends JFrame {
 
 	private ThermicPointList getResult() {
 
+		
+		Element hWall = new Element( lambda1, new Position(0, 0.7), new Position(1.0, 1.0));
+		hWall.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 1.0), alfaE, temperatureE ) );
+		hWall.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0.7, 1.0), alfaE, temperatureE ) );
+		hWall.setCloseElement(new SurfaceClose( SideOrientation.SOUTH, new Length( 0.3, 1.0), alfaI, temperatureI ) );
+		
+		Element vWall = new Element( lambda1, new Position(0,0), new Position(0.3, 0.7));
+		vWall.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0.0, 0.7), alfaE, temperatureE ) );
+		vWall.setCloseElement(new SurfaceClose( SideOrientation.EAST, new Length( 0.0, 0.7), alfaI, temperatureI ) );
+		
+		ElementSet elementSet = new ElementSet();
+		elementSet.add( vWall );
+		elementSet.add( hWall );
+		
 /*		Element pillar1 = new Element( lambda1, new Position(0,0), new Position( 0.3,0.3 ));
 		
 		pillar1.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 3.0), alfaE, temperatureE ) );
@@ -279,29 +293,29 @@ public class Test extends JFrame {
 */
 		
 		
-		
+/*		
 		Element e1 = new Element( lambda2, new Position(0,0), new Position(0.3, 0.3));
-		e1.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0,0.3), alfaE, temperatureE ) );
+//e1.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0,0.3), alfaE, temperatureE ) );
 		e1.setCloseElement(new SurfaceClose(SideOrientation.SOUTH, new Length(0,0.3), alfaI, temperatureI ) );		
 		e1.setCloseElement(new SymmetricClose( SideOrientation.WEST, new Length( 0.0, 3.0 ) ) );
 		
 		Element e2 = new Element( lambda3, new Position(0.3,0), new Position(0.5, 0.3));
-e2.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0.3,0.5), alfaE, temperatureE ) );
+//e2.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0.3,0.5), alfaE, temperatureE ) );
 		e2.setCloseElement(new SurfaceClose(SideOrientation.SOUTH, new Length(0.3,0.5), alfaI, temperatureI ) );
 
 		
 		
 		Element e3 = new Element( lambda2, new Position(0.5,0), new Position(0.8, 0.3));
-e3.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0.5,0.8), alfaE, temperatureE ) );
+//e3.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0.5,0.8), alfaE, temperatureE ) );
 		e3.setCloseElement(new SurfaceClose(SideOrientation.SOUTH, new Length(0.5,0.8), alfaI, temperatureI ) );
 		e3.setCloseElement(new SymmetricClose( SideOrientation.EAST, new Length( 0.0, 3.0 ) ) );
 		
 		
-/*		Element e4 = new Element( lambda1, new Position(0,0.3), new Position(0.8, 0.4));
+		Element e4 = new Element( lambda1, new Position(0,0.3), new Position(0.8, 0.4));
 		e4.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0,0.8), alfaE, temperatureE ) );
 		e4.setCloseElement(new SymmetricClose( SideOrientation.EAST, new Length( 0.3, 4.0 ) ) );
 		e4.setCloseElement(new SymmetricClose( SideOrientation.WEST, new Length( 0.3, 4.0 ) ) );
-*/		
+		
 		ElementSet elementSet = new ElementSet();
 		elementSet.add(e1);
 System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());		
@@ -309,13 +323,14 @@ System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + element
 System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());		
 		elementSet.add(e3);
 System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());
-//		elementSet.add(e4);
-//System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());		
+		elementSet.add(e4);
+System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());		
 
 //System.err.println(elementSet.getHorizontalMaximumDifference() + ", " + elementSet.getVerticalMaximumDifference() );
 //ThermicPointList list = elementSet.divideElements( 0.01, 0.01 );	
+*/
 
-ThermicPointList list = elementSet.divideElements( 0.1, 0.1 );
+ThermicPointList list = elementSet.divideElements( 0.01, 0.01 );
 
 list.solve(0.001);		
 		
