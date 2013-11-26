@@ -221,6 +221,27 @@ public class ThermicPoint {
 		return tempDifference;
 	}
 
+	@Override
+	public boolean equals(Object o){
+		if( ( o instanceof ThermicPoint ) ){
+		
+			if( ((ThermicPoint)o).position.equals(this.position) ){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	 @Override
+	 public int hashCode() {
+		 final int prime = 31;
+		 int result = 1;
+		 
+		 result = result * prime + position.hashCode();
+		 
+		 return result;
+	 }
+	
 	public String toString(){
 		DecimalFormat temperatureFormat = new DecimalFormat("00.00");
 		DecimalFormat deltaFormat = new DecimalFormat("#.####");
