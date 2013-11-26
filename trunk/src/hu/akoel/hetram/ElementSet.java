@@ -87,8 +87,6 @@ public class ElementSet{
 		
 		HashMap<Position, ThermicPoint> thermicPointMap = new HashMap<>();
 		
-//System.err.println("dv: " + dv + " dh: " + dh);
-		
 		//
 		//Minden elemen vegig megyek
 		//Elso korben a DThermicConnector-okat osztja ki
@@ -97,80 +95,79 @@ public class ElementSet{
 			
 			Position startPoint = element.getStartPosition();
 			Position endPoint = element.getEndPosition();
-//System.err.println("Elem: " + element);			
+			double lambda;		
 
 			double y = startPoint.getY();
 			int iSteps = (int)Math.round((endPoint.getY() - y) / dv );
 			for( int i = 0; i <= iSteps; i++){
-				//y = (double)Math.round( (startPoint.getY() + i * dv ) * precision ) / precision;
+				
 				y = CommonOperations.get3Decimals( startPoint.getY() + i * dv );
 				
 				double x = startPoint.getX();				
 				int jSteps = (int)Math.round((endPoint.getX() - x) / dh);
 				for( int j = 0; j <= jSteps; j++ ){
-					
-					
-					//x = (double)Math.round( ( startPoint.getX() + j * dh ) * precision ) / precision;
+				
 					x = CommonOperations.get3Decimals( startPoint.getX() + j * dh );
 
 					Position position = new Position(x, y);
 
-					//Termikus pont letrehozas
-					ThermicPoint tp = new ThermicPoint( position );
-				
-					//Termikus pont elhelyezese a taroloban
-					thermicPointMap.put( position, tp );
+					//Rakeresek a taroloban, hatha letezett mar ez elott is
+					ThermicPoint tp = thermicPointMap.get( position );
 					
-					double previousX;
-					double previousY;
-
-					//Az elobbb elmentett pont visszaolvasasa. Mert lehet, hogy mar letezett ezzel a kulcsal, 
-					//ezert csak egy peldanyban letezhet es a lambdat atlagolni kell 
-					ThermicPoint actualTermalPoint = thermicPointMap.get( position );
+					//Ha ez a Pont meg nem letezett
+					if( null == tp ){
+						
+						//akkor letrehozom
+						tp = new ThermicPoint( position );
+						
+						//Es el is mentem
+						thermicPointMap.put( position, tp );
+						
+					}
 					
-					//Ha nem az elso elem balrol
-					if( x != 0 ){
+					lambda = element.getLambda();	
+					
+					//Ha nem az elso elem balrol, de fuggolegesen lehet barmelyik
+					if( j != 0 ){
 						
-						//Biztos, hogy letezik WEST fele egy ThermicConnector es az DThermicConnector, mert belso pont 
-						DThermicConnector oldWestConnector = (DThermicConnector)actualTermalPoint.getWestThermicConnector();
-						double lambda = element.getLambda();
+						//Akkor elkerem a regi WEST kapcsolatat, hatha letezik  
+						DThermicConnector oldWestConnector = (DThermicConnector)tp.getWestThermicConnector();
 						
-						//Mar definialva volt egy WEST kapcsolat, vagyis ez egy Masik element EAST tagja
+						//Akkor letezik ha legalso vagy legfelso Point-rol van szo es kapcsolodik egy masik, mar lehelyezett Element-hez
 						if( null != oldWestConnector ){
 						
 							//Akkor a 2 lambda atlagat szamoljuk
 							lambda = (lambda + oldWestConnector.getLambda()) / 2;
 						}
-							
-						//Ha volt mar, ha nem, a WEST iranyu kapcsolatot letrehozom/felulirom
-						//previousX = (double)Math.round( ( startPoint.getX() + (j - 1) * dh ) * precision ) / precision;
-						previousX = CommonOperations.get3Decimals( startPoint.getX() + (j - 1) * dh );
-System.out.println("PreviousX: " + previousX);						
+
+						//Veszem a baloldali kozvetlen kapcsolatat, ami bizonyosan letezik, mivel belso pont						
+						double previousX = CommonOperations.get3Decimals( startPoint.getX() + (j - 1) * dh );
+
+						//Es osszekottetest letesitek vele
 						tp.connectToD(thermicPointMap.get(new Position(previousX, y)), ThermicPointOrientation.WEST, lambda );
 					
 					}
 					
-					//Ha nem az elso elem lentrol
-					if( y != 0 ){
+					lambda = element.getLambda();	
+					
+					//Ha nem az elso elem lentrol, de vizszintesen lehet barmelyik
+					if( i != 0 ){
 						
-						//Biztos, hogy letezik SOUTH fele egy ThermicConnector es az DThermicConnector, mert belso pont 
-						DThermicConnector oldSouthConnector = (DThermicConnector)actualTermalPoint.getSouthThermicConnector();
-						double lambda = element.getLambda();
+						//Akkor elkerem a regi SOUTH kapcsolatat, hatha letezik  
+						DThermicConnector oldSouthConnector = (DThermicConnector)tp.getSouthThermicConnector();
 						
-						//Mar definialva volt egy SOUTH kapcsolat, vagyis ez egy masik Element NORTH tagja
+						//Akkor letezik ha jobb vagy baloldali Point-rol van szo es kapcsolodik egy masik, mar lehelyezett Element-hez
 						if( null != oldSouthConnector ){
 						
 							//Akkor a 2 lambda atlagat szamoljuk
 							lambda = (lambda + oldSouthConnector.getLambda()) / 2;
 						}
-						
-						//Ha volt mar, ha nem, a SOUTH iranyu kapcsolatot letrehozom/felulirom
-						//previousY = (double)Math.round( ( startPoint.getY() + (i - 1) * dv ) * precision ) / precision;
-						previousY = CommonOperations.get3Decimals( startPoint.getY() + (i - 1) * dv );						
+
+						//Veszem az alatta levo kozvetlen kapcsolatat, ami bizonyosan letezik, mivel belso pont
+						double previousY = CommonOperations.get3Decimals( startPoint.getY() + (i - 1) * dv );						
 						tp.connectToD(thermicPointMap.get(new Position(x, previousY)), ThermicPointOrientation.SOUTH, lambda );
 					}
 					
-//System.out.println("("+x + ", " + y+")" + " " + actualTermalPoint.getActualTemperature());					
 				}
 			}		
 		}
@@ -184,7 +181,8 @@ System.out.println("PreviousX: " + previousX);
 			HashSet<CloseElement> closeElements = element.getCloseElements();
 			
 			Position startPoint = element.getStartPosition();
-			Position endPoint = element.getEndPosition();		
+			Position endPoint = element.getEndPosition();	
+			double lambda = element.getLambda();
 
 			double y = startPoint.getY();
 			int iSteps = (int)Math.round((endPoint.getY() - y) / dv );
@@ -234,6 +232,14 @@ System.out.println("PreviousX: " + previousX);
 					//ThermicPoint es van AThermicConnector definialva
 					if( j == jSteps ){
 						
+						double nextX = CommonOperations.get3Decimals( startPoint.getX() + (j + 1) * dh );
+						ThermicPoint nextThermicPoint = thermicPointMap.get(new Position(nextX, y));
+						if( null != nextThermicPoint ){
+							actualThermicPoint.connectToD(nextThermicPoint, ThermicPointOrientation.EAST, lambda );
+
+						}else{
+	
+						
 						for( CloseElement closeElement: closeElements ){
 						
 							//Megfelelo pozicio
@@ -254,7 +260,8 @@ System.out.println("PreviousX: " + previousX);
 									
 								}
 							}
-						}						
+						}
+						}
 					}
 					
 					//Deli
@@ -311,6 +318,8 @@ System.out.println("PreviousX: " + previousX);
 					}
 				}
 			}
+			
+System.err.println();			
 		}
 
 		
@@ -331,7 +340,8 @@ System.out.println("PreviousX: " + previousX);
 					//x = (double)Math.round( ( startPoint.getX() + j * dh ) * precision ) / precision;
 					x = CommonOperations.get3Decimals( startPoint.getX() + j * dh );
 					
-					//ThermicPoint actualThermalPoint = thermicPointMap.get( new Position(x,y) );
+ThermicPoint actualThermalPoint = thermicPointMap.get( new Position(x,y) );
+System.out.println(actualThermalPoint);
 					
 				}
 			}

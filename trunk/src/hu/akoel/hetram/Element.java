@@ -53,4 +53,8 @@ public class Element {
 	public void setEndPosition(Position endPosition) {
 		this.endPosition = endPosition;
 	}
+	
+	public String toString(){
+		return "λ: " + lambda + " (" + startPosition + " " + endPosition + ")";
+	}
 }
