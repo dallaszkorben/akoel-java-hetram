@@ -102,14 +102,16 @@ public class ElementSet{
 			double y = startPoint.getY();
 			int iSteps = (int)Math.round((endPoint.getY() - y) / dv );
 			for( int i = 0; i <= iSteps; i++){
-				y = (double)Math.round( (startPoint.getY() + i * dv ) * precision ) / precision;
+				//y = (double)Math.round( (startPoint.getY() + i * dv ) * precision ) / precision;
+				y = CommonOperations.get3Decimals( startPoint.getY() + i * dv );
 				
 				double x = startPoint.getX();				
 				int jSteps = (int)Math.round((endPoint.getX() - x) / dh);
 				for( int j = 0; j <= jSteps; j++ ){
 					
 					
-					x = (double)Math.round( ( startPoint.getX() + j * dh ) * precision ) / precision;
+					//x = (double)Math.round( ( startPoint.getX() + j * dh ) * precision ) / precision;
+					x = CommonOperations.get3Decimals( startPoint.getX() + j * dh );
 
 					Position position = new Position(x, y);
 
@@ -141,18 +143,9 @@ public class ElementSet{
 						}
 							
 						//Ha volt mar, ha nem, a WEST iranyu kapcsolatot letrehozom/felulirom
-						previousX = (double)Math.round( ( startPoint.getX() + (j - 1) * dh ) * precision ) / precision;
-		
-
-	
-						
-System.err.println("previousX: " + previousX);	
-Iterator it = thermicPointMap.keySet().iterator();
-while(it.hasNext()){
-	System.out.println(it.next());
-}
-System.err.println();
-
+						//previousX = (double)Math.round( ( startPoint.getX() + (j - 1) * dh ) * precision ) / precision;
+						previousX = CommonOperations.get3Decimals( startPoint.getX() + (j - 1) * dh );
+System.out.println("PreviousX: " + previousX);						
 						tp.connectToD(thermicPointMap.get(new Position(previousX, y)), ThermicPointOrientation.WEST, lambda );
 					
 					}
@@ -172,7 +165,8 @@ System.err.println();
 						}
 						
 						//Ha volt mar, ha nem, a SOUTH iranyu kapcsolatot letrehozom/felulirom
-						previousY = (double)Math.round( ( startPoint.getY() + (i - 1) * dv ) * precision ) / precision;
+						//previousY = (double)Math.round( ( startPoint.getY() + (i - 1) * dv ) * precision ) / precision;
+						previousY = CommonOperations.get3Decimals( startPoint.getY() + (i - 1) * dv );						
 						tp.connectToD(thermicPointMap.get(new Position(x, previousY)), ThermicPointOrientation.SOUTH, lambda );
 					}
 					
@@ -195,12 +189,15 @@ System.err.println();
 			double y = startPoint.getY();
 			int iSteps = (int)Math.round((endPoint.getY() - y) / dv );
 			for( int i = 0; i <= iSteps; i++){
-				y = (double)Math.round( (startPoint.getY() + i * dv ) * precision ) / precision;
+				//y = (double)Math.round( (startPoint.getY() + i * dv ) * precision ) / precision;
+				y = CommonOperations.get3Decimals( startPoint.getY() + i * dv );				
 				
 				double x = startPoint.getX();				
 				int jSteps = (int)Math.round((endPoint.getX() - x) / dh);
 				for( int j = 0; j <= jSteps; j++ ){
-					x = (double)Math.round( ( startPoint.getX() + j * dh ) * precision ) / precision;
+					
+					//x = (double)Math.round( ( startPoint.getX() + j * dh ) * precision ) / precision;
+					x = CommonOperations.get3Decimals( startPoint.getX() + j * dh );
 					
 					Position position = new Position(x, y);
 
@@ -325,17 +322,16 @@ System.err.println();
 			double y = startPoint.getY();
 			int iSteps = (int)Math.round((endPoint.getY() - y) / dv );
 			for( int i = 0; i <= iSteps; i++){
-				y = (double)Math.round( (startPoint.getY() + i * dv ) * precision ) / precision;
+				//y = (double)Math.round( (startPoint.getY() + i * dv ) * precision ) / precision;
+				y = CommonOperations.get3Decimals(startPoint.getY() + i * dv );				
 				
 				double x = startPoint.getX();				
 				int jSteps = (int)Math.round((endPoint.getX() - x) / dh);
 				for( int j = 0; j <= jSteps; j++ ){
-					x = (double)Math.round( ( startPoint.getX() + j * dh ) * precision ) / precision;
+					//x = (double)Math.round( ( startPoint.getX() + j * dh ) * precision ) / precision;
+					x = CommonOperations.get3Decimals( startPoint.getX() + j * dh );
 					
-					
-					
-					ThermicPoint actualThermalPoint = thermicPointMap.get( new Position(x,y) );
-System.out.println("("+x + ", " + y+")" + " " + actualThermalPoint );
+					//ThermicPoint actualThermalPoint = thermicPointMap.get( new Position(x,y) );
 					
 				}
 			}
@@ -380,7 +376,7 @@ System.out.println("("+x + ", " + y+")" + " " + actualThermalPoint );
 		
 		double startVertical = verticalSpacingList.get(0);		
 		for( Double value : verticalSpacingList ){
-			double difference = value - startVertical;
+			double difference = Math.abs( value - startVertical );
 			if( difference != 0 ){
 				verticalDifferencesList.add(difference);				
 			}
@@ -389,7 +385,7 @@ System.out.println("("+x + ", " + y+")" + " " + actualThermalPoint );
 		
 		double startHorizontal = horizontalSpacingList.get(0);
 		for( Double value : horizontalSpacingList ){
-			double difference = value - startHorizontal;
+			double difference = Math.abs( value - startHorizontal);
 			if( difference != 0 ){
 				horizontalDifferencesList.add(difference);				
 			}
@@ -412,7 +408,7 @@ System.out.println("("+x + ", " + y+")" + " " + actualThermalPoint );
 	 * @param sourceList
 	 * @return
 	 */
-	private double getMaximumDifference( List<Double> sourceList ){
+	private synchronized double getMaximumDifference( List<Double> sourceList ){
 				
 		//Az elso osztaskoz-tavolsag
 		double pr = 1;
@@ -420,12 +416,19 @@ System.out.println("("+x + ", " + y+")" + " " + actualThermalPoint );
 		
 		//Vegig az osztaskoz-tavolsagokon
 		for( Double b: sourceList ){
+
+			b = CommonOperations.get3Decimals(b);
+			
 			boolean ok = false;
 			
 			//Probalgatas
-			for( int k = 0; k<= precision; k++){			
-				double n = (k+pr)*b/a;
+			for( int k = 0; k<= precision; k++){
 				
+				a = CommonOperations.get3Decimals(a);
+				
+				//m az azt mondja meg, hogy hany reszre kell felbontani b-t
+				double n = (k+pr)*b/a;
+		
 				//Ha nagyjabol egesz szamra jon ki
 				if( (int)n < n + 1/precision &&  (int)n > n - 1/precision ){
 
@@ -439,9 +442,9 @@ System.out.println("("+x + ", " + y+")" + " " + actualThermalPoint );
 				System.err.println("K tulhaladta a megadott erteket");
 				System.exit(-1);
 			}
-		}
+		}	
 		
-		return sourceList.get( sourceList.size() - 1 ) / pr; 
+		return CommonOperations.get3Decimals( sourceList.get( sourceList.size() - 1 ) / pr ); 
 	}
 	
 	static class ElementDoubleComparator implements Comparator<Double>{

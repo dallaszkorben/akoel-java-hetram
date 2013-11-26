@@ -75,7 +75,7 @@ public class Test extends JFrame {
 	private double startScale = 9;
 	private double rate = 1.2;
 
-	private double lambda1 = 0.2;
+	private double lambda1 = 0.45;
 	private double lambda2 = 0.45;
 	private double lambda3 = 15.5;
 	private double alfaE = 24;
