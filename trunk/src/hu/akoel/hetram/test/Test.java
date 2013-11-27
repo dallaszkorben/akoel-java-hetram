@@ -2,16 +2,10 @@ package hu.akoel.hetram.test;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.font.FontRenderContext;
-import java.awt.font.TextLayout;
-import java.rmi.activation.ActivationGroupDesc.CommandEnvironment;
 import java.text.DecimalFormat;
-import java.util.Collection;
 import java.util.Locale;
 
-import javax.lang.model.util.Elements;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 
@@ -19,13 +13,8 @@ import hu.akoel.hetram.Element;
 import hu.akoel.hetram.Element.SideOrientation;
 import hu.akoel.hetram.accessories.Length;
 import hu.akoel.hetram.accessories.Position;
-import hu.akoel.hetram.connectors.DThermicConnector;
-import hu.akoel.hetram.connectors.ThermicConnector;
-import hu.akoel.hetram.CommonOperations;
 import hu.akoel.hetram.ElementSet;
 import hu.akoel.hetram.SurfaceClose;
-import hu.akoel.hetram.SymmetricClose;
-import hu.akoel.hetram.ThermicPoint;
 import hu.akoel.hetram.ThermicPointList;
 import hu.akoel.mgu.MCanvas;
 import hu.akoel.mgu.MGraphics;
@@ -80,7 +69,7 @@ public class Test extends JFrame {
 	private double rate = 1.2;
 
 	private double lambda1 = 0.45;
-	private double lambda2 = 0.45;
+	private double lambda2 = 0.25;
 	private double lambda3 = 1.0;
 	private double alfaE = 24;
 	private double alfaI = 8;
@@ -107,6 +96,7 @@ public class Test extends JFrame {
 
 			@Override
 			public void paintByWorldPosition(MCanvas canvas, MGraphics g2) {
+				//thermicPointList.drawTemperatureByColor(canvas, g2);
 				thermicPointList.drawCurrentByArrow(canvas, g2);
 			}
 

@@ -18,8 +18,12 @@ public class ElementSet{
 
 	private double precision = 10000;
 	private HashSet<Element> elementSet = new HashSet<>();	
+	
 	private double verticalMaximumDifference = -1;
 	private double horizontalMaximumDifference = -1;
+	
+	double verticalAppliedDifference;
+	double horizontalAppliedDifference;
 
 	/**
 	 * Hozzaad egy Element-et a listahoz
@@ -38,7 +42,14 @@ public class ElementSet{
 		doGenerateMaximumDifference();		
 		return result;
 	}	
-	
+
+	public double getVerticalAppliedDifference() {
+		return verticalAppliedDifference;
+	}
+
+	public double getHorizontalAppliedDifference() {
+		return horizontalAppliedDifference;
+	}
 	
 	public double getVerticalMaximumDifference(){
 		return verticalMaximumDifference;
@@ -83,8 +94,8 @@ public class ElementSet{
 	 */
 	public ThermicPointList divideElements( double askedHorizontalDifference, double askedVerticalDifference ){
 		
-		double dv = getVerticalSuggestedDifference(askedVerticalDifference);
-		double dh = getHorizontalSuggestedDifference(askedHorizontalDifference);
+		verticalAppliedDifference = getVerticalSuggestedDifference(askedVerticalDifference);
+		horizontalAppliedDifference = getHorizontalSuggestedDifference(askedHorizontalDifference);
 		
 		HashMap<Position, ThermicPoint> thermicPointMap = new HashMap<>();
 		
@@ -102,16 +113,16 @@ public class ElementSet{
 			double lambda;		
 
 			double y = startPoint.getY();
-			int iSteps = (int)Math.round((endPoint.getY() - y) / dv );
+			int iSteps = (int)Math.round((endPoint.getY() - y) / verticalAppliedDifference );
 			for( int i = 0; i <= iSteps; i++){
 				
-				y = CommonOperations.get3Decimals( startPoint.getY() + i * dv );
+				y = CommonOperations.get3Decimals( startPoint.getY() + i * verticalAppliedDifference );
 				
 				double x = startPoint.getX();				
-				int jSteps = (int)Math.round((endPoint.getX() - x) / dh);
+				int jSteps = (int)Math.round((endPoint.getX() - x) / horizontalAppliedDifference);
 				for( int j = 0; j <= jSteps; j++ ){
 				
-					x = CommonOperations.get3Decimals( startPoint.getX() + j * dh );
+					x = CommonOperations.get3Decimals( startPoint.getX() + j * horizontalAppliedDifference );
 
 					Position position = new Position(x, y);
 
@@ -145,7 +156,7 @@ public class ElementSet{
 						}
 
 						//Veszem a baloldali kozvetlen kapcsolatat, ami bizonyosan letezik, mivel belso pont						
-						double previousX = CommonOperations.get3Decimals( startPoint.getX() + (j - 1) * dh );
+						double previousX = CommonOperations.get3Decimals( startPoint.getX() + (j - 1) * horizontalAppliedDifference );
 
 						//Es osszekottetest letesitek vele
 						tp.connectToD(thermicPointMap.get(new Position(previousX, y)), ThermicPointOrientation.WEST, lambda );
@@ -168,7 +179,7 @@ public class ElementSet{
 						}
 
 						//Veszem az alatta levo kozvetlen kapcsolatat, ami bizonyosan letezik, mivel belso pont
-						double previousY = CommonOperations.get3Decimals( startPoint.getY() + (i - 1) * dv );						
+						double previousY = CommonOperations.get3Decimals( startPoint.getY() + (i - 1) * verticalAppliedDifference );						
 						tp.connectToD(thermicPointMap.get(new Position(x, previousY)), ThermicPointOrientation.SOUTH, lambda );
 					}
 					
@@ -193,16 +204,16 @@ public class ElementSet{
 			Position endPoint = element.getEndPosition();			
 
 			double y = startPoint.getY();
-			int iSteps = (int)Math.round((endPoint.getY() - y) / dv );
+			int iSteps = (int)Math.round((endPoint.getY() - y) / verticalAppliedDifference );
 			for( int i = 0; i <= iSteps; i++){
 
-				y = CommonOperations.get3Decimals( startPoint.getY() + i * dv );				
+				y = CommonOperations.get3Decimals( startPoint.getY() + i * verticalAppliedDifference );				
 				
 				double x = startPoint.getX();				
-				int jSteps = (int)Math.round((endPoint.getX() - x) / dh);
+				int jSteps = (int)Math.round((endPoint.getX() - x) / horizontalAppliedDifference);
 				for( int j = 0; j <= jSteps; j++ ){
 					
-					x = CommonOperations.get3Decimals( startPoint.getX() + j * dh );
+					x = CommonOperations.get3Decimals( startPoint.getX() + j * horizontalAppliedDifference );
 					
 					Position position = new Position(x, y);
 
@@ -323,16 +334,16 @@ public class ElementSet{
 			Position endPoint = element.getEndPosition();		
 
 			double y = startPoint.getY();
-			int iSteps = (int)Math.round((endPoint.getY() - y) / dv );
+			int iSteps = (int)Math.round((endPoint.getY() - y) / verticalAppliedDifference );
 			for( int i = 0; i <= iSteps; i++){
 				//y = (double)Math.round( (startPoint.getY() + i * dv ) * precision ) / precision;
-				y = CommonOperations.get3Decimals(startPoint.getY() + i * dv );				
+				y = CommonOperations.get3Decimals(startPoint.getY() + i * verticalAppliedDifference );				
 				
 				double x = startPoint.getX();				
-				int jSteps = (int)Math.round((endPoint.getX() - x) / dh);
+				int jSteps = (int)Math.round((endPoint.getX() - x) / horizontalAppliedDifference);
 				for( int j = 0; j <= jSteps; j++ ){
 					//x = (double)Math.round( ( startPoint.getX() + j * dh ) * precision ) / precision;
-					x = CommonOperations.get3Decimals( startPoint.getX() + j * dh );
+					x = CommonOperations.get3Decimals( startPoint.getX() + j * horizontalAppliedDifference );
 					
 //ThermicPoint actualThermalPoint = thermicPointMap.get( new Position(x,y) );
 //System.out.println(actualThermalPoint);
@@ -341,7 +352,7 @@ public class ElementSet{
 			}
 		}
 		
-		return new ThermicPointList( thermicPointMap.values() );
+		return new ThermicPointList( thermicPointMap.values(), this );
 		
 	}
 	
