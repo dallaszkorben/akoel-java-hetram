@@ -79,7 +79,7 @@ public class Test extends JFrame {
 	private double rate = 1.2;
 
 	private double lambda1 = 0.45;
-	private double lambda2 = 0.45;
+	private double lambda2 = 0.15;
 	private double lambda3 = 1.0;
 	private double alfaE = 24;
 	private double alfaI = 8;
@@ -258,23 +258,48 @@ public class Test extends JFrame {
 
 		return new Color(red, 0, blue);
 
+/*		
+		int value = (int) Math.round(percent * 10000);
+		return new Color(value);
+*/
+/*		
+		Color color2 = Color.RED;
+        Color color1 = Color.BLUE;
+
+        int red = (int) (color2.getRed() * percent + color1.getRed() * (1 - percent));
+        int green = (int) (color2.getGreen() * percent + color1.getGreen() * (1 - percent));
+        int blue = (int) (color2.getBlue() * percent + color1.getBlue() * (1 - percent));
+        Color stepColor = new Color(red, green, blue);
+		
+		return stepColor;
+*/
+		
 	}
 
 	private ThermicPointList getResult() {
 
 		
 		Element hWall = new Element( lambda1, new Position(0, 0.7), new Position(1.0, 1.0));
-		hWall.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 1.0), alfaE, temperatureE ) );
-		hWall.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0.7, 1.0), alfaE, temperatureE ) );
+		//hWall.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 1.0), alfaE, temperatureE ) );
+		//hWall.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0.7, 1.0), alfaE, temperatureE ) );
 		hWall.setCloseElement(new SurfaceClose( SideOrientation.SOUTH, new Length( 0.3, 1.0), alfaI, temperatureI ) );
 		
-		Element vWall = new Element( lambda1, new Position(0,0), new Position(0.3, 0.7));
-		vWall.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0.0, 0.7), alfaE, temperatureE ) );
-		vWall.setCloseElement(new SurfaceClose( SideOrientation.EAST, new Length( 0.0, 0.7), alfaI, temperatureI ) );
+		Element vWall = new Element( lambda1, new Position(0,0), new Position(0.3, 0.7 ) );
+		//vWall.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0.0, 0.7), alfaE, temperatureE ) );
+		vWall.setCloseElement(new SurfaceClose( SideOrientation.EAST, new Length( 0.0, 0.7 ), alfaI, temperatureI ) );
+		
+		Element hInsul = new Element( lambda2, new Position( 0, 1.0), new Position(1.0, 1.1 ) );
+		hInsul.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 1.0 ), alfaE, temperatureE ) );
+				
+		Element vInsul = new Element( lambda2, new Position(-0.1, 0), new Position(0, 1.1) );
+		vInsul.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0, 1.1), alfaE, temperatureE ) );
+		vInsul.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( -0.1, 0.0 ), alfaE, temperatureE ) );
 		
 		ElementSet elementSet = new ElementSet();
 		elementSet.add( vWall );
 		elementSet.add( hWall );
+		elementSet.add( hInsul );
+		elementSet.add( vInsul );
 		
 /*		Element pillar1 = new Element( lambda1, new Position(0,0), new Position( 0.3,0.3 ));
 		
