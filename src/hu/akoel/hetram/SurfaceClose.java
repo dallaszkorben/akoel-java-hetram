@@ -1,6 +1,7 @@
 package hu.akoel.hetram;
 
 import hu.akoel.hetram.Element.SideOrientation;
+import hu.akoel.hetram.accessories.Length;
 
 public class SurfaceClose extends CloseElement{
 	

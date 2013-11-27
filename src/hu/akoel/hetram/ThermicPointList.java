@@ -1,12 +1,19 @@
 package hu.akoel.hetram;
 
+import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.connectors.OThermicConnector;
 import hu.akoel.hetram.connectors.DThermicConnector;
 import hu.akoel.hetram.connectors.SThermicConnector;
 import hu.akoel.hetram.connectors.ThermicConnector;
 import hu.akoel.hetram.connectors.XDThermicConnector;
 import hu.akoel.hetram.connectors.YDThermicConnector;
+import hu.akoel.mgu.MCanvas;
+import hu.akoel.mgu.MGraphics;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
 import java.util.Collection;
 
 public class ThermicPointList{
@@ -48,6 +55,245 @@ public class ThermicPointList{
 		position++;
 	}
 	
+	/**
+	 * Nyilakkal reprezentalja az egyes ThermicPoint-ok kozott fellepo hoaramot
+	 * 
+	 * @param canvas
+	 * @param g2
+	 */
+	public void drawCurrentByArrow( MCanvas canvas, MGraphics g2 ){
+		
+		double minimumTemperature = 0;
+		double maximumTemperature = 0;
+		
+		double maximumHorizontalDelta = 0;		
+		double maximumVerticalDelta = 0;
+		
+		double nTD;
+		double eTD;
+		double sTD;
+		double wTD;
+		
+		double deltaTemperature;
+
+		//Ha vannak termikus pontjaim
+		if ( this.getSize() > 0 ) {
+			
+			Font font = new Font("Default", Font.PLAIN, 14);
+			FontRenderContext frc = g2.getFontRenderContext();
+
+			// Megkeresi a minimalais es maximalis homersekletet
+			for (int j = 0; j < this.getSize(); j++) {
+				minimumTemperature = Math.min(minimumTemperature, this.get(j).getActualTemperature());
+				maximumTemperature = Math.max(maximumTemperature, this.get(j).getActualTemperature());
+			}
+			deltaTemperature = maximumTemperature - minimumTemperature;
+
+			// Megkeresi a legnagyobb Delta-t ami a nyilak 100%-a lesz
+			
+			ThermicConnector c;
+			for (int j = 0; j < this.getSize(); j++) {
+
+				c = this.get(j).getNorthThermicConnector();
+				if (c instanceof DThermicConnector) {
+					maximumVerticalDelta = Math.max( maximumHorizontalDelta, ((DThermicConnector) c).getDelta());
+				}
+
+				c = this.get(j).getEastThermicConnector();
+				if (c instanceof DThermicConnector) {
+					maximumHorizontalDelta = Math.max( maximumHorizontalDelta, ((DThermicConnector) c).getDelta());
+				}
+			}
+
+			// Vegig a Termikus Pontokon
+			for (int j = 0; j < this.getSize(); j++) {
+
+				// A pont geometriai elhelyezkedese
+				Position position = this.get(j).getPosition();
+				
+				c = this.get(j).getNorthThermicConnector();
+				if (c instanceof YDThermicConnector) {
+					ThermicPoint nTP = ((YDThermicConnector) c).getNorthThermicPoint();
+					nTD = this.get(j).getActualTemperature() - nTP.getActualTemperature();
+				}
+
+				c = this.get(j).getEastThermicConnector();
+				if (c instanceof DThermicConnector) {
+					ThermicPoint eTP = ((XDThermicConnector) c).getEastThermicPoint();
+					eTD = this.get(j).getActualTemperature() - eTP.getActualTemperature();
+				}
+
+				c = this.get(j).getSouthThermicConnector();
+				if (c instanceof DThermicConnector) {
+					ThermicPoint sTP = ((YDThermicConnector) c).getSouthThermicPoint();
+					sTD = this.get(j).getActualTemperature() - sTP.getActualTemperature();
+				}
+
+				c = this.get(j).getWestThermicConnector();
+				if (c instanceof DThermicConnector) {
+					ThermicPoint wTP = ((XDThermicConnector) c).getWestThermicPoint();
+					wTD = this.get(j).getActualTemperature() - wTP.getActualTemperature();
+				}
+
+				double xStart = position.getX() - dWest;
+				double yStart = position.getY() - dSouth;
+
+				//g2.setStroke(new BasicStroke(1));
+				g2.setColor(getRedBluByPercent((this.get(j).getActualTemperature() - minimumTemperature) / deltaTemperature));
+				g2.fillRectangle(xStart, yStart, xStart + dWest + dEast, yStart + dSouth + dNorth);
+
+							
+//System.err.println(xStart + "   " + (xStart + dEast + dWest));						
+
+				//g2.setStroke(new BasicStroke(5));
+				//g2.drawLine(position.getX(), position.getY(), position.getX(), position.getY());
+				
+				g2.setColor(Color.white);
+				TextLayout textLayout = new	TextLayout(String.valueOf( CommonOperations.get2Decimals( this.get( j ).getActualTemperature() ) ), font, frc );
+				g2.drawFont( textLayout, position.getX(), position.getY());
+			}
+		}
+		
+	}
+	
+	
+	/**
+	 * Szinekkel reprezentalja az egyes ThermicPoint pontok homersekletet a pontok geometriai poziciojaban
+	 * es korulotte delta tavolsagban
+	 * 
+	 * @param canvas
+	 * @param g2
+	 */
+	public void drawTemperatureByColor( MCanvas canvas, MGraphics g2 ){
+		double minimumTemperature = 0;
+		double maximumTemperature = 0;
+		double deltaTemperature;
+
+		//Ha vannak termikus pontjaim
+		if ( this.getSize() > 0 ) {
+			
+			Font font = new Font("Default", Font.PLAIN, 14);
+			FontRenderContext frc = g2.getFontRenderContext();
+
+			// Megkeresi a minimalais es maximalis homersekletet
+			for (int j = 0; j < this.getSize(); j++) {
+				minimumTemperature = Math.min(minimumTemperature, this.get(j).getActualTemperature());
+				maximumTemperature = Math.max(maximumTemperature, this.get(j).getActualTemperature());
+			}
+			deltaTemperature = maximumTemperature - minimumTemperature;
+
+			// Megkeresi a legnagyobb Delta-t ami a nyilak 100%-a lesz
+			double delta = 0;
+			ThermicConnector c;
+			for (int j = 0; j < this.getSize(); j++) {
+
+				c = this.get(j).getNorthThermicConnector();
+				if (c instanceof DThermicConnector) {
+					delta = Math.max(delta,	((DThermicConnector) c).getDelta());
+				}
+
+				c = this.get(j).getEastThermicConnector();
+				if (c instanceof DThermicConnector) {
+					delta = Math.max(delta,	((DThermicConnector) c).getDelta());
+				}
+			}
+
+			// Vegig a Termikus Pontokon
+			for (int j = 0; j < this.getSize(); j++) {
+
+				// A pont geometriai elhelyezkedese
+				Position position = this.get(j).getPosition();
+
+				double dNorth = 0;
+				double dEast = 0;
+				double dSouth = 0;
+				double dWest = 0;
+				
+				c = this.get(j).getNorthThermicConnector();
+				if (c instanceof DThermicConnector) {
+					dNorth = ((DThermicConnector) c).getDelta() / 2;							
+				}
+
+				c = this.get(j).getEastThermicConnector();
+				if (c instanceof DThermicConnector) {
+					dEast = ((DThermicConnector) c).getDelta() / 2;
+				}
+
+				c = this.get(j).getSouthThermicConnector();
+				if (c instanceof DThermicConnector) {
+					dSouth = ((DThermicConnector) c).getDelta() / 2;
+				}
+
+				c = this.get(j).getWestThermicConnector();
+				if (c instanceof DThermicConnector) {
+					dWest = ((DThermicConnector) c).getDelta() / 2;
+				}
+
+				double xStart = position.getX() - dWest;
+				double yStart = position.getY() - dSouth;
+
+				//g2.setStroke(new BasicStroke(1));
+				g2.setColor(getRedBluByPercent((this.get(j).getActualTemperature() - minimumTemperature) / deltaTemperature));
+				g2.fillRectangle(xStart, yStart, xStart + dWest + dEast, yStart + dSouth + dNorth);
+
+							
+//System.err.println(xStart + "   " + (xStart + dEast + dWest));						
+
+				//g2.setStroke(new BasicStroke(5));
+				//g2.drawLine(position.getX(), position.getY(), position.getX(), position.getY());
+				
+				g2.setColor(Color.white);
+				TextLayout textLayout = new	TextLayout(String.valueOf( CommonOperations.get2Decimals( this.get( j ).getActualTemperature() ) ), font, frc );
+				g2.drawFont( textLayout, position.getX(), position.getY());
+			}
+		}
+	}
+	
+	/**
+	 * A szazalekban megadott ertekhez egy szint rendel
+	 * 
+	 * @param percent
+	 * @return
+	 */
+	private Color getRedBluByPercent(double percent) {
+		/*
+				int maxLength = 255;
+				int value = (int) Math.round(percent * maxLength);
+
+				int blue = ( value % 5 ) * 20;
+				int red = 0;
+				int green = 0;
+				
+				return new Color(red, 0, blue);
+		*/		
+				int red = 0;
+				int blue = 0;
+				int maxLength = 255;
+
+				int value = (int) Math.round(percent * maxLength);
+
+				blue = 255 - value;
+				red = value;
+
+				return new Color(red, 0, blue);
+
+		/*		
+				int value = (int) Math.round(percent * 10000);
+				return new Color(value);
+		*/
+		/*		
+				Color color2 = Color.RED;
+		        Color color1 = Color.BLUE;
+
+		        int red = (int) (color2.getRed() * percent + color1.getRed() * (1 - percent));
+		        int green = (int) (color2.getGreen() * percent + color1.getGreen() * (1 - percent));
+		        int blue = (int) (color2.getBlue() * percent + color1.getBlue() * (1 - percent));
+		        Color stepColor = new Color(red, green, blue);
+				
+				return stepColor;
+		*/
+				
+	}
 	
 	/**
 	 * A sokismeretlenes egyenletrendszer megoldasa 

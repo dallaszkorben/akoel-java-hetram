@@ -1,5 +1,6 @@
 package hu.akoel.hetram;
 
+import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.connectors.OThermicConnector;
 import hu.akoel.hetram.connectors.DThermicConnector;
 import hu.akoel.hetram.connectors.SThermicConnector;
