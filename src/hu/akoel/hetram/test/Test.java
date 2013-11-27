@@ -79,7 +79,7 @@ public class Test extends JFrame {
 	private double rate = 1.2;
 
 	private double lambda1 = 0.45;
-	private double lambda2 = 0.15;
+	private double lambda2 = 0.45;
 	private double lambda3 = 1.0;
 	private double alfaE = 24;
 	private double alfaI = 8;
@@ -246,7 +246,16 @@ public class Test extends JFrame {
 	}
 
 	private Color getRedBluByPercent(double percent) {
+/*
+		int maxLength = 255;
+		int value = (int) Math.round(percent * maxLength);
 
+		int blue = ( value % 5 ) * 20;
+		int red = 0;
+		int green = 0;
+		
+		return new Color(red, 0, blue);
+*/		
 		int red = 0;
 		int blue = 0;
 		int maxLength = 255;
