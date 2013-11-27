@@ -8,6 +8,7 @@ package hu.akoel.hetram.connectors;
  */
 public class OThermicConnector implements ThermicConnector{
 
+	private double current;
 	private double alpha;
 	private double airTemperature;
 	
@@ -27,5 +28,15 @@ public class OThermicConnector implements ThermicConnector{
 	}
 	public void setTemperature(double temperature) {
 		this.airTemperature = temperature;
+	}
+
+	@Override
+	public double getCurrent() {		
+		return current;
+	}
+
+	@Override
+	public void setCurrent(double current) {
+		this.current = current;		
 	}
 }
