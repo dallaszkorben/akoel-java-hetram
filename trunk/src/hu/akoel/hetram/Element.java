@@ -1,5 +1,7 @@
 package hu.akoel.hetram;
 
+import hu.akoel.hetram.accessories.Position;
+
 import java.util.HashSet;
 
 public class Element {

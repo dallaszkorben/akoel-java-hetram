@@ -17,12 +17,12 @@ import javax.swing.JFrame;
 
 import hu.akoel.hetram.Element;
 import hu.akoel.hetram.Element.SideOrientation;
+import hu.akoel.hetram.accessories.Length;
+import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.connectors.DThermicConnector;
 import hu.akoel.hetram.connectors.ThermicConnector;
 import hu.akoel.hetram.CommonOperations;
 import hu.akoel.hetram.ElementSet;
-import hu.akoel.hetram.Length;
-import hu.akoel.hetram.Position;
 import hu.akoel.hetram.SurfaceClose;
 import hu.akoel.hetram.SymmetricClose;
 import hu.akoel.hetram.ThermicPoint;
@@ -47,6 +47,7 @@ public class Test extends JFrame {
 	private static final long serialVersionUID = 7824210627357949349L;
 
 	ThermicPointList thermicPointList;
+	
 
 	// GCanvas parameterei
 	private MCanvas myCanvas;
@@ -106,91 +107,7 @@ public class Test extends JFrame {
 
 			@Override
 			public void paintByWorldPosition(MCanvas canvas, MGraphics g2) {
-				double minimumTemperature = 0;
-				double maximumTemperature = 0;
-				double deltaTemperature;
-
-				if (null != thermicPointList) {
-					
-					Font font = new Font("Default", Font.PLAIN, 14);
-					FontRenderContext frc = g2.getFontRenderContext();
-
-					// Megkeresi a minimalais es maximalis homersekletet
-					for (int j = 0; j < thermicPointList.getSize(); j++) {
-						minimumTemperature = Math.min(minimumTemperature, thermicPointList.get(j).getActualTemperature());
-						maximumTemperature = Math.max(maximumTemperature, thermicPointList.get(j).getActualTemperature());
-					}
-					deltaTemperature = maximumTemperature - minimumTemperature;
-
-					// Megkeresi a legnagyobb Delta-t ami a nyilak 100%-a lesz
-					double delta = 0;
-					ThermicConnector c;
-					for (int j = 0; j < thermicPointList.getSize(); j++) {
-
-						c = thermicPointList.get(j).getNorthThermicConnector();
-						if (c instanceof DThermicConnector) {
-							delta = Math.max(delta,	((DThermicConnector) c).getDelta());
-						}
-
-						c = thermicPointList.get(j).getEastThermicConnector();
-						if (c instanceof DThermicConnector) {
-							delta = Math.max(delta,	((DThermicConnector) c).getDelta());
-						}
-					}
-
-					// Vegig a Termikus Pontokon
-					for (int j = 0; j < thermicPointList.getSize(); j++) {
-
-						// A pont geometriai elhelyezkedese
-						Position position = thermicPointList.get(j).getPosition();
-
-						double dNorth = 0;
-						double dEast = 0;
-						double dSouth = 0;
-						double dWest = 0;
-						
-						c = thermicPointList.get(j).getNorthThermicConnector();
-						if (c instanceof DThermicConnector) {
-							dNorth = ((DThermicConnector) c).getDelta() / 2;							
-						}
-
-						c = thermicPointList.get(j).getEastThermicConnector();
-						if (c instanceof DThermicConnector) {
-							dEast = ((DThermicConnector) c).getDelta() / 2;
-						}
-
-						c = thermicPointList.get(j).getSouthThermicConnector();
-						if (c instanceof DThermicConnector) {
-							dSouth = ((DThermicConnector) c).getDelta() / 2;
-						}
-
-						c = thermicPointList.get(j).getWestThermicConnector();
-						if (c instanceof DThermicConnector) {
-							dWest = ((DThermicConnector) c).getDelta() / 2;
-						}
-
-						double xStart = position.getX() - dWest;
-						double yStart = position.getY() - dSouth;
-
-						//g2.setStroke(new BasicStroke(1));
-						g2.setColor(getRedBluByPercent((thermicPointList.get(j).getActualTemperature() - minimumTemperature) / deltaTemperature));
-						g2.fillRectangle(xStart, yStart, xStart + dWest + dEast, yStart + dSouth + dNorth);
-
-/*System.err.println( 
-		(int)Math.round((float)canvas.getPixelXPositionByWorldBeforeTranslate(xStart)) + "   " + 
-		(int)Math.round((float)canvas.getPixelXPositionByWorldBeforeTranslate((xStart + dEast + dWest)))
-);
-*/								
-//System.err.println(xStart + "   " + (xStart + dEast + dWest));						
-
-						//g2.setStroke(new BasicStroke(5));
-						//g2.drawLine(position.getX(), position.getY(), position.getX(), position.getY());
-						
-						g2.setColor(Color.white);
-						TextLayout textLayout = new	TextLayout(String.valueOf( CommonOperations.get2Decimals( thermicPointList.get( j ).getActualTemperature() ) ), font, frc );
-//						g2.drawFont( textLayout, position.getX(), position.getY());
-					}
-				}
+				thermicPointList.drawCurrentByArrow(canvas, g2);
 			}
 
 			@Override
@@ -245,45 +162,7 @@ public class Test extends JFrame {
 */		
 	}
 
-	private Color getRedBluByPercent(double percent) {
-/*
-		int maxLength = 255;
-		int value = (int) Math.round(percent * maxLength);
-
-		int blue = ( value % 5 ) * 20;
-		int red = 0;
-		int green = 0;
-		
-		return new Color(red, 0, blue);
-*/		
-		int red = 0;
-		int blue = 0;
-		int maxLength = 255;
-
-		int value = (int) Math.round(percent * maxLength);
-
-		blue = 255 - value;
-		red = value;
-
-		return new Color(red, 0, blue);
-
-/*		
-		int value = (int) Math.round(percent * 10000);
-		return new Color(value);
-*/
-/*		
-		Color color2 = Color.RED;
-        Color color1 = Color.BLUE;
-
-        int red = (int) (color2.getRed() * percent + color1.getRed() * (1 - percent));
-        int green = (int) (color2.getGreen() * percent + color1.getGreen() * (1 - percent));
-        int blue = (int) (color2.getBlue() * percent + color1.getBlue() * (1 - percent));
-        Color stepColor = new Color(red, green, blue);
-		
-		return stepColor;
-*/
-		
-	}
+	
 
 	private ThermicPointList getResult() {
 
@@ -364,11 +243,11 @@ System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + element
 //ThermicPointList list = elementSet.divideElements( 0.01, 0.01 );	
 */
 
-ThermicPointList list = elementSet.divideElements( 0.01, 0.01 );
+thermicPointList = elementSet.divideElements( 0.01, 0.01 );
 
-list.solve(0.001);		
+thermicPointList.solve(0.001);		
 		
-		return list;
+		return thermicPointList;
 	}
 
 }
