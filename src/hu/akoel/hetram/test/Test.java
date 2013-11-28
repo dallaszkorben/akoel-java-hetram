@@ -41,9 +41,8 @@ public class Test extends JFrame {
 	// GCanvas parameterei
 	private MCanvas myCanvas;
 	private Color background = Color.black;
-	private PossiblePixelPerUnits possiblePixelPerUnits = new PossiblePixelPerUnits(
-			new PixelPerUnitValue(1, 1));
-	private TranslateValue positionToMiddle = new TranslateValue(0, 0);
+	private PossiblePixelPerUnits possiblePixelPerUnits = new PossiblePixelPerUnits( new PixelPerUnitValue(1, 1));
+	private TranslateValue positionToMiddle = new TranslateValue(0.3, 0.6);
 
 	// Grid parameterei
 	private Grid myGrid;
@@ -96,7 +95,7 @@ public class Test extends JFrame {
 
 			@Override
 			public void paintByWorldPosition(MCanvas canvas, MGraphics g2) {
-				//thermicPointList.drawTemperatureByColor(canvas, g2);
+//				thermicPointList.drawTemperatureByColor(canvas, g2);
 				thermicPointList.drawCurrentByArrow(canvas, g2);
 			}
 
@@ -107,9 +106,7 @@ public class Test extends JFrame {
 
 		myGrid = new Grid(myCanvas, gridType, gridColor, gridWidth,	gridPosition, gridDelta);
 
-		myCrossLine = new CrossLine(myCanvas, crossLinePosition,
-				crossLineColor, crossLineWidthInPixel, crossLineLength,
-				crossLinePainterPosition);
+		myCrossLine = new CrossLine(myCanvas, crossLinePosition, crossLineColor, crossLineWidthInPixel, crossLineLength,	crossLinePainterPosition);
 
 		myScale = new Scale(myCanvas, pixelPerCm, unit, startScale, rate);
 		myScale.addScaleChangeListener(new ScaleChangeListener() {
@@ -141,15 +138,13 @@ public class Test extends JFrame {
 		this.setVisible(true);
 
 		
-
-		
 //		myCanvas.revalidateAndRepaintCoreCanvas();
 
 /*		for (int i = 0; i < thermicPointList.getSize(); i++) {
-
 			System.out.println(thermicPointList.get(i));
 		}
 */		
+		
 	}
 
 	
@@ -178,64 +173,10 @@ public class Test extends JFrame {
 		elementSet.add( hWall );
 		elementSet.add( hInsul );
 		elementSet.add( vInsul );
-		
-/*		Element pillar1 = new Element( lambda1, new Position(0,0), new Position( 0.3,0.3 ));
-		
-		pillar1.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 3.0), alfaE, temperatureE ) );
-		pillar1.setCloseElement(new SurfaceClose( SideOrientation.SOUTH, new Length( 0.0, 3.0), alfaI, temperatureI ) );
-		
-		pillar1.setCloseElement(new SymmetricClose(	SideOrientation.WEST, new Length( 0.0, 3.0 ) ) );
-		pillar1.setCloseElement(new SymmetricClose( SideOrientation.EAST, new Length( 0.0, 3.0) ) );
-		//pillar1.setCloseElement(new SurfaceClose( SideOrientation.EAST, new Length( 0.0, 3.0), alfaI, temperatureI ) );
-		
-//		pillar1.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0.0, 3.0), alfaI, temperatureI ) );		
-//		pillar1.setCloseElement(new SurfaceClose( SideOrientation.EAST, new Length( 0.0, 3.0), alfaI, temperatureI ) );
-		
-		ElementSet elementSet = new ElementSet();
-		elementSet.add( pillar1);
-*/
-		
-		
-/*		
-		Element e1 = new Element( lambda2, new Position(0,0), new Position(0.3, 0.3));
-//e1.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0,0.3), alfaE, temperatureE ) );
-		e1.setCloseElement(new SurfaceClose(SideOrientation.SOUTH, new Length(0,0.3), alfaI, temperatureI ) );		
-		e1.setCloseElement(new SymmetricClose( SideOrientation.WEST, new Length( 0.0, 3.0 ) ) );
-		
-		Element e2 = new Element( lambda3, new Position(0.3,0), new Position(0.5, 0.3));
-//e2.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0.3,0.5), alfaE, temperatureE ) );
-		e2.setCloseElement(new SurfaceClose(SideOrientation.SOUTH, new Length(0.3,0.5), alfaI, temperatureI ) );
 
-		
-		
-		Element e3 = new Element( lambda2, new Position(0.5,0), new Position(0.8, 0.3));
-//e3.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0.5,0.8), alfaE, temperatureE ) );
-		e3.setCloseElement(new SurfaceClose(SideOrientation.SOUTH, new Length(0.5,0.8), alfaI, temperatureI ) );
-		e3.setCloseElement(new SymmetricClose( SideOrientation.EAST, new Length( 0.0, 3.0 ) ) );
-		
-		
-		Element e4 = new Element( lambda1, new Position(0,0.3), new Position(0.8, 0.4));
-		e4.setCloseElement(new SurfaceClose(SideOrientation.NORTH, new Length(0,0.8), alfaE, temperatureE ) );
-		e4.setCloseElement(new SymmetricClose( SideOrientation.EAST, new Length( 0.3, 4.0 ) ) );
-		e4.setCloseElement(new SymmetricClose( SideOrientation.WEST, new Length( 0.3, 4.0 ) ) );
-		
-		ElementSet elementSet = new ElementSet();
-		elementSet.add(e1);
-System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());		
-		elementSet.add(e2);
-System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());		
-		elementSet.add(e3);
-System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());
-		elementSet.add(e4);
-System.err.println(elementSet.getHorizontalMaximumDifference() + " - " + elementSet.getVerticalMaximumDifference());		
+		thermicPointList = elementSet.divideElements( 0.1, 0.1 );
 
-//System.err.println(elementSet.getHorizontalMaximumDifference() + ", " + elementSet.getVerticalMaximumDifference() );
-//ThermicPointList list = elementSet.divideElements( 0.01, 0.01 );	
-*/
-
-thermicPointList = elementSet.divideElements( 0.01, 0.01 );
-
-thermicPointList.solve(0.001);		
+		thermicPointList.solve(0.001);		
 		
 		return thermicPointList;
 	}
