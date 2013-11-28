@@ -127,7 +127,7 @@ System.err.println("maximumCurrent: " + maximumCurrent );
 				Position position = this.get(j).getPosition();
 				
 				double r = 0.001;
-				g2.setColor( Color.red );
+				g2.setColor( Color.green );
 				g2.fillOval( position.getX() - r, position.getY() - r, 2 * r, 2 * r );
 				
 				c = this.get(j).getNorthThermicConnector();

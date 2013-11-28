@@ -107,19 +107,19 @@ public class ElementSet{
 		
 		//Minden elemen vegig megyek
 		for( Element element: elementSet ){
-			
+//System.err.println(element.getStartPosition() + " - " + element.getEndPosition() );			
 			Position startPoint = element.getStartPosition();
 			Position endPoint = element.getEndPosition();
 			double lambda;		
 
 			double y = startPoint.getY();
-			int iSteps = (int)Math.round((endPoint.getY() - y) / verticalAppliedDifference );
+			int iSteps = (int)CommonOperations.get3Decimals((endPoint.getY() - y) / verticalAppliedDifference );
 			for( int i = 0; i <= iSteps; i++){
 				
 				y = CommonOperations.get3Decimals( startPoint.getY() + i * verticalAppliedDifference );
 				
 				double x = startPoint.getX();				
-				int jSteps = (int)Math.round((endPoint.getX() - x) / horizontalAppliedDifference);
+				int jSteps = (int)CommonOperations.get3Decimals((endPoint.getX() - x) / horizontalAppliedDifference);
 				for( int j = 0; j <= jSteps; j++ ){
 				
 					x = CommonOperations.get3Decimals( startPoint.getX() + j * horizontalAppliedDifference );
@@ -357,41 +357,44 @@ public class ElementSet{
 	}
 	
 	/**
-	 * Megallapitja a lehetseges legnagyobb differencia ertekeket vizszitnes illetve fuggoleges iranyban
+	 * Megallapitja a lehetseges legnagyobb differencia ertekeket vizszintes illetve fuggoleges iranyban
 	 * 
 	 */
 	private void doGenerateMaximumDifference(){
 		
-		ElementDoubleComparator elementDoubleComparator = new ElementDoubleComparator();
+//		ElementDoubleComparator elementDoubleComparator = new ElementDoubleComparator();
 		
 		LinkedHashSet<Double> verticalSpacingSet = new LinkedHashSet<>();
 		LinkedHashSet<Double> horizontalSpacingSet = new LinkedHashSet<>();
 		
 		//Osztaspontok kigyujtese
 		for( Element element: elementSet ){
-			verticalSpacingSet.add( element.getStartPosition().getY() );
-			verticalSpacingSet.add( element.getEndPosition().getY() );
+			verticalSpacingSet.add( CommonOperations.get3Decimals( element.getStartPosition().getY() ) );
+			verticalSpacingSet.add( CommonOperations.get3Decimals( element.getEndPosition().getY() ) );
 			
-			horizontalSpacingSet.add( element.getStartPosition().getX());
-			horizontalSpacingSet.add( element.getEndPosition().getX());
+			horizontalSpacingSet.add( CommonOperations.get3Decimals( element.getStartPosition().getX() ) );
+			horizontalSpacingSet.add( CommonOperations.get3Decimals( element.getEndPosition().getX() ) );
 			
 		}
 
 		//Osztaspontok sorbarendezese
 		ArrayList<Double> verticalSpacingList = new ArrayList<Double>(verticalSpacingSet); 
 		ArrayList<Double> horizontalSpacingList = new ArrayList<Double>(horizontalSpacingSet); 
-
-		Collections.sort(verticalSpacingList, elementDoubleComparator );
-		Collections.sort(horizontalSpacingList, elementDoubleComparator );
+		//Collections.sort(verticalSpacingList, elementDoubleComparator );
+		//Collections.sort(horizontalSpacingList, elementDoubleComparator );
+		Collections.sort(verticalSpacingList );
+		Collections.sort(horizontalSpacingList); 
+System.err.println( "vertikalis osztaspontok: " + verticalSpacingSet);
 		
 		
 		//Osztaskoz-tavolsagok kiszamitasa		
 		ArrayList<Double> verticalDifferencesList = new ArrayList<Double>();
 		ArrayList<Double> horizontalDifferencesList = new ArrayList<Double>();
-		
+	
 		double startVertical = verticalSpacingList.get(0);		
 		for( Double value : verticalSpacingList ){
-			double difference = Math.abs( value - startVertical );
+
+			double difference = CommonOperations.get3Decimals( Math.abs( value - startVertical ) );
 			if( difference != 0 ){
 				verticalDifferencesList.add(difference);				
 			}
@@ -400,7 +403,7 @@ public class ElementSet{
 		
 		double startHorizontal = horizontalSpacingList.get(0);
 		for( Double value : horizontalSpacingList ){
-			double difference = Math.abs( value - startHorizontal);
+			double difference = CommonOperations.get3Decimals( Math.abs( value - startHorizontal) );
 			if( difference != 0 ){
 				horizontalDifferencesList.add(difference);				
 			}
@@ -408,12 +411,16 @@ public class ElementSet{
 		}
 		
 		//Osztaskoz-tavolsagok sorbarendezese
-		Collections.sort(verticalDifferencesList, elementDoubleComparator );
-		Collections.sort(horizontalDifferencesList, elementDoubleComparator );
+		//Collections.sort(verticalDifferencesList, elementDoubleComparator );
+		//Collections.sort(horizontalDifferencesList, elementDoubleComparator );
+		Collections.sort( verticalDifferencesList );
+		Collections.sort( horizontalDifferencesList );
 		
 		verticalMaximumDifference = getMaximumDifference( verticalDifferencesList );
 		horizontalMaximumDifference = getMaximumDifference( horizontalDifferencesList );
 		
+//System.out.println(verticalDifferencesList);		
+//System.err.println( verticalMaximumDifference + " - " + horizontalMaximumDifference);		
 	}
 	
 	/**
@@ -462,13 +469,20 @@ public class ElementSet{
 		return CommonOperations.get3Decimals( sourceList.get( sourceList.size() - 1 ) / pr ); 
 	}
 	
-	static class ElementDoubleComparator implements Comparator<Double>{
+	/*static class ElementDoubleComparator implements Comparator<Double>{
 
 		@Override
 		public int compare(Double o1, Double o2) {
 			
-	      return (int) ( o1 - o2 );
+			if( o1.doubleValue() > o2.doubleValue() ){
+				return 1;
+			}else if( o1.doubleValue() < o2.doubleValue() ){
+				return -1;
+			}else{
+				return 0;
+			}
 			
 		}		
 	}
+	*/
 }
