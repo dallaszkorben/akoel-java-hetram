@@ -13,24 +13,14 @@ import hu.akoel.mgu.MGraphics;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Polygon;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Line2D;
 import java.util.Collection;
-
-import javax.lang.model.util.Elements;
 
 public class ThermicPointList{
 	private ThermicPoint[] list;
 	private ElementSet elementSet;
 	private int position = 0;
-	
-/*	public ThermicPointList( int size ){
-		list = new ThermicPoint[size];
-	}
-*/
 	
 	public ThermicPointList( Collection<ThermicPoint> thermicPointCollection, ElementSet elementSet ){
 		
@@ -62,6 +52,116 @@ public class ThermicPointList{
 		position++;
 	}
 	
+	public Double getTemperatureByPosition( double x, double y ){
+		
+		if ( this.getSize() > 0 ) {
+			
+			ThermicConnector c;
+			double dy1, dy2, dx1, dx2;
+			boolean hasPoint;
+			
+			// Vegig a Termikus Pontokon
+			for (int j = 0; j < this.getSize(); j++) {
+				
+				Position position = this.get(j).getPosition();
+				dy1 = 0;
+				dy2 = 0;
+				dx1 = 0;
+				dx2 = 0;
+				
+				c = this.get(j).getNorthThermicConnector();
+				if (c instanceof YDThermicConnector) {
+					dy2 = ((YDThermicConnector)c).getDelta() / 2;
+				}
+
+				c = this.get(j).getEastThermicConnector();
+				if (c instanceof XDThermicConnector) {
+					dx2 = ((XDThermicConnector)c).getDelta() / 2;
+				}
+
+				c = this.get(j).getSouthThermicConnector();
+				if (c instanceof YDThermicConnector) {
+					dy1 = ((YDThermicConnector)c).getDelta() / 2;
+				}
+
+				c = this.get(j).getWestThermicConnector();
+				if (c instanceof XDThermicConnector) {
+					dx1 = ((XDThermicConnector)c).getDelta() / 2;
+				}	
+				
+				if( y <= position.getY() + dy2 && y >= position.getY() - dy1 && x <= position.getX() + dx2 && x >= position.getX() - dx1 ){
+					return this.get( j ).getActualTemperature();
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Egy kitoltott korrel reprezentalja az egyes ThermicPoint-okat
+	 * @param canvas
+	 * @param g2
+	 */
+	public void drawPoint( MCanvas canvas, MGraphics g2 ){
+		
+		//
+		// Termikus pont megjelenitese
+		//
+		for (int j = 0; j < this.getSize(); j++) {
+
+			// A pont geometriai elhelyezkedese
+			Position position = this.get(j).getPosition();
+			
+			double r = 0.002;
+			g2.setColor( Color.green );
+			g2.fillOval( position.getX() - r, position.getY() - r, 2 * r, 2 * r );
+
+		}
+		
+	}
+	
+	/**
+	 * Az egyes ThermicPoint-ok homersekletet irja ki a pontok fole
+	 * 
+	 * @param canvas
+	 * @param g2
+	 */
+	public void drawPointTemperatureByFont( MCanvas canvas, MGraphics g2 ){
+		
+		//Ha vannak termikus pontjaim
+		if ( this.getSize() > 0 ) {
+			
+			ThermicConnector c;
+			
+			// Vegig a Termikus Pontokon
+			for (int j = 0; j < this.getSize(); j++) {
+
+				double delta = 10;
+				
+				c = this.get(j).getEastThermicConnector();
+				if (c instanceof XDThermicConnector) {
+					delta = ((XDThermicConnector)c).getDelta();
+				}
+
+				c = this.get(j).getWestThermicConnector();
+				if (c instanceof XDThermicConnector) {
+					delta = ((XDThermicConnector)c).getDelta();
+				}	
+				
+				// A pont geometriai elhelyezkedese
+				Position position = this.get(j).getPosition();
+		
+				int fontSize = canvas.getPixelXLengthByWorld( delta )/4;
+				Font font = new Font("Default", Font.PLAIN, fontSize);
+				FontRenderContext frc = g2.getFontRenderContext();
+
+				g2.setColor(Color.white);
+				TextLayout textLayout = new	TextLayout(String.valueOf( CommonOperations.get2Decimals( this.get( j ).getActualTemperature() ) ), font, frc );
+				g2.drawFont( textLayout, position.getX(), position.getY());
+			}
+		}
+	}
+	
 	/**
 	 * Nyilakkal reprezentalja az egyes ThermicPoint-ok kozott fellepo hoaramot
 	 * 
@@ -81,7 +181,7 @@ public class ThermicPointList{
 			ThermicConnector c;
 			
 			//
-			// Maximalis Homersekletkulonbseg
+			// Maximalis hoaram szamitasa a maximalis hosszusagu nyil megallapitasahoz
 			//
 			for (int j = 0; j < this.getSize(); j++) {
 
@@ -89,46 +189,32 @@ public class ThermicPointList{
 				
 				c = this.get(j).getNorthThermicConnector();
 				if (c instanceof YDThermicConnector) {
-					//maximumDeltaTemperature = Math.max( maximumDeltaTemperature, ((YDThermicConnector)c).getNorthThermicPoint().getActualTemperature() - pointTemperature );
-					//maximumLambda = Math.max( maximumLambda, Math.abs( ((YDThermicConnector)c).getLambda() ) );
 					maximumCurrent = Math.max( maximumCurrent, Math.abs((((YDThermicConnector)c).getNorthThermicPoint().getActualTemperature() - pointTemperature ) * ((YDThermicConnector)c).getLambda() ) );
 				}
 
 				c = this.get(j).getEastThermicConnector();
 				if (c instanceof XDThermicConnector) {
-					//maximumDeltaTemperature = Math.max( maximumDeltaTemperature, ((XDThermicConnector)c).getEastThermicPoint().getActualTemperature() - pointTemperature );
-					//maximumLambda = Math.max( maximumLambda, Math.abs( ((XDThermicConnector)c).getLambda() ) );
 					maximumCurrent = Math.max( maximumCurrent, Math.abs((((XDThermicConnector)c).getEastThermicPoint().getActualTemperature() - pointTemperature ) * ((XDThermicConnector)c).getLambda() ) );
 				}
 
 				c = this.get(j).getSouthThermicConnector();
 				if (c instanceof YDThermicConnector) {
-					//maximumDeltaTemperature = Math.max( maximumDeltaTemperature, ((YDThermicConnector)c).getSouthThermicPoint().getActualTemperature() - pointTemperature );
-					//maximumLambda = Math.max( maximumLambda, Math.abs( ((YDThermicConnector)c).getLambda() ) );
 					maximumCurrent = Math.max( maximumCurrent, Math.abs((((YDThermicConnector)c).getSouthThermicPoint().getActualTemperature() - pointTemperature ) * ((YDThermicConnector)c).getLambda() ) );
 				}
 
 				c = this.get(j).getWestThermicConnector();
 				if (c instanceof XDThermicConnector) {
-					//maximumDeltaTemperature = Math.max( maximumDeltaTemperature, ((XDThermicConnector)c).getWestThermicPoint().getActualTemperature() - pointTemperature );
-					//maximumLambda = Math.max( maximumLambda, Math.abs( ((XDThermicConnector)c).getLambda() ) );
 					maximumCurrent = Math.max( maximumCurrent, Math.abs((((XDThermicConnector)c).getWestThermicPoint().getActualTemperature() - pointTemperature ) * ((XDThermicConnector)c).getLambda() ) );
-				}
-				
+				}				
 			}
-			
-//			maximumCurrent = maximumLambda * maximumDeltaTemperature;
-System.err.println("maximumCurrent: " + maximumCurrent );
 
-			// Vegig a Termikus Pontokon
+			//
+			// Nyilak elhelyezese a Termikus pontokba 
+			//
 			for (int j = 0; j < this.getSize(); j++) {
 
 				// A pont geometriai elhelyezkedese
 				Position position = this.get(j).getPosition();
-				
-				double r = 0.001;
-				g2.setColor( Color.green );
-				g2.fillOval( position.getX() - r, position.getY() - r, 2 * r, 2 * r );
 				
 				c = this.get(j).getNorthThermicConnector();
 				if (c instanceof YDThermicConnector) {					
@@ -230,9 +316,6 @@ System.err.println("maximumCurrent: " + maximumCurrent );
 		//Ha vannak termikus pontjaim
 		if ( this.getSize() > 0 ) {
 			
-			Font font = new Font("Default", Font.PLAIN, 14);
-			FontRenderContext frc = g2.getFontRenderContext();
-
 			// Megkeresi a minimalais es maximalis homersekletet
 			for (int j = 0; j < this.getSize(); j++) {
 				minimumTemperature = Math.min(minimumTemperature, this.get(j).getActualTemperature());
@@ -290,19 +373,10 @@ System.err.println("maximumCurrent: " + maximumCurrent );
 				double xStart = position.getX() - dWest;
 				double yStart = position.getY() - dSouth;
 
-				//g2.setStroke(new BasicStroke(1));
 				g2.setColor(getRedBluByPercent((this.get(j).getActualTemperature() - minimumTemperature) / deltaTemperature));
 				g2.fillRectangle(xStart, yStart, xStart + dWest + dEast, yStart + dSouth + dNorth);
 
-							
-//System.err.println(xStart + "   " + (xStart + dEast + dWest));						
-
-				//g2.setStroke(new BasicStroke(5));
-				//g2.drawLine(position.getX(), position.getY(), position.getX(), position.getY());
 				
-				g2.setColor(Color.white);
-				TextLayout textLayout = new	TextLayout(String.valueOf( CommonOperations.get2Decimals( this.get( j ).getActualTemperature() ) ), font, frc );
-				g2.drawFont( textLayout, position.getX(), position.getY());
 			}
 		}
 	}
@@ -570,8 +644,7 @@ System.err.println("maximumCurrent: " + maximumCurrent );
 			temperature = szamlalo/nevezo;
 			list[i].setActualTemperature( temperature );
 			
-		}
-		
+		}		
 	}
 	
 	/**
