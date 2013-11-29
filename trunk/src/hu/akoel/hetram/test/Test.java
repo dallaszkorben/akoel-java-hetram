@@ -13,12 +13,16 @@ import hu.akoel.hetram.Element;
 import hu.akoel.hetram.Element.SideOrientation;
 import hu.akoel.hetram.accessories.Length;
 import hu.akoel.hetram.accessories.Position;
+import hu.akoel.hetram.connectors.DThermicConnector;
+import hu.akoel.hetram.connectors.ThermicConnector;
+import hu.akoel.hetram.CommonOperations;
 import hu.akoel.hetram.ElementSet;
 import hu.akoel.hetram.SurfaceClose;
 import hu.akoel.hetram.ThermicPointList;
 import hu.akoel.mgu.MCanvas;
 import hu.akoel.mgu.MGraphics;
 import hu.akoel.mgu.PainterListener;
+import hu.akoel.mgu.PositionChangeListener;
 import hu.akoel.mgu.PossiblePixelPerUnits;
 import hu.akoel.mgu.crossline.CrossLine;
 import hu.akoel.mgu.grid.Grid;
@@ -68,7 +72,7 @@ public class Test extends JFrame {
 	private double rate = 1.2;
 
 	private double lambda1 = 0.45;
-	private double lambda2 = 0.25;
+	private double lambda2 = 0.30;
 	private double lambda3 = 1.0;
 	private double alfaE = 24;
 	private double alfaI = 8;
@@ -95,7 +99,9 @@ public class Test extends JFrame {
 
 			@Override
 			public void paintByWorldPosition(MCanvas canvas, MGraphics g2) {
-//				thermicPointList.drawTemperatureByColor(canvas, g2);
+				thermicPointList.drawTemperatureByColor(canvas, g2);
+				thermicPointList.drawPoint(canvas, g2);
+				thermicPointList.drawPointTemperatureByFont(canvas, g2);
 				thermicPointList.drawCurrentByArrow(canvas, g2);
 			}
 
@@ -116,34 +122,44 @@ public class Test extends JFrame {
 				DecimalFormat df = new DecimalFormat("#.00");
 
 				if (scale.getX() < 1.0) {
-					// canvasControl.setStatusPanelXScale( "xM=" +
-					// df.format(1/scale.getX() ) + ":1" );
+					// canvasControl.setStatusPanelXScale( "xM=" + df.format(1/scale.getX() ) + ":1" );
+					//System.err.println( "M=" + df.format(1/scale.getX() ) + ":1" );
 				} else {
-					// canvasControl.setStatusPanelXScale( "xM=1:" +
-					// df.format(scale.getX() ) );
+					// canvasControl.setStatusPanelXScale( "xM=1:" + df.format(scale.getX() ) );
+					//System.err.println( "M=1:" + df.format(scale.getX() ) );
 				}
 
 				if (scale.getY() < 1.0) {
-					// canvasControl.setStatusPanelYScale( "yM=" +
-					// df.format(1/scale.getY() ) + ":1" );
+					// canvasControl.setStatusPanelYScale( "yM=" + df.format(1/scale.getY() ) + ":1" );
 				} else {
-					// canvasControl.setStatusPanelYScale( "yM=1:" +
-					// df.format(scale.getY() ) );
+					// canvasControl.setStatusPanelYScale( "yM=1:" + df.format(scale.getY() ) );
 				}
+			}
+		});
+		
+		myCanvas.addPositionChangeListener(new PositionChangeListener() {
+			
+			@Override
+			public void getWorldPosition(double xPosition, double yPosition) {
+				DecimalFormat df = new DecimalFormat("#.0000");				
+				//System.err.println( "x: " + df.format(xPosition));
+				//System.err.println( "y: " + df.format(yPosition));	
+				
+				Double temperature = thermicPointList.getTemperatureByPosition(xPosition, yPosition );
+				
+				if( null != temperature ){
+					System.err.println( CommonOperations.get3Decimals( temperature ) + " C");
+				}				
 			}
 		});
 
 		this.getContentPane().setLayout(new BorderLayout(10, 10));
 		this.getContentPane().add(myCanvas, BorderLayout.CENTER);
 		this.setVisible(true);
-
 		
-//		myCanvas.revalidateAndRepaintCoreCanvas();
-
-/*		for (int i = 0; i < thermicPointList.getSize(); i++) {
-			System.out.println(thermicPointList.get(i));
-		}
-*/		
+//		for (int j = 0; j < thermicPointList.getSize(); j++) {
+//			System.out.println(thermicPointList.get(j));
+//		}
 		
 	}
 
