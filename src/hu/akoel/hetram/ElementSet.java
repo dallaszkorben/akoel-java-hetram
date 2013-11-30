@@ -22,8 +22,11 @@ public class ElementSet{
 	private double verticalMaximumDifference = -1;
 	private double horizontalMaximumDifference = -1;
 	
-	double verticalAppliedDifference;
-	double horizontalAppliedDifference;
+	private double verticalAppliedDifference;
+	private double horizontalAppliedDifference;
+	
+	private int verticalDifferenceDivider = 1;
+	private int horizontalDifferenceDivider = 1;
 
 	/**
 	 * Hozzaad egy Element-et a listahoz
@@ -59,10 +62,26 @@ public class ElementSet{
 		return horizontalMaximumDifference;
 	}
 	
+	public int getVerticalDifferenceDivider() {
+		return verticalDifferenceDivider;
+	}
+
+	public void setVerticalDifferenceDivider(int verticalDifferenceDivider) {
+		this.verticalDifferenceDivider = verticalDifferenceDivider;
+	}
+
+	public int getHorizontalDifferenceDivider() {
+		return horizontalDifferenceDivider;
+	}
+
+	public void setHorizontalDifferenceDivider(int horizontalDifferenceDivider) {
+		this.horizontalDifferenceDivider = horizontalDifferenceDivider;
+	}
+
 	public Iterator<Element> iterator(){
 		return elementSet.iterator();
 	}
-	
+/*	
 	public double getHorizontalSuggestedDifference( double askedDifference ){
 		double maximumDifference = getHorizontalMaximumDifference();
 		
@@ -82,20 +101,24 @@ public class ElementSet{
 			return maximumDifference / ((int)(maximumDifference / askedDifference ) );
 		}
 	}
-	
+*/	
 	
 	/**
-	 * Automatikusan felbontja kis differencialis negyzetekre az osszes elemet
-	 * es legyartja hozza a termikus pontokat
+	 * Automatikusan felbontja kis differencialis negyzetekre az osszes elemet,
+	 * legyartja a termikus pontokat es megteremti kozottuk a kapcsolatot
+	 * !!! Szamitas nem tortenik !!!
 	 * 
 	 * @param askedHorizontalDifference
 	 * @param askedVerticalDifference
 	 * @return
 	 */
-	public ThermicPointList divideElements( double askedHorizontalDifference, double askedVerticalDifference ){
+	public ThermicPointList divideElements( ){
 		
-		verticalAppliedDifference = getVerticalSuggestedDifference(askedVerticalDifference);
-		horizontalAppliedDifference = getHorizontalSuggestedDifference(askedHorizontalDifference);
+		//verticalAppliedDifference = getVerticalSuggestedDifference(askedVerticalDifference);
+		//horizontalAppliedDifference = getHorizontalSuggestedDifference(askedHorizontalDifference);
+		
+		verticalAppliedDifference = verticalMaximumDifference / verticalDifferenceDivider;
+		horizontalAppliedDifference = horizontalMaximumDifference / horizontalDifferenceDivider;
 		
 		HashMap<Position, ThermicPoint> thermicPointMap = new HashMap<>();
 		

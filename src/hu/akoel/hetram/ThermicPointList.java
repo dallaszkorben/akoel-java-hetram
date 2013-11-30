@@ -52,13 +52,12 @@ public class ThermicPointList{
 		position++;
 	}
 	
-	public Double getTemperatureByPosition( double x, double y ){
+	public ThermicPoint getThermicPointByPosition( double x, double y ){
 		
 		if ( this.getSize() > 0 ) {
 			
 			ThermicConnector c;
 			double dy1, dy2, dx1, dx2;
-			boolean hasPoint;
 			
 			// Vegig a Termikus Pontokon
 			for (int j = 0; j < this.getSize(); j++) {
@@ -90,13 +89,23 @@ public class ThermicPointList{
 				}	
 				
 				if( y <= position.getY() + dy2 && y >= position.getY() - dy1 && x <= position.getX() + dx2 && x >= position.getX() - dx1 ){
-					return this.get( j ).getActualTemperature();
+					return this.get( j );
 				}
 			}
 		}
 		return null;
 	}
-	
+/*
+	public Double getTemperatureByPosition( double x, double y ){
+		
+		ThermicPoint tp = getThermicPointByPosition(x, y);
+		if( null == tp ){
+			return null;
+		}else{
+			return tp.getActualTemperature();
+		}
+	}
+*/	
 	/**
 	 * Egy kitoltott korrel reprezentalja az egyes ThermicPoint-okat
 	 * @param canvas
@@ -116,8 +125,7 @@ public class ThermicPointList{
 			g2.setColor( Color.green );
 			g2.fillOval( position.getX() - r, position.getY() - r, 2 * r, 2 * r );
 
-		}
-		
+		}		
 	}
 	
 	/**
@@ -230,13 +238,14 @@ public class ThermicPointList{
 					
 					ThermicPoint pairThermicPoint = ((YDThermicConnector) c).getSouthThermicPoint();
 					Position pairPosition = pairThermicPoint.getPosition();
-					double current = ((YDThermicConnector)c).getCurrent();
+					//double current = ((YDThermicConnector)c).getCurrent();
+					double current = this.get(j).getSouthCurrent();
 					double startX, startY, endX, endY;
 					
 					double lengthPercentage = Math.abs( current / maximumCurrent );
 					
 					//Felfele mutat
-					if( current > 0 ){
+					if( current < 0 ){
 						startX = pairPosition.getX();
 						startY = pairPosition.getY();
 						endX = position.getX();
@@ -268,13 +277,14 @@ public class ThermicPointList{
 		
 					ThermicPoint pairThermicPoint = ((XDThermicConnector) c).getWestThermicPoint();
 					Position pairPosition = pairThermicPoint.getPosition();
-					double current = ((XDThermicConnector)c).getCurrent();
+					//double current = ((XDThermicConnector)c).getCurrent();
+					double current = this.get(j).getWestCurrent();
 					
 					double startX, startY, endX, endY;
 					
 					double lengthPercentage = current / maximumCurrent;
 					
-					if( current > 0 ){
+					if( current < 0 ){
 						startX = pairPosition.getX();
 						startY = pairPosition.getY();
 						endX = pairPosition.getX() + lengthPercentage * ((XDThermicConnector) c).getDelta();
@@ -381,6 +391,8 @@ public class ThermicPointList{
 		}
 	}
 	
+		
+	
 	/**
 	 * A szazalekban megadott ertekhez egy szint rendel
 	 * 
@@ -462,7 +474,8 @@ public class ThermicPointList{
 				ThermicPoint pairThermicPoint = ((YDThermicConnector) c).getSouthThermicPoint();
 				double deltaT = this.get(i).getActualTemperature() - pairThermicPoint.getActualTemperature();
 				double q = lambda * deltaT;
-				c.setCurrent( q );
+				this.get(i).setSouthCurrent( q );
+				pairThermicPoint.setNorthCurrent( -q );
 			}
 
 			//WEST
@@ -472,11 +485,10 @@ public class ThermicPointList{
 				ThermicPoint pairThermicPoint = ((XDThermicConnector) c).getWestThermicPoint();
 				double deltaT = this.get(i).getActualTemperature() - pairThermicPoint.getActualTemperature();
 				double q = lambda * deltaT;
-				c.setCurrent( q );
+				this.get(i).setWestCurrent( q );
+				pairThermicPoint.setEastCurrent( -q );
 			}
-
 			
-				
 		}
 		
 	}
