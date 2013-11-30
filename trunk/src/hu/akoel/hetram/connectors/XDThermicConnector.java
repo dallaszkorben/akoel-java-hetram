@@ -3,7 +3,7 @@ package hu.akoel.hetram.connectors;
 import hu.akoel.hetram.ThermicPoint;
 
 public class XDThermicConnector extends DThermicConnector{
-
+	
 	private ThermicPoint westThermicPoint;
 	private ThermicPoint eastThermicPoint;
 	

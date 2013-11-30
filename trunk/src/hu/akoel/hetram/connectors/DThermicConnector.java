@@ -3,7 +3,6 @@ package hu.akoel.hetram.connectors;
 
 public abstract class DThermicConnector implements ThermicConnector{
 
-	private double current;
 	private double lambda;
 	private double delta;
 	
@@ -20,11 +19,4 @@ public abstract class DThermicConnector implements ThermicConnector{
 		return delta;
 	}
 
-	public double getCurrent(){
-		return current;
-	}
-	
-	public void setCurrent( double current ){
-		this.current = current;
-	}
 }

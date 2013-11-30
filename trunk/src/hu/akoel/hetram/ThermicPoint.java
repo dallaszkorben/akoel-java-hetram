@@ -26,6 +26,10 @@ public class ThermicPoint {
 	private ThermicConnector eastThermicConnector;
 	private ThermicConnector southThermicConnector;
 	private ThermicConnector westThermicConnector;
+	private Double northCurrent;
+	private Double eastCurrent;
+	private Double southCurrent;
+	private Double westCurrent;
 	
 	/**
 	 * Egy Termikus Pont letrehozasa
@@ -124,6 +128,38 @@ public class ThermicPoint {
 		}
 	}
 	
+	public Double getNorthCurrent() {
+		return northCurrent;
+	}
+
+	public void setNorthCurrent(Double northCurrent) {
+		this.northCurrent = northCurrent;
+	}
+
+	public Double getEastCurrent() {
+		return eastCurrent;
+	}
+
+	public void setEastCurrent(Double eastCurrent) {
+		this.eastCurrent = eastCurrent;
+	}
+
+	public Double getSouthCurrent() {
+		return southCurrent;
+	}
+
+	public void setSouthCurrent(Double southCurrent) {
+		this.southCurrent = southCurrent;
+	}
+
+	public Double getWestCurrent() {
+		return westCurrent;
+	}
+
+	public void setWestCurrent(Double westCurrent) {
+		this.westCurrent = westCurrent;
+	}
+
 	public ThermicConnector getNorthThermicConnector() {
 		return northThermicConnector;
 	}
@@ -256,6 +292,7 @@ public class ThermicPoint {
 		if( tc instanceof YDThermicConnector ){
 			back += "(λ=" + ((DThermicConnector)tc).getLambda() + " ";
 			back += "δ=" + deltaFormat.format( ((DThermicConnector)tc).getDelta() ) + " ";
+			back += "q=" + this.getNorthCurrent() + " ";
 			back += getNorthPair().getPosition() + ")";
 		}else if( tc instanceof OThermicConnector ){
 			back += "(α=" + ((OThermicConnector)tc).getAlpha() + " ";
@@ -269,6 +306,7 @@ public class ThermicPoint {
 		if( tc instanceof XDThermicConnector ){
 			back += "(λ=" + ((DThermicConnector)tc).getLambda() + " ";
 			back += "δ=" + deltaFormat.format( ((DThermicConnector)tc).getDelta() ) + " ";
+			back += "q=" + this.getEastCurrent() + " ";
 			back += getEastPair().getPosition() + ")";
 		}else if( tc instanceof OThermicConnector ){
 			back += "(α=" + ((OThermicConnector)tc).getAlpha() + " ";
@@ -283,6 +321,7 @@ public class ThermicPoint {
 			back += "(λ=" + ((DThermicConnector)tc).getLambda() + " ";
 			back += "δ=" + deltaFormat.format( ((DThermicConnector)tc).getDelta() ) + " ";
 			back += getSouthPair().getPosition() + ")";
+			back += "q=" + this.getSouthCurrent() + " ";
 		}else if( tc instanceof OThermicConnector ){
 			back += "(α=" + ((OThermicConnector)tc).getAlpha() + " ";
 			back += "T=" + ((OThermicConnector)tc).getAirTemperature() + ")";
@@ -295,6 +334,7 @@ public class ThermicPoint {
 		if( tc instanceof XDThermicConnector ){
 			back += "(λ=" + ((DThermicConnector)tc).getLambda() + " ";
 			back += "δ=" + deltaFormat.format( ((DThermicConnector)tc).getDelta() ) + " ";
+			back += "q=" + this.getWestCurrent() + " ";
 			back += getWestPair().getPosition() + ")";
 		}else if( tc instanceof OThermicConnector ){
 			back += "(α=" + ((OThermicConnector)tc).getAlpha() + " ";
