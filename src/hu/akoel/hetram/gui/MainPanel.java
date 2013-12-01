@@ -324,6 +324,14 @@ thermicPointList = getResult();
 		elementSet.setHorizontalDifferenceDivider(horizontalDifferenceDivider);
 	}
 
+	public double getPixelPerCm(){
+		return this.pixelPerCm;
+	}
+	
+	public void setPixelPerCm( double pixelPerCm ){
+		this.pixelPerCm = pixelPerCm;
+	}
+	
 	public void doCalculate(){
 		thermicPointList = elementSet.divideElements();
 		thermicPointList.solve(0.001);		

@@ -6,6 +6,8 @@ import hu.akoel.mgu.axis.Axis.AxisPosition;
 import hu.akoel.mgu.crossline.CrossLine;
 import hu.akoel.mgu.grid.Grid;
 import hu.akoel.mgu.scale.Scale;
+import hu.akoel.mgu.scale.values.PixelPerCmValue;
+import hu.akoel.mgu.values.RateValue;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -88,7 +90,7 @@ public class CanvasSettingTab extends JPanel {
 
 		//--------------------------
 		//
-		// Grid ki/be kapcsolo
+		// Grid 
 		//
 		//--------------------------
 		//Delta X
@@ -291,7 +293,7 @@ public class CanvasSettingTab extends JPanel {
 
 		// -------------------------
 		//
-		// Crossline ki/be kapcsolo
+		// Crossline
 		//
 		// -------------------------
 		
@@ -550,6 +552,135 @@ public class CanvasSettingTab extends JPanel {
 		crossLinePanelConstraints.weightx = 0;
 		crossLinePanel.add(new JLabel(" " + myScale.getUnitY().getSign()), crossLinePanelConstraints);
 
+		
+		
+		
+		
+		
+		
+		
+		
+		// -------------------------
+		//
+		// Scale
+		//
+		// -------------------------
+	
+JTextField pixelPerCmField;		
+		
+		//Pixel per cm
+		JLabel pixelPerCmLabel = new JLabel("1 cm = ");
+		JLabel pixelPerCmUnit = new JLabel( "px" );
+		pixelPerCmField = new JTextField();
+		pixelPerCmField.setColumns(8);
+		pixelPerCmField.setText(String.valueOf( myScale.getPixelPerCm().getX() ) );
+		pixelPerCmField.setInputVerifier(new InputVerifier() {
+			String goodValue = String.valueOf( myScale.getPixelPerCm().getX() );
+
+			@Override
+			public boolean verify(JComponent input) {
+				JTextField text = (JTextField) input;
+				String possibleValue = text.getText();
+				try {
+					Double.valueOf(possibleValue);
+					goodValue = possibleValue;
+				} catch (NumberFormatException e) {
+					text.setText(goodValue);
+					return false;
+				}
+				myScale.setPixelPerCm( new PixelPerCmValue( Double.valueOf(goodValue), Double.valueOf(goodValue) ) );				
+				myCanvas.revalidateAndRepaintCoreCanvas();
+				return true;
+			}
+		});
+		
+JTextField rateField;		
+		
+		//Rate
+		JLabel rateLabel = new JLabel("Rate: ");
+		rateField = new JTextField();
+		rateField.setColumns(8);
+		rateField.setText(String.valueOf( myScale.getRate().getX() ) );
+		rateField.setInputVerifier(new InputVerifier() {
+			String goodValue = String.valueOf( myScale.getRate().getX() );
+
+			@Override
+			public boolean verify(JComponent input) {
+				JTextField text = (JTextField) input;
+				String possibleValue = text.getText();
+				try {
+					Double.valueOf(possibleValue);
+					goodValue = possibleValue;
+				} catch (NumberFormatException e) {
+					text.setText(goodValue);
+					return false;
+				}
+				myScale.setRate( new RateValue( Double.valueOf(goodValue), Double.valueOf(goodValue) ) );				
+				return true;
+			}
+		});
+		
+		JPanel scalePanel = new JPanel();
+		scalePanel.setLayout(new GridBagLayout());
+		scalePanel.setBorder(BorderFactory.createTitledBorder( BorderFactory.createLineBorder(Color.black), "Scale", TitledBorder.LEFT, TitledBorder.TOP));
+		GridBagConstraints scaleConstraints = new GridBagConstraints();
+
+		// 1. sor - pixel per cm
+		row = 0;
+		scaleConstraints.gridx = 0;
+		scaleConstraints.gridy = row;
+		scaleConstraints.gridwidth = 1;
+		scaleConstraints.anchor = GridBagConstraints.WEST;
+		scaleConstraints.fill = GridBagConstraints.HORIZONTAL;
+		scaleConstraints.weightx = 0;
+		scaleConstraints.anchor = GridBagConstraints.WEST;
+		scalePanel.add(pixelPerCmLabel, scaleConstraints);
+
+		scaleConstraints.gridx = 1;
+		scaleConstraints.gridy = row;
+		scaleConstraints.gridwidth = 1;
+		scaleConstraints.anchor = GridBagConstraints.WEST;
+		scaleConstraints.fill = GridBagConstraints.HORIZONTAL;
+		scaleConstraints.weightx = 0;
+		scaleConstraints.anchor = GridBagConstraints.WEST;
+		scalePanel.add(pixelPerCmField, scaleConstraints);
+
+		scaleConstraints.gridx = 2;
+		scaleConstraints.gridy = row;
+		scaleConstraints.gridwidth = 1;
+		scaleConstraints.anchor = GridBagConstraints.WEST;
+		scaleConstraints.fill = GridBagConstraints.HORIZONTAL;
+		scaleConstraints.weightx = 0;
+		scaleConstraints.anchor = GridBagConstraints.WEST;
+		scalePanel.add(pixelPerCmUnit, scaleConstraints);
+
+		// 2. sor - rate
+		row++;
+		scaleConstraints.gridx = 0;
+		scaleConstraints.gridy = row;
+		scaleConstraints.gridwidth = 1;
+		scaleConstraints.anchor = GridBagConstraints.WEST;
+		scaleConstraints.fill = GridBagConstraints.HORIZONTAL;
+		scaleConstraints.weightx = 0;
+		scaleConstraints.anchor = GridBagConstraints.WEST;
+		scalePanel.add(rateLabel, scaleConstraints);
+
+		scaleConstraints.gridx = 1;
+		scaleConstraints.gridy = row;
+		scaleConstraints.gridwidth = 1;
+		scaleConstraints.anchor = GridBagConstraints.WEST;
+		scaleConstraints.fill = GridBagConstraints.HORIZONTAL;
+		scaleConstraints.weightx = 0;
+		scaleConstraints.anchor = GridBagConstraints.WEST;
+		scalePanel.add(rateField, scaleConstraints);
+		
+		
+		
+		
+		
+		
+		
+		
 		// ----
 		//
 		// Axis
@@ -683,24 +814,33 @@ public class CanvasSettingTab extends JPanel {
 		//
 		//-----------------------------------
 		
+		row = 0;
 		canvasSettingConstraints.gridx = 0;
-		canvasSettingConstraints.gridy = 0;
+		canvasSettingConstraints.gridy = row;
 		canvasSettingConstraints.anchor = GridBagConstraints.NORTH;
 		canvasSettingConstraints.weighty = 0;
 		canvasSettingConstraints.fill = GridBagConstraints.HORIZONTAL;
 		this.add(gridPanel, canvasSettingConstraints);
 
+		row++;
 		canvasSettingConstraints.weighty = 0;
-		canvasSettingConstraints.gridy++;
+		canvasSettingConstraints.gridy = row;
 		this.add(crossLinePanel, canvasSettingConstraints);
 
+		row++;
 		canvasSettingConstraints.weighty = 0;
-		canvasSettingConstraints.gridy++;
+		canvasSettingConstraints.gridy = row;
+		this.add(scalePanel, canvasSettingConstraints);
+
+		row++;
+		canvasSettingConstraints.weighty = 0;
+		canvasSettingConstraints.gridy = row;
 		this.add(axisPanel, canvasSettingConstraints);
 
 		// Azert hogy felfele legyen igazitva
+		row++;
 		canvasSettingConstraints.weighty = 1;
-		canvasSettingConstraints.gridy++;
+		canvasSettingConstraints.gridy = row;
 		this.add(new JLabel(), canvasSettingConstraints);
 
 	}

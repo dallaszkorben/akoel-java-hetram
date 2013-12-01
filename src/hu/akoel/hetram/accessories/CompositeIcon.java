@@ -58,6 +58,7 @@ public class CompositeIcon implements Icon, SwingConstants {
     public void paintIcon(Component c, Graphics g, int x, int y) {
 		int width = getIconWidth();
 		int height = getIconHeight();
+		
 		if (fPosition == LEFT || fPosition == RIGHT) {
 			Icon leftIcon, rightIcon;
 			if (fPosition == LEFT) {
@@ -69,7 +70,10 @@ public class CompositeIcon implements Icon, SwingConstants {
 				rightIcon = fIcon1;
 			}
 			// "Left" orientation, because we specify the x position
-			paintIcon(c, g, leftIcon, x, y, width, height, LEFT, fVerticalOrientation);
+			//Ikon kirajzolasa
+//			paintIcon(c, g, leftIcon, x, y, width, height, LEFT, fVerticalOrientation);
+			
+			//szoveg kirajzolas
 			paintIcon(c, g, rightIcon, x + leftIcon.getIconWidth(), y, width, height, LEFT, fVerticalOrientation);			
 		}
 		else if (fPosition == TOP || fPosition == BOTTOM) {
@@ -83,13 +87,17 @@ public class CompositeIcon implements Icon, SwingConstants {
 				bottomIcon = fIcon1;
 			}
 			// "Top" orientation, because we specify the y position
-			paintIcon(c, g, topIcon, x, y, width, height, fHorizontalOrientation, TOP);
+			//Ikon kirajzolasa
+//			paintIcon(c, g, topIcon, x, y, width, height, fHorizontalOrientation, TOP);
+			
+			//Szoveg kirajzolasa
 			paintIcon(c, g, bottomIcon, x, y + topIcon.getIconHeight(), width, height, fHorizontalOrientation, TOP);			
 		}
 		else {
 			paintIcon(c, g, fIcon1, x, y, width, height, fHorizontalOrientation, fVerticalOrientation);
 			paintIcon(c, g, fIcon2, x, y, width, height, fHorizontalOrientation, fVerticalOrientation);			
 		}
+		
 	}
     
 	/* Paints one icon in the specified rectangle with the given orientations

@@ -124,7 +124,7 @@ public class VTextIcon implements Icon, PropertyChangeListener {
 			//fWidth -= 15;
 			// and height is the font height * the char count, + one extra leading at the bottom
 			fHeight = fCharHeight * len + fDescent;
-			fHeight += 10;
+			//fHeight += 10;
 		}		
 		else {
 			// if rotated, width is the height of the string
@@ -132,7 +132,7 @@ public class VTextIcon implements Icon, PropertyChangeListener {
 			//fWidth -= 15;
 			// and height is the width, plus some buffer space 
 			fHeight = fm.stringWidth(fLabel) + 2*kBufferSpace;
-			fHeight += 10;
+			//fHeight += 10;
 		}
 	}
 
