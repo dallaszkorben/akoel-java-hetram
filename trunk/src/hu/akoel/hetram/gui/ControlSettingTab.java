@@ -1,10 +1,12 @@
 package hu.akoel.hetram.gui;
 
 import hu.akoel.hetram.CommonOperations;
+import hu.akoel.hetram.listeners.CalculationListener;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -14,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
@@ -26,6 +29,9 @@ public class ControlSettingTab extends JPanel {
 	private JTextField appliedXDeltaField;
 	private JTextField appliedYDeltaField;
 	private JButton calculateButton;
+	private JProgressBar progressBar;
+	
+private double calculationPrecision = 0.001;	
 
 	public ControlSettingTab(MainPanel mainPanel) {
 		super();
@@ -77,7 +83,7 @@ public class ControlSettingTab extends JPanel {
 		askedXDeltaDividerField.setColumns(4);
 		askedXDeltaDividerField.setText("1");
 		askedXDeltaDividerField.setInputVerifier(new InputVerifier() {
-			String goodValue = String.valueOf(String.valueOf( ControlSettingTab.this.mainPanel.getHorizontalDifferenceDivider()));
+			String goodValue = String.valueOf( ControlSettingTab.this.mainPanel.getHorizontalDifferenceDivider());
 
 			@Override
 			public boolean verify(JComponent input) {
@@ -104,7 +110,7 @@ public class ControlSettingTab extends JPanel {
 		askedYDeltaDividerField.setColumns(4);
 		askedYDeltaDividerField.setText("1");
 		askedYDeltaDividerField.setInputVerifier(new InputVerifier() {
-			String goodValue = String.valueOf(String.valueOf(ControlSettingTab.this.mainPanel.getVerticalDifferenceDivider()));
+			String goodValue = String.valueOf(ControlSettingTab.this.mainPanel.getVerticalDifferenceDivider());
 
 			@Override
 			public boolean verify(JComponent input) {
@@ -122,11 +128,44 @@ public class ControlSettingTab extends JPanel {
 			}
 		});
 
+		//
+		// Szamitas pontossaga
+		//
+		JLabel calculationPrecisionLabel = new JLabel("Pontosság: ");
+		JTextField calculationPrecisionField = new JTextField();
+		calculationPrecisionField.setEditable(true);
+		calculationPrecisionField.setColumns(4);
+		calculationPrecisionField.setText( String.valueOf(ControlSettingTab.this.calculationPrecision) );
+		calculationPrecisionField.setInputVerifier(new InputVerifier() {
+			String goodValue = String.valueOf(ControlSettingTab.this.calculationPrecision);
+
+			@Override
+			public boolean verify(JComponent input) {
+				JTextField text = (JTextField) input;
+				String possibleValue = text.getText();
+				try {
+					Double.valueOf(possibleValue);
+					goodValue = possibleValue;
+				} catch (NumberFormatException e) {
+					text.setText(goodValue);
+					return false;
+				}
+				ControlSettingTab.this.calculationPrecision = Double.valueOf(goodValue);
+				return true;
+			}
+		});
+		
+		//
+		// Szamitas gomb
+		//
 		calculateButton = new JButton("Szamit");
 		calculateButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				
+				//A szal elinditasa elott elinditja a progressBart -indeterminate modban
+				progressBar.setIndeterminate(true);
 				
 				//A szal elinditasa elott torli az alkalmazott delta ertekeket
 				ControlSettingTab.this.appliedXDeltaField.setText("");
@@ -138,10 +177,29 @@ public class ControlSettingTab extends JPanel {
 				//Egy szal definialasa a kalkulacio szamara
 				Thread t = new Thread(){
 					
-					public void run(){						
+					public void run(){		
+						
+						ControlSettingTab.this.mainPanel.setCalculationListener(new CalculationListener(){
+
+							boolean isIndeterminateMode = true;
+							
+							@Override
+							public void getDifference(double difference) {
+								
+								//Atvaltok rendes modba
+								if( difference <= 1.0 ){ 
+										
+										if( isIndeterminateMode ){
+											progressBar.setIndeterminate( false );
+										}
+																	
+										progressBar.setValue( (int)(calculationPrecision/difference*100) );
+								}
+							}							
+						});
 						
 						//Elinditja a kalkulaciot a megadott ertekekkel
-						ControlSettingTab.this.mainPanel.doCalculate();
+						ControlSettingTab.this.mainPanel.doCalculate( calculationPrecision );
 						
 						//Ha befejezodott a kalkulacio, akkor az alkalmazott delta ertekeket megjeleniti
 						ControlSettingTab.this.appliedXDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getHorizontalAppliedDifference())));
@@ -153,21 +211,24 @@ public class ControlSettingTab extends JPanel {
 						//Ujra engedelyezi a Kalkulacios homb hasznalatat
 						//Letiltja a Kalkulacios gombot
 						ControlSettingTab.this.calculateButton.setEnabled(true);
-
+						
+						//Nullazza a progressBar-t
+						progressBar.setValue(0);
+						ControlSettingTab.this.mainPanel.setCalculationListener(null);
 					}					
-					
 				};
 				
 				//A szal elinditasa
 				t.start();
 					
-				
-				
-	
-
-				
 			}
 		});
+		
+		//
+		//Progress bar
+		//
+		progressBar = new JProgressBar();
+		
 		
 		// Alkalmazott horizontal deltaX
 		//
@@ -287,6 +348,24 @@ public class ControlSettingTab extends JPanel {
 		this.add(askedYDeltaDividerField, controlConstraints);
 
 		//
+		// Kalkulacio pontossaga
+		//
+		row++;
+		controlConstraints.gridx = 0;
+		controlConstraints.gridy = row;
+		controlConstraints.anchor = GridBagConstraints.NORTH;
+		controlConstraints.weighty = 0;
+		controlConstraints.fill = GridBagConstraints.HORIZONTAL;
+		this.add(calculationPrecisionLabel, controlConstraints);
+
+		controlConstraints.gridx = 1;
+		controlConstraints.gridy = row;
+		controlConstraints.anchor = GridBagConstraints.NORTH;
+		controlConstraints.weighty = 0;
+		controlConstraints.fill = GridBagConstraints.HORIZONTAL;
+		this.add(calculationPrecisionField, controlConstraints);
+		
+		//
 		// Calculate gomb
 		//
 		row++;
@@ -299,9 +378,29 @@ public class ControlSettingTab extends JPanel {
 		this.add(calculateButton, controlConstraints);
 
 		//
+		// Progress bar
+		//
+
+		row++;
+		Insets insets = controlConstraints.insets;
+		int ipady = controlConstraints.ipady;
+		controlConstraints.insets = new Insets(5, 0, 5, 0);
+		controlConstraints.ipady = 8;
+		controlConstraints.gridx = 0;
+		controlConstraints.gridy = row;
+		controlConstraints.gridwidth = 3;
+		controlConstraints.anchor = GridBagConstraints.NORTH;
+		controlConstraints.weighty = 0;
+		controlConstraints.fill = GridBagConstraints.HORIZONTAL;
+		this.add(progressBar, controlConstraints);
+
+		
+		//
 		// Alkalmazott X delta
 		//
 		row++;
+		controlConstraints.insets = insets;
+		controlConstraints.ipady = ipady;
 		controlConstraints.gridx = 0;
 		controlConstraints.gridy = row;
 		controlConstraints.gridwidth = 1;

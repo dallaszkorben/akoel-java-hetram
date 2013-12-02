@@ -7,6 +7,7 @@ import hu.akoel.hetram.connectors.SThermicConnector;
 import hu.akoel.hetram.connectors.ThermicConnector;
 import hu.akoel.hetram.connectors.XDThermicConnector;
 import hu.akoel.hetram.connectors.YDThermicConnector;
+import hu.akoel.hetram.listeners.CalculationListener;
 import hu.akoel.mgu.MCanvas;
 import hu.akoel.mgu.MGraphics;
 
@@ -15,12 +16,14 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class ThermicPointList{
 	private ThermicPoint[] list;
 	private ElementSet elementSet;
 	private int position = 0;
+	private CalculationListener calculationListener = null;
 	
 	public ThermicPointList( Collection<ThermicPoint> thermicPointCollection, ElementSet elementSet ){
 		
@@ -106,6 +109,11 @@ public class ThermicPointList{
 		}
 	}
 */	
+	
+	public void setCalculationListener( CalculationListener calculationListener ){
+		this.calculationListener =  calculationListener;
+	}
+	
 	/**
 	 * Egy kitoltott korrel reprezentalja az egyes ThermicPoint-okat
 	 * @param canvas
@@ -460,10 +468,15 @@ public class ThermicPointList{
 				difference = Math.max( difference, list[i].getTempDifference() );
 			}
 			
+			//Ha volt definialva figyelo interfesz, akkor elkuldi neki az elozo szamitashoz kepesti elterest
+			if( null != calculationListener){
+				calculationListener.getDifference(difference);
+			}
+			
 		}while( difference  > minDifference || difference < 0 );
 
 		//Q szamitasa a kiszamitott T-k alapjan
-		for( int i = 0; i < position; i++ ){
+		for( int i = 0; i < getSize(); i++ ){
 			
 			ThermicConnector c;
 			

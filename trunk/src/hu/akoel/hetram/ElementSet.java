@@ -432,13 +432,51 @@ public class ElementSet{
 	}
 	
 	/**
+	 * Legnagyobb kozos osztot adja vissza
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	public int LNKO(int a, int b){
+	     if (a == 0)
+	        return b;
+	     if (b == 0)
+	        return a;
+	 
+	     if (a > b)
+	        return LNKO(a % b, b);
+	     else
+	        return LNKO(a, b % a);
+	}
+	
+	
+	
+	/**
 	 * Visszaadja a parameterkent megadott listaban szereplo osztaskoz-tavolsagok-bol
 	 * kiszamitott minimalis differencia erteket
 	 * 
 	 * @param sourceList
 	 * @return
 	 */
-	private synchronized double getMaximumDifference( List<Double> sourceList ){
+	private double getMaximumDifference( List<Double> sourceList ){
+		int prec = 1000;
+				
+		int a = (int)( prec * CommonOperations.get3Decimals( sourceList.get(0) ) );
+		int b;
+		
+		//Vegig az osztaskoz-tavolsagokon
+		for( Double s: sourceList ){
+
+			b = (int)( prec * CommonOperations.get3Decimals( s ) );
+
+			a = LNKO(a, b);
+			
+		}
+		return CommonOperations.get3Decimals( (double)a / (double)prec );
+		
+	}
+	
+	/*private double getMaximumDifference( List<Double> sourceList ){
 				
 		//Az elso osztaskoz-tavolsag
 		double pr = 1;
@@ -475,7 +513,7 @@ public class ElementSet{
 		}	
 		
 		return CommonOperations.get3Decimals( sourceList.get( sourceList.size() - 1 ) / pr ); 
-	}
+	}*/
 	
 	private static class ElementDoubleComparator implements Comparator<Double>{
 
