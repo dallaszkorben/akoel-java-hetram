@@ -25,6 +25,7 @@ public class ControlSettingTab extends JPanel {
 	
 	private JTextField appliedXDeltaField;
 	private JTextField appliedYDeltaField;
+	private JButton calculateButton;
 
 	public ControlSettingTab(MainPanel mainPanel) {
 		super();
@@ -121,17 +122,50 @@ public class ControlSettingTab extends JPanel {
 			}
 		});
 
-		JButton calculateButton = new JButton("Szamit");
+		calculateButton = new JButton("Szamit");
 		calculateButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				ControlSettingTab.this.mainPanel.doCalculate();
+				
+				//A szal elinditasa elott torli az alkalmazott delta ertekeket
+				ControlSettingTab.this.appliedXDeltaField.setText("");
+				ControlSettingTab.this.appliedYDeltaField.setText("");
+				
+				//Letiltja a Kalkulacios gombot
+				ControlSettingTab.this.calculateButton.setEnabled(false);
+				
+				//Egy szal definialasa a kalkulacio szamara
+				Thread t = new Thread(){
+					
+					public void run(){						
+						
+						//Elinditja a kalkulaciot a megadott ertekekkel
+						ControlSettingTab.this.mainPanel.doCalculate();
+						
+						//Ha befejezodott a kalkulacio, akkor az alkalmazott delta ertekeket megjeleniti
+						ControlSettingTab.this.appliedXDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getHorizontalAppliedDifference())));
+						ControlSettingTab.this.appliedYDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getVerticalAppliedDifference())));
 
-				ControlSettingTab.this.appliedXDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getHorizontalAppliedDifference())));
-				ControlSettingTab.this.appliedYDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getVerticalAppliedDifference())));
+						//Grafika ujra rajzolasa
+						ControlSettingTab.this.mainPanel.revalidateAndRepaint();
+						
+						//Ujra engedelyezi a Kalkulacios homb hasznalatat
+						//Letiltja a Kalkulacios gombot
+						ControlSettingTab.this.calculateButton.setEnabled(true);
 
-				ControlSettingTab.this.mainPanel.revalidateAndRepaint();
+					}					
+					
+				};
+				
+				//A szal elinditasa
+				t.start();
+					
+				
+				
+	
+
+				
 			}
 		});
 		
