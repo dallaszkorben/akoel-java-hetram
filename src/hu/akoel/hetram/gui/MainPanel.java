@@ -8,6 +8,7 @@ import hu.akoel.hetram.ThermicPointList;
 import hu.akoel.hetram.Element.SideOrientation;
 import hu.akoel.hetram.accessories.Length;
 import hu.akoel.hetram.accessories.Position;
+import hu.akoel.hetram.listeners.CalculationListener;
 import hu.akoel.hetram.test.Test;
 import hu.akoel.mgu.MCanvas;
 import hu.akoel.mgu.MGraphics;
@@ -97,6 +98,8 @@ public class MainPanel extends JFrame{
 	private boolean needDrawAxis = false;
 	private boolean needDrawGrid = true;
 	private boolean needDrawCrossline = true;
+	
+	private CalculationListener calculationListener = null;
 	
 	public static void main(String[] args) {
 		Locale.setDefault(new Locale("en", "US"));
@@ -332,9 +335,18 @@ thermicPointList = getResult();
 		this.pixelPerCm = pixelPerCm;
 	}
 	
-	public void doCalculate(){
+	public void setCalculationListener( CalculationListener calculationListener ){
+		this.calculationListener = calculationListener;
+	}
+	
+	public void doCalculate( double precision ){
 		thermicPointList = elementSet.divideElements();
-		thermicPointList.solve(0.001);		
+		
+		if( null != calculationListener ){
+			thermicPointList.setCalculationListener(calculationListener);
+		}
+		
+		thermicPointList.solve( precision );		
 	}
 	
 	public void revalidateAndRepaint(){
