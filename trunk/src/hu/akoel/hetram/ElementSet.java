@@ -346,7 +346,7 @@ public class ElementSet{
 			}			
 		}
 
-		
+		/*
 		for( Element element: elementSet ){
 						
 			Position startPoint = element.getStartPosition();
@@ -366,7 +366,7 @@ public class ElementSet{
 					
 				}
 			}
-		}
+		}*/
 		
 		return new ThermicPointList( thermicPointMap.values(), this );
 		
