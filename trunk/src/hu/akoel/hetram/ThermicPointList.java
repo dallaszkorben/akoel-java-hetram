@@ -127,19 +127,16 @@ public class ThermicPointList{
 	 * @param canvas
 	 * @param g2
 	 */
-	public void drawPoint( MCanvas canvas, MGraphics g2 ){
+	public void drawPoint( MCanvas canvas, MGraphics g2, Color thermicPointColor, double thermicPointRadius ){
 		
-		//
-		// Termikus pont megjelenitese
-		//
+		// Termikus pontok megjelenitese
 		for (int j = 0; j < this.getSize(); j++) {
 
 			// A pont geometriai elhelyezkedese
 			Position position = this.get(j).getPosition();
 			
-			double r = 0.002;
-			g2.setColor( Color.green );
-			g2.fillOval( position.getX() - r, position.getY() - r, 2 * r, 2 * r );
+			g2.setColor( thermicPointColor );
+			g2.fillOval( position.getX(), position.getY(), thermicPointRadius );
 
 		}		
 	}
@@ -471,9 +468,23 @@ public class ThermicPointList{
 					
 				}
 				
+				//
 				//E-NY negyzet kirajzolasa
-				
-				
+				//
+				//Ha van  Delre es Nyugatra is mutato Termikus konnektor meg nem jelenti azt, hogy az adott negyed belul van a keresztmetszeten
+				if( dNorth > 0 && dWest > 0 ){					
+					
+					//Meg kell nezni hogy a tole Nyugatra levo Termikus Pont rendelkezik-e Eszak fele mutato Termikus Konnektorral
+					//Meg kene nezni, a tole Eszakra levo Termikus Pontot is 
+					tP = ((XDThermicConnector)cWest).getWestThermicPoint();
+					
+					//Ha rendelkezik E-fele mutato Termikus Konnektorral
+					tc = tP.getNorthThermicConnector();
+					if( tc instanceof DThermicConnector ){
+						g2.fillRectangle(xStart, yStart, xStart - dWest, yStart + dNorth);
+					}					
+					
+				}
 				
 				//g2.fillRectangle(xStart, yStart, xStart + dWest + dEast, yStart + dSouth + dNorth);
 
