@@ -112,7 +112,8 @@ public class ElementSet{
 	 * @param askedVerticalDifference
 	 * @return
 	 */
-	public ThermicPointList divideElements( ){
+
+	public ThermicPointList generateThermicPoints( ){
 		
 		//verticalAppliedDifference = getVerticalSuggestedDifference(askedVerticalDifference);
 		//horizontalAppliedDifference = getHorizontalSuggestedDifference(askedHorizontalDifference);

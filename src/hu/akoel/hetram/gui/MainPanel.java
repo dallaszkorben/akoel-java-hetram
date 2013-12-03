@@ -99,7 +99,10 @@ public class MainPanel extends JFrame{
 	private boolean needDrawGrid = true;
 	private boolean needDrawCrossline = true;
 	
+	//ThermicPointList
 	private CalculationListener calculationListener = null;
+	private Color thermicPointColor = Color.green;
+	private double thermicPointRadius = 0.004;
 	
 	public static void main(String[] args) {
 		Locale.setDefault(new Locale("en", "US"));
@@ -129,106 +132,104 @@ public class MainPanel extends JFrame{
 	public MainPanel( ){
 
 //Feltoltom csak. nincs szamitas		
-thermicPointList = getResult();
+elementSet = temporarelyGenerateElementSet();
 			
-			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			this.setTitle("Proba");
-			this.setUndecorated(false);
-			this.setSize(700, 600);
-			this.createBufferStrategy(1);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setTitle("Proba");
+		this.setUndecorated(false);
+		this.setSize(700, 600);
+		this.createBufferStrategy(1);
 
-			myCanvas = new MCanvas(BorderFactory.createLoweredBevelBorder(), background, possiblePixelPerUnits, positionToMiddle);
-			myCanvas.addPainterListenerToHighest(new PainterListener() {
+		myCanvas = new MCanvas(BorderFactory.createLoweredBevelBorder(), background, possiblePixelPerUnits, positionToMiddle);
+		myCanvas.addPainterListenerToHighest(new PainterListener() {
 
-				@Override
-				public void paintByWorldPosition(MCanvas canvas, MGraphics g2) {
-					if( needDrawTemperatureByColor && null != thermicPointList )
-						thermicPointList.drawTemperatureByColor(canvas, g2);
-					if( needDrawPoint && null != thermicPointList )
-						thermicPointList.drawPoint(canvas, g2);
-					if( needDrawTemperatureByFont && null != thermicPointList )
-						thermicPointList.drawPointTemperatureByFont(canvas, g2);
-					if( needDrawCurrentByArrow && null != thermicPointList )
-						thermicPointList.drawCurrentByArrow(canvas, g2);
-				}
+			@Override
+			public void paintByWorldPosition(MCanvas canvas, MGraphics g2) {
+				if( needDrawTemperatureByColor && null != thermicPointList )
+					thermicPointList.drawTemperatureByColor(canvas, g2);
+				if( needDrawPoint && null != thermicPointList )
+					thermicPointList.drawPoint(canvas, g2, thermicPointColor, thermicPointRadius );
+				if( needDrawTemperatureByFont && null != thermicPointList )
+					thermicPointList.drawPointTemperatureByFont(canvas, g2);
+				if( needDrawCurrentByArrow && null != thermicPointList )
+					thermicPointList.drawCurrentByArrow(canvas, g2);
+			}
 
-				@Override
-				public void paintByViewer(MCanvas canvas, Graphics2D g2) {
-				}
-			});
+			@Override
+			public void paintByViewer(MCanvas canvas, Graphics2D g2) {
+			}
+		});
 
-			myGrid = new Grid(myCanvas, gridType, gridColor, gridWidth,	gridPosition, gridDelta);
+		myGrid = new Grid(myCanvas, gridType, gridColor, gridWidth,	gridPosition, gridDelta);
 
-			myCrossLine = new CrossLine(myCanvas, crossLinePosition, crossLineColor, crossLineWidthInPixel, crossLineLength,	crossLinePainterPosition);
+		myCrossLine = new CrossLine(myCanvas, crossLinePosition, crossLineColor, crossLineWidthInPixel, crossLineLength,	crossLinePainterPosition);
 
-			myScale = new Scale(myCanvas, pixelPerCm, unit, startScale, rate);
+		myScale = new Scale(myCanvas, pixelPerCm, unit, startScale, rate);
 
-			myAxis = new Axis(myCanvas, axisPosition, axisColor, axisWidthInPixel, painterPosition);
+		myAxis = new Axis(myCanvas, axisPosition, axisColor, axisWidthInPixel, painterPosition);
 			
-			//Meretarany valtozas kijelzese
-			myScale.addScaleChangeListener(new ScaleChangeListener() {
-				@Override
-				public void getScale(Value scale) {
-					statusLine.setScale( scale.getX() );
-				}
-			});
+		//Meretarany valtozas kijelzese
+		myScale.addScaleChangeListener(new ScaleChangeListener() {
+			@Override
+			public void getScale(Value scale) {
+				statusLine.setScale( scale.getX() );
+			}
+		});
 			
-			//Pozicio kijelzese
-			myCanvas.addPositionChangeListener(new PositionChangeListener() {			
-				@Override
-				public void getWorldPosition(double xPosition, double yPosition) {
-					statusLine.setXPosition( xPosition );
-					statusLine.setYPosition( yPosition );
-				}
-			});
+		//Pozicio kijelzese
+		myCanvas.addPositionChangeListener(new PositionChangeListener() {			
+			@Override
+			public void getWorldPosition(double xPosition, double yPosition) {
+				statusLine.setXPosition( xPosition );
+				statusLine.setYPosition( yPosition );
+			}
+		});
 
-			//Homerseklet es Hoaram kijelzese
-			myCanvas.addPositionChangeListener(new PositionChangeListener() {			
-				@Override
-				public void getWorldPosition(double xPosition, double yPosition) {				
+		//Homerseklet es Hoaram kijelzese
+		myCanvas.addPositionChangeListener(new PositionChangeListener() {			
+			@Override
+			public void getWorldPosition(double xPosition, double yPosition) {				
 					
-					if( null != thermicPointList ){
+				if( null != thermicPointList ){
 					
-						ThermicPoint tp = thermicPointList.getThermicPointByPosition(xPosition, yPosition);
+					ThermicPoint tp = thermicPointList.getThermicPointByPosition(xPosition, yPosition);
 					
-						if( null == tp ){
-							statusLine.setTemperature( null );
-							statusLine.setQNorth( null );
-							statusLine.setQEast( null );
-							statusLine.setQSouth( null );
-							statusLine.setQWest( null );
+					if( null == tp ){
+						statusLine.setTemperature( null );
+						statusLine.setQNorth( null );
+						statusLine.setQEast( null );
+						statusLine.setQSouth( null );
+						statusLine.setQWest( null );
 							
-						}else{					
-							statusLine.setTemperature( tp.getActualTemperature() );
+					}else{					
+						statusLine.setTemperature( tp.getActualTemperature() );
 					
-							statusLine.setQNorth( tp.getNorthCurrent() );
-							statusLine.setQEast( tp.getEastCurrent() );
-							statusLine.setQSouth( tp.getSouthCurrent() );
-							statusLine.setQWest( tp.getWestCurrent() );
-						}
-					}													
-				}
-			});
+						statusLine.setQNorth( tp.getNorthCurrent() );
+						statusLine.setQEast( tp.getEastCurrent() );
+						statusLine.setQSouth( tp.getSouthCurrent() );
+						statusLine.setQWest( tp.getWestCurrent() );
+					}
+				}													
+			}
+		});
 
-			this.statusLine = new StatusLine();
-			this.controlPanel = new SettingTabbedPanel( this );
+		this.statusLine = new StatusLine();
+		this.controlPanel = new SettingTabbedPanel( this );
 			
-			//Mezooszto
-			JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,  myCanvas, controlPanel );
-			splitPane.setOneTouchExpandable(true);
-			splitPane.setDividerLocation(400);
-			splitPane.setResizeWeight(1.0);
+		//Mezooszto
+		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,  myCanvas, controlPanel );
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setDividerLocation(400);
+		splitPane.setResizeWeight(1.0);
 
 			
-			this.getContentPane().setLayout(new BorderLayout(10, 10));
-			this.getContentPane().add( splitPane, BorderLayout.CENTER );
-//			this.getContentPane().add( myCanvas, BorderLayout.CENTER );
-//			this.getContentPane().add( controlPanel, BorderLayout.EAST );
-			this.getContentPane().add( statusLine, BorderLayout.SOUTH );
-			this.setVisible(true);
+		this.getContentPane().setLayout(new BorderLayout(10, 10));
+		this.getContentPane().add( splitPane, BorderLayout.CENTER );
+		this.getContentPane().add( statusLine, BorderLayout.SOUTH );
+		this.setVisible(true);
 
-			//Meretarany kezdoertek kiirasa
-			statusLine.setScale( myScale.getScale().getX() );
+		//Meretarany kezdoertek kiirasa
+		statusLine.setScale( myScale.getScale().getX() );
 			
 //			for (int j = 0; j < thermicPointList.getSize(); j++) {
 //				System.out.println(thermicPointList.get(j));
@@ -327,6 +328,14 @@ thermicPointList = getResult();
 		elementSet.setHorizontalDifferenceDivider(horizontalDifferenceDivider);
 	}
 
+	public double getThermicPointRadius(){
+		return thermicPointRadius;
+	}
+	
+	public void setThermicPointRadius( double thermicPointRadius ){
+		this.thermicPointRadius = thermicPointRadius;
+	}
+	
 	public double getPixelPerCm(){
 		return this.pixelPerCm;
 	}
@@ -340,8 +349,9 @@ thermicPointList = getResult();
 	}
 	
 	public void doCalculate( double precision ){
-		thermicPointList = elementSet.divideElements();
+		thermicPointList = elementSet.generateThermicPoints();
 		
+		//Figyelo osztaly a szamitas nyomonkovetesere
 		if( null != calculationListener ){
 			thermicPointList.setCalculationListener(calculationListener);
 		}
@@ -352,7 +362,8 @@ thermicPointList = getResult();
 	public void revalidateAndRepaint(){
 		myCanvas.revalidateAndRepaintCoreCanvas();
 	}
-	private ThermicPointList getResult() {
+	
+	private ElementSet temporarelyGenerateElementSet() {
 		
 		Element hWall = new Element( lambda1, new Position(0, 0.7), new Position(1.0, 1.0));
 		//hWall.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 1.0), alfaE, temperatureE ) );
@@ -370,16 +381,18 @@ thermicPointList = getResult();
 		vInsul.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0, 1.1), alfaE, temperatureE ) );
 		vInsul.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( -0.1, 0.0 ), alfaE, temperatureE ) );
 		
-		elementSet = new ElementSet();
-		elementSet.add( vWall );
-		elementSet.add( hWall );
-		elementSet.add( hInsul );
-		elementSet.add( vInsul );
+		ElementSet es;
+		
+		es = new ElementSet();
+		es.add( vWall );
+		es.add( hWall );
+		es.add( hInsul );
+		es.add( vInsul );
 
 
 //		thermicPointList = elementSet.divideElements();
 //		thermicPointList.solve(0.001);		
 		
-		return thermicPointList;
+		return es;
 	}
 }

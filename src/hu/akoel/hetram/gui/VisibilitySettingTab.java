@@ -7,10 +7,13 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.InputVerifier;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 public class VisibilitySettingTab extends JPanel{
@@ -30,16 +33,12 @@ public class VisibilitySettingTab extends JPanel{
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints visibilitySettingConstraints = new GridBagConstraints();
 		
-		
-		//----------------------------------------------
-		//
-		// Visibility TAB elemek letrehozasa
-		//
-		//----------------------------------------------
-		
+	
+		//------------------------------------------------
 		//
 		// Homerseklet szin szerinti megjelnitese - BLOKK
 		//
+		//------------------------------------------------
 		JPanel temperatureByColorPanel = new JPanel();
 		temperatureByColorPanel.setLayout( new GridBagLayout() );
 		temperatureByColorPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Hőmérséklet-Szin", TitledBorder.LEFT, TitledBorder.TOP ) );
@@ -69,18 +68,12 @@ public class VisibilitySettingTab extends JPanel{
 		temperatureByColorPanelConstraints.fill = GridBagConstraints.HORIZONTAL;
 		temperatureByColorPanelConstraints.weightx = 1;
 		temperatureByColorPanel.add(turnOnTemperatureByColor, temperatureByColorPanelConstraints);
-/*		
-		//2. sor - Turn on Temperature by Color
-		outlookPanelConstraints.gridx = 0;
-		outlookPanelConstraints.gridy++;
-		outlookPanelConstraints.gridwidth = 1;
-		outlookPanelConstraints.weightx = 0;
-		outlookPanel.add(turnOnThermicPoint, outlookPanelConstraints );
-*/
-			
+
+		//-------------------------------------
 		//
 		// Termikus pont  megjelnitese - BLOKK
 		//
+		//-------------------------------------
 		JPanel thermicPointPanel = new JPanel();
 		thermicPointPanel.setLayout( new GridBagLayout() );
 		thermicPointPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Termikus pont", TitledBorder.LEFT, TitledBorder.TOP ) );
@@ -99,9 +92,36 @@ public class VisibilitySettingTab extends JPanel{
 					VisibilitySettingTab.this.mainPanel.setNeedDrawPoint(true);
 				}
 			}
-		});
+		});		
 		
-		//1. sor - Turn on Thermic Point
+		//Termikus Pont radius
+		JLabel thermicPointRadiusLabel = new JLabel("Pont sugara: ");
+		JTextField thermicPointRadiusField = new JTextField();
+		thermicPointRadiusField.setEditable(true);
+		thermicPointRadiusField.setColumns(4);
+		thermicPointRadiusField.setText( String.valueOf( VisibilitySettingTab.this.mainPanel.getThermicPointRadius() ) );
+		thermicPointRadiusField.setInputVerifier(new InputVerifier() {
+			String goodValue = String.valueOf( VisibilitySettingTab.this.mainPanel.getThermicPointRadius() );
+
+			@Override
+			public boolean verify(JComponent input) {
+				JTextField text = (JTextField) input;
+				String possibleValue = text.getText();
+				try {
+					Double.valueOf(possibleValue);
+					goodValue = possibleValue;
+				} catch (NumberFormatException e) {
+					text.setText(goodValue);
+					return false;
+				}
+				VisibilitySettingTab.this.mainPanel.setThermicPointRadius( Double.valueOf( goodValue ) );
+				VisibilitySettingTab.this.mainPanel.revalidateAndRepaint();
+				return true;
+			}
+		});
+		JLabel thermicPointRadiusUnit = new JLabel( "m" );
+		
+		//1. sor - Turn on Thermic Point on/Off
 		row = 0;
 		thermicPointPanelConstraints.gridx = 0;
 		thermicPointPanelConstraints.gridy = row;
@@ -111,9 +131,37 @@ public class VisibilitySettingTab extends JPanel{
 		thermicPointPanelConstraints.weightx = 1;
 		thermicPointPanel.add(turnOnThermicPoint, thermicPointPanelConstraints);	
 		
+		//2. sor - Thermic point radius
+		row++;
+		thermicPointPanelConstraints.gridx = 0;
+		thermicPointPanelConstraints.gridy = row;
+		thermicPointPanelConstraints.gridwidth = 1;
+		thermicPointPanelConstraints.weightx = 0;
+		thermicPointPanel.add(new JLabel("     "), thermicPointPanelConstraints);
+		
+		thermicPointPanelConstraints.gridx = 1;
+		thermicPointPanelConstraints.gridy = row;
+		thermicPointPanelConstraints.gridwidth = 1;
+		thermicPointPanelConstraints.weightx = 0;
+		thermicPointPanel.add(thermicPointRadiusLabel, thermicPointPanelConstraints );
+
+		thermicPointPanelConstraints.gridx = 2;
+		thermicPointPanelConstraints.gridy = row;
+		thermicPointPanelConstraints.gridwidth = 1;
+		thermicPointPanelConstraints.weightx = 0;
+		thermicPointPanel.add(thermicPointRadiusField, thermicPointPanelConstraints );
+		
+		thermicPointPanelConstraints.gridx = 3;
+		thermicPointPanelConstraints.gridy = row;
+		thermicPointPanelConstraints.gridwidth = 1;
+		thermicPointPanelConstraints.weightx = 0;
+		thermicPointPanel.add(thermicPointRadiusUnit, thermicPointPanelConstraints );
+
+		//-----------------------------------------
 		//
 		// Hőmérséklet szám   megjelnitese - BLOKK
 		//
+		//-----------------------------------------
 		JPanel temperatureByFontPanel = new JPanel();
 		temperatureByFontPanel.setLayout( new GridBagLayout() );
 		temperatureByFontPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Hőmérséklet-szám", TitledBorder.LEFT, TitledBorder.TOP ) );
