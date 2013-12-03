@@ -55,6 +55,13 @@ public class ThermicPointList{
 		position++;
 	}
 	
+	/**
+	 *  Visszaadja a parameterkent megadott poziciohoz tartozo Termikus Pontot
+	 *  
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public ThermicPoint getThermicPointByPosition( double x, double y ){
 		
 		if ( this.getSize() > 0 ) {
@@ -116,6 +123,7 @@ public class ThermicPointList{
 	
 	/**
 	 * Egy kitoltott korrel reprezentalja az egyes ThermicPoint-okat
+	 * 
 	 * @param canvas
 	 * @param g2
 	 */
@@ -343,17 +351,20 @@ public class ThermicPointList{
 
 			// Megkeresi a legnagyobb Delta-t ami a nyilak 100%-a lesz
 			double delta = 0;
-			ThermicConnector c;
+			ThermicConnector cNorth, cEast, cSouth, cWest;
+			ThermicConnector tc;
+			ThermicPoint tP;			
+			
 			for (int j = 0; j < this.getSize(); j++) {
 
-				c = this.get(j).getNorthThermicConnector();
-				if (c instanceof DThermicConnector) {
-					delta = Math.max(delta,	((DThermicConnector) c).getDelta());
+				cNorth = this.get(j).getNorthThermicConnector();
+				if (cNorth instanceof DThermicConnector) {
+					delta = Math.max(delta,	((DThermicConnector) cNorth).getDelta());
 				}
 
-				c = this.get(j).getEastThermicConnector();
-				if (c instanceof DThermicConnector) {
-					delta = Math.max(delta,	((DThermicConnector) c).getDelta());
+				cEast = this.get(j).getEastThermicConnector();
+				if (cEast instanceof DThermicConnector) {
+					delta = Math.max(delta,	((DThermicConnector) cEast).getDelta());
 				}
 			}
 
@@ -368,31 +379,103 @@ public class ThermicPointList{
 				double dSouth = 0;
 				double dWest = 0;
 				
-				c = this.get(j).getNorthThermicConnector();
-				if (c instanceof DThermicConnector) {
-					dNorth = ((DThermicConnector) c).getDelta() / 2;							
+				cNorth = this.get(j).getNorthThermicConnector();
+				if (cNorth instanceof DThermicConnector) {
+					dNorth = ((DThermicConnector) cNorth).getDelta() / 2;							
 				}
 
-				c = this.get(j).getEastThermicConnector();
-				if (c instanceof DThermicConnector) {
-					dEast = ((DThermicConnector) c).getDelta() / 2;
+				cEast = this.get(j).getEastThermicConnector();
+				if (cEast instanceof DThermicConnector) {
+					dEast = ((DThermicConnector) cEast).getDelta() / 2;
 				}
 
-				c = this.get(j).getSouthThermicConnector();
-				if (c instanceof DThermicConnector) {
-					dSouth = ((DThermicConnector) c).getDelta() / 2;
+				cSouth = this.get(j).getSouthThermicConnector();
+				if (cSouth instanceof DThermicConnector) {
+					dSouth = ((DThermicConnector) cSouth).getDelta() / 2;
 				}
 
-				c = this.get(j).getWestThermicConnector();
-				if (c instanceof DThermicConnector) {
-					dWest = ((DThermicConnector) c).getDelta() / 2;
+				cWest = this.get(j).getWestThermicConnector();
+				if (cWest instanceof DThermicConnector) {
+					dWest = ((DThermicConnector) cWest).getDelta() / 2;
 				}
 
-				double xStart = position.getX() - dWest;
-				double yStart = position.getY() - dSouth;
+				//double xStart = position.getX() - dWest;
+				//double yStart = position.getY() - dSouth;
+				
+				double xStart = position.getX();
+				double yStart = position.getY();
 
+				//A Termikus Ponthoz tartozo szin
 				g2.setColor(getRedBluByPercent((this.get(j).getActualTemperature() - minimumTemperature) / deltaTemperature));
-				g2.fillRectangle(xStart, yStart, xStart + dWest + dEast, yStart + dSouth + dNorth);
+				
+				//
+				//A teljes negyzet negyedekre valo felbontasa azert szukseges, mert
+				//Ha van az adott negyedet meghatarozo iranyokba mutato Termikus Konnektor az meg nem jelenti azt, 
+				//hogy az adott negyed belul van a fizikai keresztmetszeten
+				//Praktikusan ilyen helyzet a negativ falsarok -> L. Itt van mondjuk Kelet es Eszak iranyba is Termikus Konnektor
+				//ennek ellenere a negativ sarok pontban E-K negyedre megsem kell rajzolni, hiszen fizikailag az mar nem
+				//a keresztmetszet resze
+				//
+				
+				//
+				//E-K negyzet kirajzolasa
+				//
+				//Ha van Eszakra es Keletre is mutato Termikus konnektor meg nem jelenti azt, hogy az adott negyed belul van a keresztmetszeten
+				if( dEast > 0 && dNorth > 0 ){					
+					
+					//Meg kell nezni hogy a tole Keletre levo Termikus Pont rendelkezik-e Eszak fele mutato Termikus Konnektorral
+					//Meg kene nezni, a tole Eszakra levo Termikus Pontot is
+					tP = ((XDThermicConnector)cEast).getEastThermicPoint();
+					
+					//Ha rendelkezik D-fele mutato Termikus Konnektorral
+					tc = tP.getNorthThermicConnector();
+					if( tc instanceof DThermicConnector ){
+						g2.fillRectangle(xStart, yStart, xStart + dEast, yStart + dNorth);
+					}					
+					
+				}
+				
+				//
+				//D-K negyzet kirajzolasa
+				//				
+				//Ha van Keletre es Delre is mutato Termikus konnektor meg nem jelenti azt, hogy az adott negyed belul van a keresztmetszeten
+				if( dEast > 0 && dSouth > 0 ){					
+					
+					//Meg kell nezni hogy a tole Keletre levo Termikus Pont rendelkezik-e Del fele mutato Termikus Konnektorral
+					//Meg kene nezni, a tole Delre levo Termikus Pontot is 
+					tP = ((XDThermicConnector)cEast).getEastThermicPoint();
+					
+					//Ha rendelkezik D-fele mutato Termikus Konnektorral
+					tc = tP.getSouthThermicConnector();
+					if( tc instanceof DThermicConnector ){
+						g2.fillRectangle(xStart, yStart, xStart + dEast, yStart - dSouth);
+					}					
+					
+				}
+				
+				//
+				//D-NY negyzet kirajzolasa
+				//
+				//Ha van  Delre es Nyugatra is mutato Termikus konnektor meg nem jelenti azt, hogy az adott negyed belul van a keresztmetszeten
+				if( dSouth > 0 && dWest > 0 ){					
+					
+					//Meg kell nezni hogy a tole Nyugatra levo Termikus Pont rendelkezik-e Del fele mutato Termikus Konnektorral
+					//Meg kene nezni, a tole Delre levo Termikus Pontot is 
+					tP = ((XDThermicConnector)cWest).getWestThermicPoint();
+					
+					//Ha rendelkezik D-fele mutato Termikus Konnektorral
+					tc = tP.getSouthThermicConnector();
+					if( tc instanceof DThermicConnector ){
+						g2.fillRectangle(xStart, yStart, xStart - dWest, yStart - dSouth);
+					}					
+					
+				}
+				
+				//E-NY negyzet kirajzolasa
+				
+				
+				
+				//g2.fillRectangle(xStart, yStart, xStart + dWest + dEast, yStart + dSouth + dNorth);
 
 				
 			}
