@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
 public class ControlSettingTab extends JPanel {
@@ -29,9 +30,7 @@ public class ControlSettingTab extends JPanel {
 	private JTextField appliedXDeltaField;
 	private JTextField appliedYDeltaField;
 	private JButton calculateButton;
-	private JProgressBar progressBar;
-	
-private double calculationPrecision = 0.001;	
+	private JProgressBar progressBar;	
 
 	public ControlSettingTab(MainPanel mainPanel) {
 		super();
@@ -135,9 +134,9 @@ private double calculationPrecision = 0.001;
 		JTextField calculationPrecisionField = new JTextField();
 		calculationPrecisionField.setEditable(true);
 		calculationPrecisionField.setColumns(4);
-		calculationPrecisionField.setText( String.valueOf(ControlSettingTab.this.calculationPrecision) );
+		calculationPrecisionField.setText( String.valueOf(ControlSettingTab.this.mainPanel.getCalculationPrecision() ) );
 		calculationPrecisionField.setInputVerifier(new InputVerifier() {
-			String goodValue = String.valueOf(ControlSettingTab.this.calculationPrecision);
+			String goodValue = String.valueOf(ControlSettingTab.this.mainPanel.getCalculationPrecision());
 
 			@Override
 			public boolean verify(JComponent input) {
@@ -150,7 +149,7 @@ private double calculationPrecision = 0.001;
 					text.setText(goodValue);
 					return false;
 				}
-				ControlSettingTab.this.calculationPrecision = Double.valueOf(goodValue);
+				ControlSettingTab.this.mainPanel.setCalculationPrecision( Double.valueOf(goodValue) );
 				return true;
 			}
 		});
@@ -174,11 +173,10 @@ private double calculationPrecision = 0.001;
 				//Letiltja a Kalkulacios gombot
 				ControlSettingTab.this.calculateButton.setEnabled(false);
 				
-				//Egy szal definialasa a kalkulacio szamara
-				Thread t = new Thread(){
-					
-					public void run(){		
-						
+				SwingUtilities.invokeLater(new Runnable() {
+				   
+					public void run() {
+				    	
 						ControlSettingTab.this.mainPanel.setCalculationListener(new CalculationListener(){
 
 							boolean isIndeterminateMode = true;
@@ -192,14 +190,25 @@ private double calculationPrecision = 0.001;
 										if( isIndeterminateMode ){
 											progressBar.setIndeterminate( false );
 										}
-																	
-										progressBar.setValue( (int)(calculationPrecision/difference*100) );
-								}
+										
+										
+										SwingUtilities.invokeLater( new Runnable(){
+											double difference = 5;
+											@Override
+											public void run() {
+												progressBar.setStringPainted(true);
+												progressBar.setValue( (int)(ControlSettingTab.this.mainPanel.getCalculationPrecision()/difference++*100) );
+		System.err.println((int)(ControlSettingTab.this.mainPanel.getCalculationPrecision()/difference*100));										
+												
+											}
+											
+										});
+																		}
 							}							
 						});
 						
 						//Elinditja a kalkulaciot a megadott ertekekkel
-						ControlSettingTab.this.mainPanel.doCalculate( calculationPrecision );
+						ControlSettingTab.this.mainPanel.doCalculate( ControlSettingTab.this.mainPanel.getCalculationPrecision() );
 						
 						//Ha befejezodott a kalkulacio, akkor az alkalmazott delta ertekeket megjeleniti
 						ControlSettingTab.this.appliedXDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getHorizontalAppliedDifference())));
@@ -213,14 +222,11 @@ private double calculationPrecision = 0.001;
 						ControlSettingTab.this.calculateButton.setEnabled(true);
 						
 						//Nullazza a progressBar-t
-						progressBar.setValue(0);
-						ControlSettingTab.this.mainPanel.setCalculationListener(null);
-					}					
-				};
-				
-				//A szal elinditasa
-				t.start();
-					
+//						progressBar.setValue(0);
+//						ControlSettingTab.this.mainPanel.setCalculationListener(null);
+				     
+				    }
+				  });							
 			}
 		});
 		
