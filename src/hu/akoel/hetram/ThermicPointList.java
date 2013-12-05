@@ -16,8 +16,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
-import java.util.ArrayList;
 import java.util.Collection;
+
+import javax.swing.SwingUtilities;
 
 public class ThermicPointList{
 	private ThermicPoint[] list;
@@ -196,9 +197,6 @@ public class ThermicPointList{
 		//Ha vannak termikus pontjaim
 		if ( this.getSize() > 0 ) {
 			
-			Font font = new Font("Default", Font.PLAIN, 14);
-			FontRenderContext frc = g2.getFontRenderContext();
-
 			ThermicConnector c;
 			
 			//
@@ -512,33 +510,47 @@ public class ThermicPointList{
 				
 				return new Color(red, 0, blue);
 		*/		
-				int red = 0;
-				int blue = 0;
-				int maxLength = 255;
+		int red = 0;
+		int blue = 0;
+		int maxLength = 255;
+		
+		int value = (int) Math.round(percent * maxLength);
 
-				int value = (int) Math.round(percent * maxLength);
-
-				blue = 255 - value;
-				red = value;
-
-				return new Color(red, 0, blue);
+		blue = 255 - value;
+		red = value;
+				
+		return new Color(red, 0, blue);
 	}
 
 	private Color getWhiteBlack(double percent) {
-				int red = 0;
-				int blue = 0;
-				int green = 0;
-				int maxLength = 255;
+		int red = 0;
+		int blue = 0;
+		int green = 0;
+		int maxLength = 255;
 
-				int value = (int) Math.round(percent * maxLength);
+		int value = (int) Math.round(percent * maxLength);
 
-				blue = value;
-				red = value;
-				green = value;
+		blue = value;
+		red = value;
+		green = value;
 
-				return new Color(red, green, blue);
+		return new Color(red, green, blue);
 	}
 
+	private class CalculationListenerThread extends Thread{
+		private double difference;
+		private CalculationListener calculationListener;
+		
+		public CalculationListenerThread( CalculationListener calculationListener, double difference ){
+			this.calculationListener = calculationListener;
+			this.difference = difference;
+		}
+		
+		@Override
+		    public void run() {
+				calculationListener.getDifference(difference);		
+		 }
+	}
 	
 	/**
 	 * A sokismeretlenes egyenletrendszer megoldasa 
@@ -556,6 +568,8 @@ public class ThermicPointList{
 		do{
 
 			difference = -1;
+			
+			//Elvegez egy iteraciot az egyenletrendszeren
 			doIteration();
 			
 			for( int i = 0; i < getSize(); i++ ){
@@ -564,7 +578,9 @@ public class ThermicPointList{
 			
 			//Ha volt definialva figyelo interfesz, akkor elkuldi neki az elozo szamitashoz kepesti elterest
 			if( null != calculationListener){
-				calculationListener.getDifference(difference);
+				
+				SwingUtilities.invokeLater(new CalculationListenerThread(calculationListener, difference));
+				
 			}
 			
 		}while( difference  > minDifference || difference < 0 );
@@ -640,8 +656,6 @@ public class ThermicPointList{
 			if( cN instanceof YDThermicConnector ){
 				
 				YDThermicConnector dtc = (YDThermicConnector)cN;
-				//szamlalo += ( dtc.getLambda()/dtc.getDelta()/2 ) * dtc.getNorthThermicPoint().getActualTemperature();
-				//nevezo += dtc.getLambda()/dtc.getDelta()/2;
 				szamlalo += dx * ( dtc.getLambda() / dy ) * dtc.getNorthThermicPoint().getActualTemperature();
 				nevezo += dx * dtc.getLambda() / dy;
 
@@ -651,8 +665,6 @@ public class ThermicPointList{
 			
 				//Veszi a Pont felett levo Pontot osszekoto konnektort
 				YDThermicConnector cp = (YDThermicConnector)list[i].getSouthThermicConnector();
-				//szamlalo += ( cp.getLambda()/cp.getDelta()/2 ) * cp.getSouthThermicPoint().getActualTemperature();
-				//nevezo += cp.getLambda()/cp.getDelta()/2;
 				szamlalo += dx * ( cp.getLambda()/cp.getDelta() / dy ) * cp.getSouthThermicPoint().getActualTemperature();
 				nevezo += dx * cp.getLambda()/cp.getDelta() / dy;
 				
@@ -672,8 +684,6 @@ public class ThermicPointList{
 			//Termikus Pont-Termikus Pont
 			if( cE instanceof XDThermicConnector ){
 								
-				//szamlalo += ( ((DThermicConnector) cE).getLambda()/((DThermicConnector) cE).getDelta()/2 ) * ((XDThermicConnector)cE).getEastThermicPoint().getActualTemperature();
-				//nevezo += ((DThermicConnector) cE).getLambda()/((DThermicConnector) cE).getDelta()/2;
 				szamlalo += dy * ( ((DThermicConnector) cE).getLambda() / dx ) * ((XDThermicConnector)cE).getEastThermicPoint().getActualTemperature();
 				nevezo += dy * ((DThermicConnector) cE).getLambda() / dx;
 			
@@ -682,8 +692,6 @@ public class ThermicPointList{
 			
 				//Veszi a Pont-tol balra levo Pont-ot osszekoto Konnektort
 				ThermicConnector cp = list[i].getWestThermicConnector();					
-				//szamlalo += ( ((DThermicConnector) cp).getLambda()/((DThermicConnector) cp).getDelta()/2 ) * ((XDThermicConnector)cp).getWestThermicPoint().getActualTemperature();
-				//nevezo += ((DThermicConnector) cp).getLambda()/((DThermicConnector) cp).getDelta()/2;
 				szamlalo += dy * ( ((DThermicConnector) cp).getLambda() / dx ) * ((XDThermicConnector)cp).getWestThermicPoint().getActualTemperature();
 				nevezo += dy * ((DThermicConnector) cp).getLambda() / dx;
 					
@@ -703,8 +711,6 @@ public class ThermicPointList{
 			//Termikus Pont-Termikus Pont
 			if( cS instanceof YDThermicConnector ){
 				
-				//szamlalo += ( ((DThermicConnector) cS).getLambda()/((DThermicConnector) cS).getDelta()/2 ) * ((YDThermicConnector)cS).getSouthThermicPoint().getActualTemperature();
-				//nevezo += ((DThermicConnector) cS).getLambda()/((DThermicConnector) cS).getDelta()/2;
 				szamlalo += dx * ( ((DThermicConnector) cS).getLambda() / dy ) * ((YDThermicConnector)cS).getSouthThermicPoint().getActualTemperature();
 				nevezo += dx * ((DThermicConnector) cS).getLambda() / dy;
 
@@ -713,8 +719,6 @@ public class ThermicPointList{
 				
 				//Veszi a Pont felett levo Pontot osszekoto Konnektort
 				ThermicConnector cp = list[i].getNorthThermicConnector();		
-				//szamlalo += ( ((DThermicConnector) cp).getLambda()/((DThermicConnector) cp).getDelta()/2 ) * ((YDThermicConnector)cp).getNorthThermicPoint().getActualTemperature();
-				//nevezo += ((DThermicConnector) cp).getLambda()/((DThermicConnector) cp).getDelta()/2;
 				szamlalo += dx * (((DThermicConnector) cp).getLambda()/ dy ) * ((YDThermicConnector)cp).getNorthThermicPoint().getActualTemperature();
 				nevezo += dx * ((DThermicConnector) cp).getLambda()/ dy;
 						
@@ -734,8 +738,6 @@ public class ThermicPointList{
 			//Termikus Pont-Termikus Pont
 			if( cW instanceof XDThermicConnector ){
 				
-				//szamlalo += ( ((DThermicConnector) cW).getLambda()/((DThermicConnector) cW).getDelta()/2 ) * ((XDThermicConnector)cW).getWestThermicPoint().getActualTemperature();
-				//nevezo += ((DThermicConnector) cW).getLambda()/((DThermicConnector) cW).getDelta()/2;
 				szamlalo += dy * ( ((DThermicConnector) cW).getLambda() / dx ) * ((XDThermicConnector)cW).getWestThermicPoint().getActualTemperature();
 				nevezo += dy * ((DThermicConnector) cW).getLambda() / dx;
 				
@@ -744,8 +746,6 @@ public class ThermicPointList{
 				
 				//Veszi a Ponttol jobbra levo Pontot osszekoto Konnektort
 				ThermicConnector cp = list[i].getEastThermicConnector();				
-				//szamlalo += ( ((DThermicConnector) cp).getLambda()/((DThermicConnector) cp).getDelta()/2 ) * ((XDThermicConnector)cp).getEastThermicPoint().getActualTemperature();
-				//nevezo += ((DThermicConnector) cp).getLambda()/((DThermicConnector) cp).getDelta()/2;
 				szamlalo += dy * ( ((DThermicConnector) cp).getLambda() / dx ) * ((XDThermicConnector)cp).getEastThermicPoint().getActualTemperature();
 				nevezo += dy * ((DThermicConnector) cp).getLambda() / dx;
 			

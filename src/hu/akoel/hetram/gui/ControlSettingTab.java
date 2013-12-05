@@ -170,11 +170,16 @@ public class ControlSettingTab extends JPanel {
 				ControlSettingTab.this.appliedXDeltaField.setText("");
 				ControlSettingTab.this.appliedYDeltaField.setText("");
 				
+				//Torlom a mar letezo Thermikus Pont listat es az ertekelofelulet ujrarajzolasaval el is tuntetem
+				ControlSettingTab.this.mainPanel.setThermicPointList(null);				
+				
 				//Letiltja a Kalkulacios gombot
 				ControlSettingTab.this.calculateButton.setEnabled(false);
 				
-				SwingUtilities.invokeLater(new Runnable() {
+				//Majd letrehozom azt a szalat, ami majd a kalkulaciot vegzi
+				Thread thread = new Thread(){
 				   
+					//Egyszer csak elindul a kalkulacio
 					public void run() {
 				    	
 						ControlSettingTab.this.mainPanel.setCalculationListener(new CalculationListener(){
@@ -189,21 +194,12 @@ public class ControlSettingTab extends JPanel {
 										
 										if( isIndeterminateMode ){
 											progressBar.setIndeterminate( false );
-										}
+										}							
 										
-										
-										SwingUtilities.invokeLater( new Runnable(){
-											double difference = 5;
-											@Override
-											public void run() {
-												progressBar.setStringPainted(true);
-												progressBar.setValue( (int)(ControlSettingTab.this.mainPanel.getCalculationPrecision()/difference++*100) );
-		System.err.println((int)(ControlSettingTab.this.mainPanel.getCalculationPrecision()/difference*100));										
-												
-											}
-											
-										});
-																		}
+										progressBar.setStringPainted(true);
+										progressBar.setValue( (int)(ControlSettingTab.this.mainPanel.getCalculationPrecision()/difference*100) );
+
+								}
 							}							
 						});
 						
@@ -214,19 +210,31 @@ public class ControlSettingTab extends JPanel {
 						ControlSettingTab.this.appliedXDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getHorizontalAppliedDifference())));
 						ControlSettingTab.this.appliedYDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getVerticalAppliedDifference())));
 
-						//Grafika ujra rajzolasa
-						ControlSettingTab.this.mainPanel.revalidateAndRepaint();
+						//Ha nem igy rajzoltatom ujra az eredmenyt, akkor nem jelenik meg
+						SwingUtilities.invokeLater( new Runnable(){
+
+							@Override
+							public void run() {
+
+								//Grafika ujra rajzolasa
+								ControlSettingTab.this.mainPanel.revalidateAndRepaint();
+								
+							}			
+						});		
 						
 						//Ujra engedelyezi a Kalkulacios homb hasznalatat
 						//Letiltja a Kalkulacios gombot
 						ControlSettingTab.this.calculateButton.setEnabled(true);
 						
 						//Nullazza a progressBar-t
-//						progressBar.setValue(0);
-//						ControlSettingTab.this.mainPanel.setCalculationListener(null);
+						progressBar.setValue(0);
+						ControlSettingTab.this.mainPanel.setCalculationListener(null);
 				     
 				    }
-				  });							
+				};	
+				
+				//Elinditom a szalat
+				thread.start();
 			}
 		});
 		

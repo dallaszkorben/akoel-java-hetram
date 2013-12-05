@@ -69,9 +69,9 @@ public class MainPanel extends JFrame{
 	//
 	//VisibilitySettings
 	//
-	private boolean needDrawTemperatureByColor = false;
+	private boolean needDrawTemperatureByColor = true;
 
-	private boolean needDrawThermicPoint = true;
+	private boolean needDrawThermicPoint = false;
 	private Color thermicPointColor = Color.green;
 	private double thermicPointRadius = 0.002;
 
@@ -118,7 +118,7 @@ public class MainPanel extends JFrame{
 	//Temporary data
 	//
 	private double lambda1 = 0.45;
-	private double lambda2 = 0.30;
+	private double lambda2 = 0.20;
 	private double lambda3 = 1.0;
 	private double alfaE = 24;
 	private double alfaI = 8;
@@ -255,6 +255,11 @@ elementSet = temporarelyGenerateElementSet();
 //			for (int j = 0; j < thermicPointList.getSize(); j++) {
 //				System.out.println(thermicPointList.get(j));
 //			}
+	}
+	
+	public void setThermicPointList( ThermicPointList thermicPointList ){
+		this.thermicPointList = thermicPointList;
+		myCanvas.revalidateAndRepaintCoreCanvas();
 	}
 	
 	public void setNeedDrawTemperatureByColor( boolean need ){
