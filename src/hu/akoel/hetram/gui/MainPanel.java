@@ -52,7 +52,45 @@ public class MainPanel extends JFrame{
 	private PossiblePixelPerUnits possiblePixelPerUnits = new PossiblePixelPerUnits( new PixelPerUnitValue(1, 1));
 	private TranslateValue positionToMiddle = new TranslateValue(0.3, 0.6);
 
+	private CalculationListener calculationListener = null;
+	
+	
+	//------------------------
+	//
+	//Kiindulasi parameterek
+	//
+	//------------------------
+
+	//
+	//ControlSettings
+	//
+	double calculationPrecision = 0.001;
+	
+	//
+	//VisibilitySettings
+	//
+	private boolean needDrawTemperatureByColor = false;
+
+	private boolean needDrawThermicPoint = true;
+	private Color thermicPointColor = Color.green;
+	private double thermicPointRadius = 0.002;
+
+	private boolean needDrawTemperatureByFont = false;
+	private boolean needDrawCurrentByArrow = false;
+	
+	//
+	//CanvasSettings
+	//	
+	// Axis parameterei	
+	private boolean needDrawAxis = false;
+	private Axis myAxis;
+	private Color axisColor = Color.yellow;
+	private int axisWidthInPixel = 1;
+	private Axis.AxisPosition axisPosition = Axis.AxisPosition.AT_LEFT_BOTTOM;
+	private Axis.PainterPosition painterPosition = Axis.PainterPosition.HIGHEST;	
+
 	// Grid parameterei
+	private boolean needDrawGrid = true;
 	private Grid myGrid;
 	private Color gridColor = Color.green;
 	private int gridWidth = 1;
@@ -61,6 +99,7 @@ public class MainPanel extends JFrame{
 	private Grid.Type gridType = Grid.Type.DOT;
 
 	// CrossLine parameterei
+	private boolean needDrawCrossline = true;
 	private CrossLine myCrossLine;
 	private PositionValue crossLinePosition = new PositionValue(0, 0);
 	private Color crossLineColor = Color.red;
@@ -73,15 +112,11 @@ public class MainPanel extends JFrame{
 	private double pixelPerCm = 20.57;//42.1;
 	private Scale.UNIT unit = Scale.UNIT.m;
 	private double startScale = 10;
-	private double rate = 1.2;
+	private double rate = 1.2;	
 	
-	// Axis parameterei
-	private Axis myAxis;
-	private Color axisColor = Color.yellow;
-	private int axisWidthInPixel = 1;
-	private Axis.AxisPosition axisPosition = Axis.AxisPosition.AT_LEFT_BOTTOM;
-	private Axis.PainterPosition painterPosition = Axis.PainterPosition.HIGHEST;	
-	
+	//
+	//Temporary data
+	//
 	private double lambda1 = 0.45;
 	private double lambda2 = 0.30;
 	private double lambda3 = 1.0;
@@ -89,21 +124,7 @@ public class MainPanel extends JFrame{
 	private double alfaI = 8;
 	private double temperatureE = -13;
 	private double temperatureI = 20;
-	
-	private boolean needDrawTemperatureByColor = false;
-	private boolean needDrawPoint = true;
-	private boolean needDrawTemperatureByFont = false;
-	private boolean needDrawCurrentByArrow = false;
-	
-	private boolean needDrawAxis = false;
-	private boolean needDrawGrid = true;
-	private boolean needDrawCrossline = true;
-	
-	//ThermicPointList
-	private CalculationListener calculationListener = null;
-	private Color thermicPointColor = Color.green;
-	private double thermicPointRadius = 0.004;
-	
+		
 	public static void main(String[] args) {
 		Locale.setDefault(new Locale("en", "US"));
 		new Test();
@@ -147,7 +168,7 @@ elementSet = temporarelyGenerateElementSet();
 			public void paintByWorldPosition(MCanvas canvas, MGraphics g2) {
 				if( needDrawTemperatureByColor && null != thermicPointList )
 					thermicPointList.drawTemperatureByColor(canvas, g2);
-				if( needDrawPoint && null != thermicPointList )
+				if( needDrawThermicPoint && null != thermicPointList )
 					thermicPointList.drawPoint(canvas, g2, thermicPointColor, thermicPointRadius );
 				if( needDrawTemperatureByFont && null != thermicPointList )
 					thermicPointList.drawPointTemperatureByFont(canvas, g2);
@@ -246,12 +267,12 @@ elementSet = temporarelyGenerateElementSet();
 	}	
 	
 	public void setNeedDrawPoint( boolean need ){
-		this.needDrawPoint = need;
+		this.needDrawThermicPoint = need;
 		myCanvas.revalidateAndRepaintCoreCanvas();
 	}
 	
 	public boolean isNeedDrawPoint(){
-		return this.needDrawPoint;		
+		return this.needDrawThermicPoint;		
 	}
 	
 	public void setNeedDrawTemperatureByFont( boolean need ){
@@ -342,6 +363,14 @@ elementSet = temporarelyGenerateElementSet();
 	
 	public void setPixelPerCm( double pixelPerCm ){
 		this.pixelPerCm = pixelPerCm;
+	}
+	
+	public double getCalculationPrecision(){
+		return calculationPrecision;
+	}
+	
+	public void setCalculationPrecision( double calculationPrecision ){
+		this.calculationPrecision = calculationPrecision;
 	}
 	
 	public void setCalculationListener( CalculationListener calculationListener ){
