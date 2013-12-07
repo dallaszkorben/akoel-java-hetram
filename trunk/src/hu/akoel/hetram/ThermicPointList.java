@@ -518,7 +518,7 @@ public class ThermicPointList{
 
 		blue = 255 - value;
 		red = value;
-				
+
 		return new Color(red, 0, blue);
 	}
 
@@ -636,18 +636,22 @@ public class ThermicPointList{
 			
 			double dx = 0;
 			if( cW instanceof XDThermicConnector ){
-				dx += ((XDThermicConnector)cW).getDelta()/2;
+				//dx += ((XDThermicConnector)cW).getDelta()/2;
+				dx += ((XDThermicConnector)cW).getDelta();
 			}
 			if( cE instanceof XDThermicConnector ){
-				dx += ((XDThermicConnector)cE).getDelta()/2;
+				//dx += ((XDThermicConnector)cE).getDelta()/2;
+				dx += ((XDThermicConnector)cE).getDelta();
 			}
 			
 			double dy = 0;
 			if( cN instanceof YDThermicConnector ){
-				dy += ((YDThermicConnector)cN).getDelta()/2;
+				//dy += ((YDThermicConnector)cN).getDelta()/2;
+				dy += ((YDThermicConnector)cN).getDelta();
 			}
 			if( cS instanceof YDThermicConnector ){
-				dy += ((YDThermicConnector)cS).getDelta()/2;
+				//dy += ((YDThermicConnector)cS).getDelta()/2;
+				dy += ((YDThermicConnector)cS).getDelta();
 			}
 			
 			//NORTH

@@ -117,12 +117,12 @@ public class MainPanel extends JFrame{
 	//
 	//Temporary data
 	//
-	private double lambda1 = 0.45;
+	private double lambda1 = 0.67;
 	private double lambda2 = 0.20;
 	private double lambda3 = 1.0;
 	private double alfaE = 24;
 	private double alfaI = 8;
-	private double temperatureE = -13;
+	private double temperatureE = -15;
 	private double temperatureI = 20;
 		
 	public static void main(String[] args) {
@@ -399,13 +399,13 @@ elementSet = temporarelyGenerateElementSet();
 	
 	private ElementSet temporarelyGenerateElementSet() {
 		
-		Element hWall = new Element( lambda1, new Position(0, 0.7), new Position(1.0, 1.0));
-		//hWall.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 1.0), alfaE, temperatureE ) );
-		//hWall.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0.7, 1.0), alfaE, temperatureE ) );
+		//
+		// Falsarok
+		//
+/*		Element hWall = new Element( lambda1, new Position(0, 0.7), new Position(1.0, 1.0));
 		hWall.setCloseElement(new SurfaceClose( SideOrientation.SOUTH, new Length( 0.3, 1.0), alfaI, temperatureI ) );
 		
 		Element vWall = new Element( lambda1, new Position(0,0), new Position(0.3, 0.7 ) );
-		//vWall.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0.0, 0.7), alfaE, temperatureE ) );
 		vWall.setCloseElement(new SurfaceClose( SideOrientation.EAST, new Length( 0.0, 0.7 ), alfaI, temperatureI ) );
 		
 		Element hInsul = new Element( lambda2, new Position( 0, 1.0), new Position(1.0, 1.1 ) );
@@ -414,19 +414,24 @@ elementSet = temporarelyGenerateElementSet();
 		Element vInsul = new Element( lambda2, new Position(-0.1, 0), new Position(0, 1.1) );
 		vInsul.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0, 1.1), alfaE, temperatureE ) );
 		vInsul.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( -0.1, 0.0 ), alfaE, temperatureE ) );
+*/
+		
+		//
+		// Egyenes fal
+		//
+		Element hWall = new Element( lambda1, new Position(0.0, 0.0), new Position(0.38, 0.38));
+		hWall.setCloseElement(new SurfaceClose( SideOrientation.SOUTH, new Length( 0.0, 0.38), alfaI, temperatureI ) );
+		hWall.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 0.38), alfaE, temperatureE ) );
+
 		
 		ElementSet es;
 		
 		es = new ElementSet();
-		es.add( vWall );
+//		es.add( vWall );
 		es.add( hWall );
-		es.add( hInsul );
-		es.add( vInsul );
+//		es.add( hInsul );
+//		es.add( vInsul );
 
-
-//		thermicPointList = elementSet.divideElements();
-//		thermicPointList.solve(0.001);		
-		
 		return es;
 	}
 }
