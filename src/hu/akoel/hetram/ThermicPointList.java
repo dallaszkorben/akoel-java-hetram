@@ -18,7 +18,6 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
-import java.awt.geom.PathIterator;
 import java.util.Collection;
 
 import javax.swing.SwingUtilities;
@@ -28,7 +27,13 @@ public class ThermicPointList{
 	private ElementSet elementSet;
 	private int position = 0;
 	private CalculationListener calculationListener = null;
+	private CURRENT_TYPE currentType = CURRENT_TYPE.TRAJECTORY;
 	
+	public static enum CURRENT_TYPE{
+		VECTORPAIR,
+		VECTOR,
+		TRAJECTORY
+	}
 	public ThermicPointList( Collection<ThermicPoint> thermicPointCollection, ElementSet elementSet ){
 		
 		list = new ThermicPoint[ thermicPointCollection.size() ];
@@ -57,6 +62,14 @@ public class ThermicPointList{
 		
 		//Lista mutatojanak novelese
 		position++;
+	}
+	
+	public void setCurrentType( CURRENT_TYPE currentType ){
+		this.currentType = currentType;
+	}
+	
+	public CURRENT_TYPE getCurrentType(){
+		return this.currentType;
 	}
 	
 	/**
@@ -193,7 +206,7 @@ public class ThermicPointList{
 	 * @param canvas
 	 * @param g2
 	 */
-	public void drawCurrentByArrow( MCanvas canvas, MGraphics g2 ){
+	public void drawCurrent( MCanvas canvas, MGraphics g2 ){
 		
 		double maximumCurrent = 0;
 		double maxDeltaY = 0;
@@ -212,25 +225,21 @@ public class ThermicPointList{
 				c = this.get(j).getNorthThermicConnector();
 				if (c instanceof YDThermicConnector) {
 					maxDeltaY = Math.max( maxDeltaY, Math.abs( ((YDThermicConnector)c).getDelta() ));
-					//maximumCurrentY = Math.max( maximumCurrentY, Math.abs( this.get(j).getNorthCurrent() ) );
 				}
 
 				c = this.get(j).getEastThermicConnector();
 				if (c instanceof XDThermicConnector) {
 					maxDeltaX = Math.max( maxDeltaX, Math.abs( ((XDThermicConnector)c).getDelta() ));
-					//maximumCurrentX = Math.max( maximumCurrentX, Math.abs( this.get(j).getEastCurrent() ) );
 				}
 
 				c = this.get(j).getSouthThermicConnector();
 				if (c instanceof YDThermicConnector) {
 					maxDeltaY = Math.max( maxDeltaY, Math.abs( ((YDThermicConnector)c).getDelta() ));
-					//maximumCurrentY = Math.max( maximumCurrentY, Math.abs( this.get(j).getSouthCurrent() ) );
 				}
 
 				c = this.get(j).getWestThermicConnector();
 				if (c instanceof XDThermicConnector) {
 					maxDeltaX = Math.max( maxDeltaX, Math.abs( ((XDThermicConnector)c).getDelta() ));
-					//maximumCurrentX = Math.max( maximumCurrentX, Math.abs( this.get(j).getWestCurrent() ) );
 				}
 				
 				if( null != this.get(j).getEastCurrent() )
@@ -284,6 +293,7 @@ public class ThermicPointList{
 										
 						vY = position.getY() + yLengthPercentage * maxDeltaY;
 					}
+
 				}
 
 				//---------------
@@ -309,6 +319,7 @@ public class ThermicPointList{
 						vY = position.getY() - yLengthPercentage * maxDeltaY;
 					
 					}
+
 				}
 								
 				//----------
@@ -361,66 +372,76 @@ public class ThermicPointList{
 					
 						vX = position.getX() - xLengthPercentage * maxDeltaX;
 					}
-					
+
 				}
 
+				//----------------------
 				//
-				// Vektropar kirajzolasa
+				// MEGJELENITES
 				//
-
+				//----------------------
+				
 				//g2.setColor( getWhiteBlack( yLengthPercentage ) );
 				g2.setColor( Color.white);
 				g2.setStroke(new BasicStroke(1));
 				
-/*				
-				g2.drawLine( position.getX(), position.getY(), position.getX(), vY);
+				//
+				// Vektropar kirajzolasa
+				//
+				if( currentType.equals( CURRENT_TYPE.VECTORPAIR ) ){
+							
+					g2.drawLine( position.getX(), position.getY(), position.getX(), vY);
 
-				arrowLength = (vY - position.getY()) / 4;					
-				g2.drawLine( position.getX(), vY, position.getX() + arrowLength/2, vY - arrowLength );
-				g2.drawLine( position.getX(), vY, position.getX() - arrowLength/2, vY - arrowLength );
+					arrowLength = (vY - position.getY()) / 4;					
+					g2.drawLine( position.getX(), vY, position.getX() + arrowLength/2, vY - arrowLength );
+					g2.drawLine( position.getX(), vY, position.getX() - arrowLength/2, vY - arrowLength );
 				
-				//g2.setColor( getWhiteBlack( xLengthPercentage ) );
-				g2.setColor( Color.white);
-				g2.setStroke(new BasicStroke(1));
-				g2.drawLine( position.getX(), position.getY(), vX, position.getY());
+					//g2.setColor( getWhiteBlack( xLengthPercentage ) );
+					g2.setColor( Color.white);
+					g2.setStroke(new BasicStroke(1));
+					g2.drawLine( position.getX(), position.getY(), vX, position.getY());
 				
-				arrowLength = (vX - position.getX()) / 4;					
-				g2.drawLine( vX, position.getY(), vX - arrowLength, position.getY() + arrowLength/2);
-				g2.drawLine( vX, position.getY(), vX - arrowLength, position.getY() - arrowLength/2 );
+					arrowLength = (vX - position.getX()) / 4;					
+					g2.drawLine( vX, position.getY(), vX - arrowLength, position.getY() + arrowLength/2);
+					g2.drawLine( vX, position.getY(), vX - arrowLength, position.getY() - arrowLength/2 );
 				
-				
+
 				//
 				// Vektor kirajzolas
 				//
+				}else if( currentType.equals( CURRENT_TYPE.VECTOR ) ){
+								
+					//Vektor iranyanak kirajzolasa
+					g2.drawLine( position.getX(), position.getY(), vX, vY);
 				
-				//Vektor iranyanak kirajzolasa
-				g2.drawLine( position.getX(), position.getY(), vX, vY);
+					//Vektor nyil hegye				
+					arrowLength = Math.sqrt( (vX - position.getX() ) * (vX - position.getX() ) + (vY - position.getY() ) * (vY - position.getY() ) ) / 4;
+					Path2D.Double path = new Path2D.Double();
+					path.moveTo(vX - arrowLength / 2, vY - arrowLength );
+					path.lineTo(vX, vY);
+					path.lineTo( vX + arrowLength / 2, vY - arrowLength );
+					AffineTransform at = new AffineTransform();				
 				
-				//Vektor nyil hegye				
-				arrowLength = Math.sqrt( (vX - position.getX() ) * (vX - position.getX() ) + (vY - position.getY() ) * (vY - position.getY() ) ) / 4;
-				Path2D.Double path = new Path2D.Double();
-				path.moveTo(vX - arrowLength / 2, vY - arrowLength );
-				path.lineTo(vX, vY);
-				path.lineTo( vX + arrowLength / 2, vY - arrowLength );
-				AffineTransform at = new AffineTransform();				
+					double theta = Math.atan2( (vY - position.getY() ), ( vX - position.getX() ) );
+					at.rotate( theta-Math.PI/2d, vX , vY );
+					path.transform(at);
+					g2.drawPath( path );
 				
-				double theta = Math.atan2( (vY - position.getY() ), ( vX - position.getX() ) );
-				at.rotate( theta-Math.PI/2d, vX , vY );
-				path.transform(at);
-				g2.drawPath( path );
-*/				
 				//
 				// Trajektoria kirajzolsa
-				//
-				Path2D.Double trajektoriaPath = new Path2D.Double();
-				trajektoriaPath.moveTo( position.getX(), position.getY() );
-				trajektoriaPath.lineTo(vX, vY);
-				AffineTransform trajektoriaAT = new AffineTransform();				
+				//					
+				}else if( currentType.equals( CURRENT_TYPE.TRAJECTORY ) ){
 				
-				trajektoriaAT.rotate( Math.PI/2d, position.getX() + (vX - position.getX())/2  , position.getY() + (vY - position.getY())/2 );
-				trajektoriaPath.transform(trajektoriaAT);
-				g2.drawPath( trajektoriaPath );
+					Path2D.Double trajektoriaPath = new Path2D.Double();
+					trajektoriaPath.moveTo( position.getX() - ( vX - position.getX() ) / 2, position.getY() - ( vY - position.getY() ) / 2 );
+					trajektoriaPath.lineTo( position.getX() + ( vX - position.getX() ) / 2, position.getY() + ( vY - position.getY() ) / 2 );
+
+					AffineTransform trajektoriaAT = new AffineTransform();				
 				
+					trajektoriaAT.rotate( Math.PI/2d, position.getX(), position.getY() );
+					trajektoriaPath.transform(trajektoriaAT);
+					g2.drawPath( trajektoriaPath );
+				}				
 			}
 		}		
 	}
@@ -588,7 +609,6 @@ public class ThermicPointList{
 				}
 				
 				//g2.fillRectangle(xStart, yStart, xStart + dWest + dEast, yStart + dSouth + dNorth);
-
 				
 			}
 		}

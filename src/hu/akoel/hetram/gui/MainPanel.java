@@ -7,6 +7,7 @@ import hu.akoel.hetram.SymmetricClose;
 import hu.akoel.hetram.ThermicPoint;
 import hu.akoel.hetram.ThermicPointList;
 import hu.akoel.hetram.Element.SideOrientation;
+import hu.akoel.hetram.ThermicPointList.CURRENT_TYPE;
 import hu.akoel.hetram.accessories.Length;
 import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.listeners.CalculationListener;
@@ -55,7 +56,6 @@ public class MainPanel extends JFrame{
 
 	private CalculationListener calculationListener = null;
 	
-	
 	//------------------------
 	//
 	//Kiindulasi parameterek
@@ -78,6 +78,7 @@ public class MainPanel extends JFrame{
 
 	private boolean needDrawTemperatureByFont = false;
 	private boolean needDrawCurrentByArrow = true;
+	private CURRENT_TYPE currentType = CURRENT_TYPE.TRAJECTORY;
 	
 	//
 	//CanvasSettings
@@ -167,14 +168,19 @@ elementSet = temporarelyGenerateElementSet();
 
 			@Override
 			public void paintByWorldPosition(MCanvas canvas, MGraphics g2) {
-				if( needDrawTemperatureByColor && null != thermicPointList )
+				if( needDrawTemperatureByColor && null != thermicPointList ){
 					thermicPointList.drawTemperatureByColor(canvas, g2);
-				if( needDrawThermicPoint && null != thermicPointList )
+				}
+				if( needDrawThermicPoint && null != thermicPointList ){
 					thermicPointList.drawPoint(canvas, g2, thermicPointColor, thermicPointRadius );
-				if( needDrawTemperatureByFont && null != thermicPointList )
+				}
+				if( needDrawTemperatureByFont && null != thermicPointList ){
 					thermicPointList.drawPointTemperatureByFont(canvas, g2);
-				if( needDrawCurrentByArrow && null != thermicPointList )
-					thermicPointList.drawCurrentByArrow(canvas, g2);
+				}
+				if( needDrawCurrentByArrow && null != thermicPointList ){
+					thermicPointList.setCurrentType(currentType);
+					thermicPointList.drawCurrent(canvas, g2);
+				}
 			}
 
 			@Override
@@ -290,11 +296,25 @@ elementSet = temporarelyGenerateElementSet();
 		return this.needDrawTemperatureByFont;
 	}
 
-	public void setNeedDrawCurrentByArrow( boolean need ){
+	public void setNeedDrawCurrent( boolean need ){
 		this.needDrawCurrentByArrow = need;
 		myCanvas.revalidateAndRepaintCoreCanvas();
 	}
 
+	public void setDrawCurrentBy( CURRENT_TYPE currentType ){
+		this.currentType = currentType;
+		if( null != thermicPointList ){
+			myCanvas.revalidateAndRepaintCoreCanvas();
+		}
+	}
+	
+	public CURRENT_TYPE getDrawCurrentBy(){
+		return this.currentType;
+	}
+	
+	
+	
+	
 	public boolean isNeedDrawAxis(){
 		return needDrawAxis;
 	}

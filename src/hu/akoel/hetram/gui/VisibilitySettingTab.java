@@ -1,18 +1,26 @@
 package hu.akoel.hetram.gui;
 
+import hu.akoel.hetram.ThermicPointList;
+import hu.akoel.hetram.ThermicPointList.CURRENT_TYPE;
+import hu.akoel.mgu.axis.Axis.AxisPosition;
+
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.InputVerifier;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
@@ -21,6 +29,10 @@ public class VisibilitySettingTab extends JPanel{
 	private static final long serialVersionUID = 5151984439858433362L;
 	
 	private MainPanel mainPanel ;
+	
+	private JRadioButton vectorCurrentTypeSelector;
+	private JRadioButton vectorPairCurrentTypeSelector;
+	private JRadioButton trajectoryCurrentTypeSelector;
 	
 	public VisibilitySettingTab( MainPanel mainPanel ){
 		super();
@@ -203,10 +215,11 @@ public class VisibilitySettingTab extends JPanel{
 		//3. sor - legmelegebb szin
 		
 		
-		
+		//----------------------------------
 		//
 		// Hőáram  megjelnitese - BLOKK
 		//
+		//----------------------------------
 		JPanel currentPanel = new JPanel();
 		currentPanel.setLayout( new GridBagLayout() );
 		currentPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Termikus áram", TitledBorder.LEFT, TitledBorder.TOP ) );
@@ -220,12 +233,56 @@ public class VisibilitySettingTab extends JPanel{
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if( e.getStateChange() == ItemEvent.DESELECTED){
-					VisibilitySettingTab.this.mainPanel.setNeedDrawCurrentByArrow(false);
+					VisibilitySettingTab.this.mainPanel.setNeedDrawCurrent(false);
+					
+					trajectoryCurrentTypeSelector.setEnabled( false );
+					vectorPairCurrentTypeSelector.setEnabled( false );
+					vectorCurrentTypeSelector.setEnabled( false );
 				}else{
-					VisibilitySettingTab.this.mainPanel.setNeedDrawCurrentByArrow(true);
+					VisibilitySettingTab.this.mainPanel.setNeedDrawCurrent(true);
+					
+					trajectoryCurrentTypeSelector.setEnabled( true );
+					vectorPairCurrentTypeSelector.setEnabled( true );
+					vectorCurrentTypeSelector.setEnabled( true );
+
 				}
 			}
 		});
+		
+		ActionListener currentTypeSelectorActionListener = new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (e.getSource() == vectorCurrentTypeSelector) {
+					VisibilitySettingTab.this.mainPanel.setDrawCurrentBy( ThermicPointList.CURRENT_TYPE.VECTOR);
+				} else if (e.getSource() == vectorPairCurrentTypeSelector ) {
+					VisibilitySettingTab.this.mainPanel.setDrawCurrentBy( ThermicPointList.CURRENT_TYPE.VECTORPAIR);
+				} else if (e.getSource() == trajectoryCurrentTypeSelector) {
+					VisibilitySettingTab.this.mainPanel.setDrawCurrentBy( ThermicPointList.CURRENT_TYPE.TRAJECTORY);
+				}
+			}
+		};
+		
+		//Hoaram tipusvalasztas
+		ButtonGroup bg = new ButtonGroup();
+		vectorCurrentTypeSelector = new JRadioButton("Vektor", false );
+		vectorCurrentTypeSelector.addActionListener(currentTypeSelectorActionListener);
+		bg.add( vectorCurrentTypeSelector );
+		vectorPairCurrentTypeSelector = new JRadioButton("Vektorpár", false );
+		vectorPairCurrentTypeSelector.addActionListener(currentTypeSelectorActionListener);
+		bg.add( vectorPairCurrentTypeSelector );
+		trajectoryCurrentTypeSelector = new JRadioButton("Trajektoria", false );
+		trajectoryCurrentTypeSelector.addActionListener(currentTypeSelectorActionListener);
+		bg.add( trajectoryCurrentTypeSelector );
+
+		CURRENT_TYPE currentType = VisibilitySettingTab.this.mainPanel.getDrawCurrentBy();
+		if( currentType.equals( CURRENT_TYPE.VECTOR ) ){
+			vectorCurrentTypeSelector.setSelected( true );			
+		}else if( currentType.equals( CURRENT_TYPE.VECTORPAIR ) ){
+			vectorPairCurrentTypeSelector.setSelected( true );
+		}else if( currentType.equals( CURRENT_TYPE.TRAJECTORY ) ){
+			trajectoryCurrentTypeSelector.setSelected( true );
+		}
 		
 		//1. sor - Turn on Thermic Point
 		row = 0;
@@ -237,7 +294,44 @@ public class VisibilitySettingTab extends JPanel{
 		currentPanelConstraints.weightx = 1;
 		currentPanel.add(turnOnCurrent, currentPanelConstraints);			
 		
+		//2. sor - Hoaram megjelenites - Vektor
+		row++;
+		currentPanelConstraints.gridx = 0;
+		currentPanelConstraints.gridy = row;
+		currentPanelConstraints.gridwidth = 1;
+		currentPanelConstraints.weightx = 0;
+		currentPanel.add( new JLabel("     "), currentPanelConstraints );
 		
+		currentPanelConstraints.gridx = 1;
+		currentPanelConstraints.gridy = row;
+		currentPanelConstraints.gridwidth = 1;
+		currentPanel.add(vectorCurrentTypeSelector, currentPanelConstraints);		
+		
+		//3. sor - Hoaram megjelenites - Vektorpar
+		row++;
+		currentPanelConstraints.gridx = 0;
+		currentPanelConstraints.gridy = row;
+		currentPanelConstraints.gridwidth = 1;
+		currentPanelConstraints.weightx = 0;
+		currentPanel.add( new JLabel("     "), currentPanelConstraints );
+		
+		currentPanelConstraints.gridx = 1;
+		currentPanelConstraints.gridy = row;
+		currentPanelConstraints.gridwidth = 1;
+		currentPanel.add(vectorPairCurrentTypeSelector, currentPanelConstraints);		
+		
+		//4. sor - Hoaram megjelenites - Trajektoriak
+		row++;
+		currentPanelConstraints.gridx = 0;
+		currentPanelConstraints.gridy = row;
+		currentPanelConstraints.gridwidth = 1;
+		currentPanelConstraints.weightx = 0;
+		currentPanel.add( new JLabel("     "), currentPanelConstraints );
+		
+		currentPanelConstraints.gridx = 1;
+		currentPanelConstraints.gridy = row;
+		currentPanelConstraints.gridwidth = 1;
+		currentPanel.add(trajectoryCurrentTypeSelector, currentPanelConstraints);		
 		//-----------------------------------
 		//
 		// Visibility TAB feltoltese
@@ -288,6 +382,8 @@ public class VisibilitySettingTab extends JPanel{
 		visibilitySettingConstraints.weighty = 0;
 		visibilitySettingConstraints.fill = GridBagConstraints.HORIZONTAL;
 		this.add(currentPanel, visibilitySettingConstraints);
+		
+		
 		
 		//
 		// Felfele igazitas
