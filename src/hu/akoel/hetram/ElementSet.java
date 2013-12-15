@@ -81,27 +81,6 @@ public class ElementSet{
 	public Iterator<Element> iterator(){
 		return elementSet.iterator();
 	}
-/*	
-	public double getHorizontalSuggestedDifference( double askedDifference ){
-		double maximumDifference = getHorizontalMaximumDifference();
-		
-		if( askedDifference >= maximumDifference ){
-			return maximumDifference;
-		}else{
-			return maximumDifference / ((int)(maximumDifference / askedDifference ) );
-		}
-	}
-	
-	public double getVerticalSuggestedDifference( double askedDifference ){
-		double maximumDifference = getVerticalMaximumDifference();
-		
-		if( askedDifference >= maximumDifference ){
-			return maximumDifference;
-		}else{
-			return maximumDifference / ((int)(maximumDifference / askedDifference ) );
-		}
-	}
-*/	
 	
 	/**
 	 * Automatikusan felbontja kis differencialis negyzetekre az osszes elemet,
@@ -115,9 +94,6 @@ public class ElementSet{
 
 	public ThermicPointList generateThermicPoints( ){
 		
-		//verticalAppliedDifference = getVerticalSuggestedDifference(askedVerticalDifference);
-		//horizontalAppliedDifference = getHorizontalSuggestedDifference(askedHorizontalDifference);
-		
 		verticalAppliedDifference = verticalMaximumDifference / verticalDifferenceDivider;
 		horizontalAppliedDifference = horizontalMaximumDifference / horizontalDifferenceDivider;
 		
@@ -125,7 +101,8 @@ public class ElementSet{
 		
 		//----------------------------------------------
 		//
-		// Elso korben a DThermicConnector-okat osztja ki
+		// Elso korben a Termikus Pont-ok legyartasa es
+		// a DThermicConnector-ok kiosztasa
 		//
 		//----------------------------------------------
 		
@@ -147,7 +124,7 @@ public class ElementSet{
 			for( int i = 0; i <= iSteps; i++){
 				
 				//Az aktualis vertikalis point
-				y = CommonOperations.get3Decimals( startPoint.getY() + i * verticalAppliedDifference );
+				y = CommonOperations.get10Decimals( startPoint.getY() + i * verticalAppliedDifference );
 				
 				//Elindul a kezdo horizontalis pontbol
 				double x = startPoint.getX();			
@@ -159,7 +136,7 @@ public class ElementSet{
 				for( int j = 0; j <= jSteps; j++ ){
 				
 					//Az aktualis horizontalis pont
-					x = CommonOperations.get3Decimals( startPoint.getX() + j * horizontalAppliedDifference );
+					x = CommonOperations.get10Decimals( startPoint.getX() + j * horizontalAppliedDifference );
 
 					//Az aktualis pont pozicioja
 					Position position = new Position(x, y);
@@ -195,7 +172,7 @@ public class ElementSet{
 						}
 
 						//Veszem a baloldali kozvetlen kapcsolatat, ami bizonyosan letezik, mivel belso pont						
-						double previousX = CommonOperations.get3Decimals( startPoint.getX() + (j - 1) * horizontalAppliedDifference );
+						double previousX = CommonOperations.get10Decimals( startPoint.getX() + (j - 1) * horizontalAppliedDifference );
 
 						//Es osszekottetest letesitek vele
 						tp.connectToD(thermicPointMap.get(new Position(previousX, y)), ThermicPointOrientation.WEST, lambda );
@@ -218,7 +195,7 @@ public class ElementSet{
 						}
 
 						//Veszem az alatta levo kozvetlen kapcsolatat, ami bizonyosan letezik, mivel belso pont
-						double previousY = CommonOperations.get3Decimals( startPoint.getY() + (i - 1) * verticalAppliedDifference );						
+						double previousY = CommonOperations.get10Decimals( startPoint.getY() + (i - 1) * verticalAppliedDifference );						
 						tp.connectToD(thermicPointMap.get(new Position(x, previousY)), ThermicPointOrientation.SOUTH, lambda );
 					}					
 				}
@@ -251,7 +228,7 @@ public class ElementSet{
 			for( int i = 0; i <= iSteps; i++){
 
 				//Az aktualis vertikalis pont
-				y = CommonOperations.get3Decimals( startPoint.getY() + i * verticalAppliedDifference );				
+				y = CommonOperations.get10Decimals( startPoint.getY() + i * verticalAppliedDifference );				
 				
 				//Kezdo horizontalis pontbol indulok
 				double x = startPoint.getX();		
@@ -263,7 +240,7 @@ public class ElementSet{
 				for( int j = 0; j <= jSteps; j++ ){
 					
 					//Az aktualis horizontalis pont
-					x = CommonOperations.get3Decimals( startPoint.getX() + j * horizontalAppliedDifference );
+					x = CommonOperations.get10Decimals( startPoint.getX() + j * horizontalAppliedDifference );
 					
 					//Az aktualis pont pozicioja
 					Position position = new Position(x, y);
@@ -542,59 +519,20 @@ public class ElementSet{
 	private double getMaximumDifference( List<Double> sourceList ){
 		int prec = 1000;
 				
-		int a = (int)( prec * CommonOperations.get3Decimals( sourceList.get(0) ) );
+		int a = (int)( prec * CommonOperations.get10Decimals( sourceList.get(0) ) );
 		int b;
 		
 		//Vegig az osztaskoz-tavolsagokon
 		for( Double s: sourceList ){
 
-			b = (int)( prec * CommonOperations.get3Decimals( s ) );
+			b = (int)( prec * CommonOperations.get10Decimals( s ) );
 
 			a = LNKO(a, b);
 			
 		}
-		return CommonOperations.get3Decimals( (double)a / (double)prec );
+		return CommonOperations.get10Decimals( (double)a / (double)prec );
 		
 	}
-	
-	/*private double getMaximumDifference( List<Double> sourceList ){
-				
-		//Az elso osztaskoz-tavolsag
-		double pr = 1;
-		double a = sourceList.get(0);
-		
-		//Vegig az osztaskoz-tavolsagokon
-		for( Double b: sourceList ){
-
-			b = CommonOperations.get3Decimals(b);
-			
-			boolean ok = false;
-			
-			//Probalgatas
-			for( int k = 0; k<= precision; k++){
-				
-				a = CommonOperations.get3Decimals(a);
-				
-				//m az azt mondja meg, hogy hany reszre kell felbontani b-t
-				double n = (k+pr)*b/a;
-		
-				//Ha nagyjabol egesz szamra jon ki
-				if( (int)n < n + 1/precision &&  (int)n > n - 1/precision ){
-
-					a = b;
-					pr = n;
-					ok = true;
-					break;
-				}
-			}
-			if( !ok ){
-				System.err.println("K tulhaladta a megadott erteket");
-				System.exit(-1);
-			}
-		}	
-		
-		return CommonOperations.get3Decimals( sourceList.get( sourceList.size() - 1 ) / pr ); 
-	}*/
 	
 	private static class ElementDoubleComparator implements Comparator<Double>{
 

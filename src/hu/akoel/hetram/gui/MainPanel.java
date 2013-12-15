@@ -403,7 +403,7 @@ elementSet = temporarelyGenerateElementSet();
 		//
 		// Falsarok
 		//
-/*
+
 		Element hWall = new Element( lambda1, new Position(0, 0.7), new Position(1.0, 1.0));
 		hWall.setCloseElement(new SurfaceClose( SideOrientation.SOUTH, new Length( 0.3, 1.0), alfaI, temperatureI ) );
 		
@@ -417,26 +417,26 @@ elementSet = temporarelyGenerateElementSet();
 		vInsul.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0, 1.1), alfaE, temperatureE ) );
 		vInsul.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( -0.1, 0.0 ), alfaE, temperatureE ) );
 
-*/		
-		//
+		
+/*		//
 		// Egyenes fal
 		//
 		Element hWall = new Element( lambda1, new Position(0.0, 0.0), new Position(0.38, 0.38));
 		//hWall.setCloseElement(new SurfaceClose( SideOrientation.SOUTH, new Length( 0.0, 0.38), alfaI, temperatureI ) );
 		//hWall.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 0.38), alfaE, temperatureE ) );
-		hWall.setCloseElement(new SurfaceClose( SideOrientation.EAST, new Length( 0.0, 0.38), alfaI, temperatureI ) );
-		hWall.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0.0, 0.38), alfaE, temperatureE ) );
+		hWall.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 0.38), alfaI, temperatureI ) );
+		hWall.setCloseElement(new SurfaceClose( SideOrientation.SOUTH, new Length( 0.0, 0.38), alfaE, temperatureE ) );
 		//hWall.setCloseElement(new SymmetricClose( SideOrientation.WEST, new Length( 0.0, 0.38) ) );
 		//hWall.setCloseElement(new SymmetricClose( SideOrientation.EAST, new Length( 0.0, 0.38) ) );
-
+*/
 		
 		ElementSet es;
 		
 		es = new ElementSet();
-//		es.add( vWall );
+		es.add( vWall );
 		es.add( hWall );
-//		es.add( hInsul );
-//		es.add( vInsul );
+		es.add( hInsul );
+		es.add( vInsul );
 
 		return es;
 	}
