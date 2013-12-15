@@ -674,9 +674,7 @@ JTextField rateField;
 		scaleConstraints.anchor = GridBagConstraints.WEST;
 		scalePanel.add(rateField, scaleConstraints);
 		
-		
-		
-		
+	
 		
 		
 		
