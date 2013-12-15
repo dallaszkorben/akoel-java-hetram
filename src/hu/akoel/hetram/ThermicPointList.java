@@ -16,6 +16,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
+import java.awt.geom.PathIterator;
 import java.util.Collection;
 
 import javax.swing.SwingUtilities;
@@ -308,15 +311,6 @@ public class ThermicPointList{
 					}
 				}
 								
-				g2.setColor( getWhiteBlack( yLengthPercentage ) );
-				g2.setColor( Color.white);
-				g2.setStroke(new BasicStroke(1));
-				g2.drawLine( position.getX(), position.getY(), position.getX(), vY);
-				
-				arrowLength = (vY - position.getY()) / 4;					
-				g2.drawLine( position.getX(), vY, position.getX() + arrowLength/2, vY - arrowLength );
-				g2.drawLine( position.getX(), vY, position.getX() - arrowLength/2, vY - arrowLength );
-
 				//----------
 				//
 				//EAST
@@ -370,7 +364,22 @@ public class ThermicPointList{
 					
 				}
 
-				g2.setColor( getWhiteBlack( xLengthPercentage ) );
+				//
+				// Vektropar kirajzolasa
+				//
+
+				//g2.setColor( getWhiteBlack( yLengthPercentage ) );
+				g2.setColor( Color.white);
+				g2.setStroke(new BasicStroke(1));
+				
+/*				
+				g2.drawLine( position.getX(), position.getY(), position.getX(), vY);
+
+				arrowLength = (vY - position.getY()) / 4;					
+				g2.drawLine( position.getX(), vY, position.getX() + arrowLength/2, vY - arrowLength );
+				g2.drawLine( position.getX(), vY, position.getX() - arrowLength/2, vY - arrowLength );
+				
+				//g2.setColor( getWhiteBlack( xLengthPercentage ) );
 				g2.setColor( Color.white);
 				g2.setStroke(new BasicStroke(1));
 				g2.drawLine( position.getX(), position.getY(), vX, position.getY());
@@ -378,7 +387,40 @@ public class ThermicPointList{
 				arrowLength = (vX - position.getX()) / 4;					
 				g2.drawLine( vX, position.getY(), vX - arrowLength, position.getY() + arrowLength/2);
 				g2.drawLine( vX, position.getY(), vX - arrowLength, position.getY() - arrowLength/2 );
-								
+				
+				
+				//
+				// Vektor kirajzolas
+				//
+				
+				//Vektor iranyanak kirajzolasa
+				g2.drawLine( position.getX(), position.getY(), vX, vY);
+				
+				//Vektor nyil hegye				
+				arrowLength = Math.sqrt( (vX - position.getX() ) * (vX - position.getX() ) + (vY - position.getY() ) * (vY - position.getY() ) ) / 4;
+				Path2D.Double path = new Path2D.Double();
+				path.moveTo(vX - arrowLength / 2, vY - arrowLength );
+				path.lineTo(vX, vY);
+				path.lineTo( vX + arrowLength / 2, vY - arrowLength );
+				AffineTransform at = new AffineTransform();				
+				
+				double theta = Math.atan2( (vY - position.getY() ), ( vX - position.getX() ) );
+				at.rotate( theta-Math.PI/2d, vX , vY );
+				path.transform(at);
+				g2.drawPath( path );
+*/				
+				//
+				// Trajektoria kirajzolsa
+				//
+				Path2D.Double trajektoriaPath = new Path2D.Double();
+				trajektoriaPath.moveTo( position.getX(), position.getY() );
+				trajektoriaPath.lineTo(vX, vY);
+				AffineTransform trajektoriaAT = new AffineTransform();				
+				
+				trajektoriaAT.rotate( Math.PI/2d, position.getX() + (vX - position.getX())/2  , position.getY() + (vY - position.getY())/2 );
+				trajektoriaPath.transform(trajektoriaAT);
+				g2.drawPath( trajektoriaPath );
+				
 			}
 		}		
 	}
@@ -585,7 +627,7 @@ public class ThermicPointList{
 	}
 
 	private Color getWhiteBlack(double percent) {
-//System.out.println(percent);				
+			
 		int red = 0;
 		int blue = 0;
 		int green = 0;
