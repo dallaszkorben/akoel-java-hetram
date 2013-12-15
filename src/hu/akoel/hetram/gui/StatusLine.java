@@ -49,22 +49,22 @@ public class StatusLine extends JPanel{
 		temperatureField.setBackground( Color.yellow );
 		this.add( temperatureField );
 		
-		qNorthField.setColumns( 11 );
+		qNorthField.setColumns( 13 );
 		qNorthField.setBorder(BorderFactory.createLoweredBevelBorder());
 		qNorthField.setEditable(false);
 		this.add( qNorthField);
 		
-		qEastField.setColumns( 11 );
+		qEastField.setColumns( 13 );
 		qEastField.setBorder(BorderFactory.createLoweredBevelBorder());
 		qEastField.setEditable(false);
 		this.add( qEastField );
 		
-		qSouthField.setColumns( 11 );
+		qSouthField.setColumns( 13 );
 		qSouthField.setBorder(BorderFactory.createLoweredBevelBorder());
 		qSouthField.setEditable(false);
 		this.add( qSouthField );
 
-		qWestField.setColumns( 11 );
+		qWestField.setColumns( 13 );
 		qWestField.setBorder(BorderFactory.createLoweredBevelBorder());
 		qWestField.setEditable(false);
 		this.add( qWestField );

@@ -132,28 +132,42 @@ public class ElementSet{
 		//Minden elemen vegig megyek
 		for( Element element: elementSet ){
 			
+			//Veszem az elem kezdo es veg pozicioit
 			Position startPoint = element.getStartPosition();
 			Position endPoint = element.getEndPosition();
 			double lambda;		
 
+			//Mindig a kezdo vertikalis pontbol indulok
 			double y = startPoint.getY();
+			
+			//Vertikalis felbontas
 			int iSteps = (int)Math.round((endPoint.getY() - y) / verticalAppliedDifference );
+			
+			//Vegig a vertikalis pontokon
 			for( int i = 0; i <= iSteps; i++){
 				
+				//Az aktualis vertikalis point
 				y = CommonOperations.get3Decimals( startPoint.getY() + i * verticalAppliedDifference );
 				
-				double x = startPoint.getX();				
+				//Elindul a kezdo horizontalis pontbol
+				double x = startPoint.getX();			
+				
+				//Horizontalis felbontas
 				int jSteps = (int)Math.round((endPoint.getX() - x) / horizontalAppliedDifference);
+				
+				//Vegig a horizontalis pontokon
 				for( int j = 0; j <= jSteps; j++ ){
 				
+					//Az aktualis horizontalis pont
 					x = CommonOperations.get3Decimals( startPoint.getX() + j * horizontalAppliedDifference );
 
+					//Az aktualis pont pozicioja
 					Position position = new Position(x, y);
 
 					//Rakeresek a taroloban, hatha letezett mar ez elott is
 					ThermicPoint tp = thermicPointMap.get( position );
 					
-					//Ha ez a Pont meg nem letezett
+					//Ha ez a pont meg nem letezett
 					if( null == tp ){
 						
 						//akkor letrehozom
@@ -164,6 +178,7 @@ public class ElementSet{
 						
 					}
 					
+					//Az elem lamba-ja
 					lambda = element.getLambda();	
 					
 					//Ha nem az elso elem balrol, de fuggolegesen lehet barmelyik
@@ -214,7 +229,7 @@ public class ElementSet{
 		//
 		// Masodik korben a kimaradt adatkapcsolatok potlasa
 		// -A kulso korvonalat lezaro Connectorok 
-		//  (Szabad feluletet biztosito konnektor es a Szimmetria lezarast biztosito konnektor)
+		// -Szimmetria lezarast biztosito konnektor
 		//
 		//--------------------------------------------------
 		
@@ -226,23 +241,45 @@ public class ElementSet{
 			Position startPoint = element.getStartPosition();
 			Position endPoint = element.getEndPosition();			
 
+			//Kezdo vertikalis pontbol indulok
 			double y = startPoint.getY();
+			
+			//Vertikalis felbontas
 			int iSteps = (int)Math.round((endPoint.getY() - y) / verticalAppliedDifference );
+			
+			//Vegig a vertikalis pontokon
 			for( int i = 0; i <= iSteps; i++){
 
+				//Az aktualis vertikalis pont
 				y = CommonOperations.get3Decimals( startPoint.getY() + i * verticalAppliedDifference );				
 				
-				double x = startPoint.getX();				
+				//Kezdo horizontalis pontbol indulok
+				double x = startPoint.getX();		
+				
+				//Horizontalis felbontas
 				int jSteps = (int)Math.round((endPoint.getX() - x) / horizontalAppliedDifference);
+				
+				//Vegig a horizontalis pontokon
 				for( int j = 0; j <= jSteps; j++ ){
 					
+					//Az aktualis horizontalis pont
 					x = CommonOperations.get3Decimals( startPoint.getX() + j * horizontalAppliedDifference );
 					
+					//Az aktualis pont pozicioja
 					Position position = new Position(x, y);
 
+					//Az aktualis pontban elhelyezkedo Termikus pont
 					ThermicPoint actualThermicPoint = thermicPointMap.get( position );
-								
+					
+					//----------------------------
+					//
+					// BAL SZELSO PONT WEST irany
+					//
+					//----------------------------
+					
+					//
 					//Ha bal-szelso Pont es a Pont-nak nincs WEST iranyu DThermicConnector-a
+					//
 					if( j == 0 && null == actualThermicPoint.getWestThermicConnector() ){
 						
 						for( CloseElement closeElement: closeElements ){
@@ -267,7 +304,19 @@ public class ElementSet{
 							}
 						}
 					}
-										
+					
+					//Ha esetleg meg mindig nincs lezarva a bal-szelso pont WEST iranyban
+					//Ha nincs definialva semmilyen lezaras, akkor az szimmetria pont lesz
+					if( j == 0 && null == actualThermicPoint.getWestThermicConnector() ){
+						actualThermicPoint.connectToS( ThermicPointOrientation.WEST );
+					}						
+					
+					//-----------------------------
+					//
+					// JOBB SZELSO PONT EAST irany
+					//
+					//-----------------------------
+					
 					//Ha jobb-szelso Pont es a Pont-nak nincs EAST iranyu DThermicConnector-a
 					if( j == jSteps && null == actualThermicPoint.getEastThermicConnector() ){
 
@@ -294,6 +343,18 @@ public class ElementSet{
 						}
 					}
 					
+					//Ha esetleg meg mindig nincs lezarva a jobb-szelso pont EAST iranyban
+					//Ha nincs definialva semmilyen lezaras, akkor az szimmetria pont lesz
+					if( j == jSteps && null == actualThermicPoint.getEastThermicConnector() ){
+						actualThermicPoint.connectToS( ThermicPointOrientation.EAST );
+					}	
+					
+					//------------------------------
+					//
+					// ALSO SZELSO PONT SOUTH irany
+					//
+					//------------------------------
+
 					//Ha also-szelso Pont es a Pont-nak nincs SOUTH iranyu DThermicConnector-a
 					if( i == 0 && null == actualThermicPoint.getSouthThermicConnector()){
 						
@@ -320,6 +381,18 @@ public class ElementSet{
 						}
 					}
 					
+					//Ha esetleg meg mindig nincs lezarva az also-szelso pont SOUTH iranyban
+					//Ha nincs definialva semmilyen lezaras, akkor az szimmetria pont lesz
+					if( i == 0 && null == actualThermicPoint.getSouthThermicConnector() ){
+						actualThermicPoint.connectToS( ThermicPointOrientation.SOUTH );
+					}	
+					
+					//------------------------------
+					//
+					// FELSO SZELSO PONT NORTH irany
+					//
+					//------------------------------
+
 					//Ha felso-szelso Pont es a Pont-nak nincs NORTH iranyu DThermicConnector-a
 					if( i == iSteps && null == actualThermicPoint.getNorthThermicConnector() ){
 						
@@ -343,6 +416,13 @@ public class ElementSet{
 							}						
 						}
 					}
+					
+					//Ha esetleg meg mindig nincs lezarva a felso-szelso pont NORTH iranyban
+					//Ha nincs definialva semmilyen lezaras, akkor az szimmetria pont lesz
+					if( i == iSteps && null == actualThermicPoint.getNorthThermicConnector() ){
+						actualThermicPoint.connectToS( ThermicPointOrientation.NORTH );
+					}	
+
 				}
 			}			
 		}
