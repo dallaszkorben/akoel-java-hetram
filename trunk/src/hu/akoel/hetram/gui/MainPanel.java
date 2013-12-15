@@ -3,6 +3,7 @@ package hu.akoel.hetram.gui;
 import hu.akoel.hetram.Element;
 import hu.akoel.hetram.ElementSet;
 import hu.akoel.hetram.SurfaceClose;
+import hu.akoel.hetram.SymmetricClose;
 import hu.akoel.hetram.ThermicPoint;
 import hu.akoel.hetram.ThermicPointList;
 import hu.akoel.hetram.Element.SideOrientation;
@@ -76,7 +77,7 @@ public class MainPanel extends JFrame{
 	private double thermicPointRadius = 0.002;
 
 	private boolean needDrawTemperatureByFont = false;
-	private boolean needDrawCurrentByArrow = false;
+	private boolean needDrawCurrentByArrow = true;
 	
 	//
 	//CanvasSettings
@@ -402,7 +403,8 @@ elementSet = temporarelyGenerateElementSet();
 		//
 		// Falsarok
 		//
-/*		Element hWall = new Element( lambda1, new Position(0, 0.7), new Position(1.0, 1.0));
+/*
+		Element hWall = new Element( lambda1, new Position(0, 0.7), new Position(1.0, 1.0));
 		hWall.setCloseElement(new SurfaceClose( SideOrientation.SOUTH, new Length( 0.3, 1.0), alfaI, temperatureI ) );
 		
 		Element vWall = new Element( lambda1, new Position(0,0), new Position(0.3, 0.7 ) );
@@ -414,14 +416,18 @@ elementSet = temporarelyGenerateElementSet();
 		Element vInsul = new Element( lambda2, new Position(-0.1, 0), new Position(0, 1.1) );
 		vInsul.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0, 1.1), alfaE, temperatureE ) );
 		vInsul.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( -0.1, 0.0 ), alfaE, temperatureE ) );
-*/
-		
+
+*/		
 		//
 		// Egyenes fal
 		//
 		Element hWall = new Element( lambda1, new Position(0.0, 0.0), new Position(0.38, 0.38));
-		hWall.setCloseElement(new SurfaceClose( SideOrientation.SOUTH, new Length( 0.0, 0.38), alfaI, temperatureI ) );
-		hWall.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 0.38), alfaE, temperatureE ) );
+		//hWall.setCloseElement(new SurfaceClose( SideOrientation.SOUTH, new Length( 0.0, 0.38), alfaI, temperatureI ) );
+		//hWall.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 0.38), alfaE, temperatureE ) );
+		hWall.setCloseElement(new SurfaceClose( SideOrientation.EAST, new Length( 0.0, 0.38), alfaI, temperatureI ) );
+		hWall.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0.0, 0.38), alfaE, temperatureE ) );
+		//hWall.setCloseElement(new SymmetricClose( SideOrientation.WEST, new Length( 0.0, 0.38) ) );
+		//hWall.setCloseElement(new SymmetricClose( SideOrientation.EAST, new Length( 0.0, 0.38) ) );
 
 		
 		ElementSet es;

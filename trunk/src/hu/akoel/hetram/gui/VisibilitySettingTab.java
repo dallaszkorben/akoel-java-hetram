@@ -169,7 +169,7 @@ public class VisibilitySettingTab extends JPanel{
 		
 		//Homerseklet szam megjelenites
 		JCheckBox turnOnTemperatureByFont = new JCheckBox("Látszik");
-		turnOnTemperatureByFont.setSelected( mainPanel.isNeedDrawTemperatureByColor() );
+		turnOnTemperatureByFont.setSelected( mainPanel.isNeedDrawTemperatureByFont() );
 		turnOnTemperatureByFont.addItemListener( new ItemListener() {
 			
 			@Override
