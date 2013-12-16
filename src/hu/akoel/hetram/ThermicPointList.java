@@ -435,6 +435,8 @@ public class ThermicPointList{
 				}else if( currentType.equals( CURRENT_TYPE.TRAJECTORY ) ){
 				
 					Vector2D vector = new Vector2D( vX - position.getX(), vY - position.getY() );
+					
+					//Minden trajektoria vonal egyforma hosszu
 					//vector = vector.getVector( maxLength );
 					
 					Path2D.Double trajektoriaPath = new Path2D.Double();
@@ -636,7 +638,7 @@ public class ThermicPointList{
 	 * @return
 	 */
 	private Color getRedBluByPercent(double percent) {
-//System.out.println(percent);		
+
 		/*
 				int maxLength = 255;
 				int value = (int) Math.round(percent * maxLength);
@@ -1181,9 +1183,7 @@ public class ThermicPointList{
 			}
 			
 			temperature = szamlalo/nevezo;
-			list[i].setActualTemperature( temperature );
-			
-//System.err.println(temperature);			
+			list[i].setActualTemperature( temperature );	
 			
 		}		
 	}
