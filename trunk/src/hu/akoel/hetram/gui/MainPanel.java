@@ -122,10 +122,10 @@ public class MainPanel extends JFrame{
 	private double lambda1 = 0.67;
 	private double lambda2 = 0.20;
 	private double lambda3 = 1.0;
-	private double alfaE = 24;
-	private double alfaI = 8;
-	private double temperatureE = -15;
-	private double temperatureI = 20;
+	private double alfaE = 8;
+	private double alfaI = 24;
+	private double temperatureE = 20;
+	private double temperatureI = -15;
 		
 	public static void main(String[] args) {
 		Locale.setDefault(new Locale("en", "US"));

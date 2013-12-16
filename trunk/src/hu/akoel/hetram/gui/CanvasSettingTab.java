@@ -7,7 +7,7 @@ import hu.akoel.mgu.crossline.CrossLine;
 import hu.akoel.mgu.grid.Grid;
 import hu.akoel.mgu.scale.Scale;
 import hu.akoel.mgu.scale.values.PixelPerCmValue;
-import hu.akoel.mgu.values.RateValue;
+import hu.akoel.mgu.values.ZoomRateValue;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -594,15 +594,15 @@ JTextField pixelPerCmField;
 			}
 		});
 		
-JTextField rateField;		
+JTextField zoomRateField;		
 		
 		//Rate
-		JLabel rateLabel = new JLabel("Rate: ");
-		rateField = new JTextField();
-		rateField.setColumns(8);
-		rateField.setText(String.valueOf( myScale.getRate().getX() ) );
-		rateField.setInputVerifier(new InputVerifier() {
-			String goodValue = String.valueOf( myScale.getRate().getX() );
+		JLabel zoomRateLabel = new JLabel("Zoom rate: ");
+		zoomRateField = new JTextField();
+		zoomRateField.setColumns(8);
+		zoomRateField.setText(String.valueOf( myScale.getZoomRate().getX() ) );
+		zoomRateField.setInputVerifier(new InputVerifier() {
+			String goodValue = String.valueOf( myScale.getZoomRate().getX() );
 
 			@Override
 			public boolean verify(JComponent input) {
@@ -615,7 +615,7 @@ JTextField rateField;
 					text.setText(goodValue);
 					return false;
 				}
-				myScale.setRate( new RateValue( Double.valueOf(goodValue), Double.valueOf(goodValue) ) );				
+				myScale.setZoomRate( new ZoomRateValue( Double.valueOf(goodValue), Double.valueOf(goodValue) ) );				
 				return true;
 			}
 		});
@@ -663,7 +663,7 @@ JTextField rateField;
 		scaleConstraints.fill = GridBagConstraints.HORIZONTAL;
 		scaleConstraints.weightx = 0;
 		scaleConstraints.anchor = GridBagConstraints.WEST;
-		scalePanel.add(rateLabel, scaleConstraints);
+		scalePanel.add(zoomRateLabel, scaleConstraints);
 
 		scaleConstraints.gridx = 1;
 		scaleConstraints.gridy = row;
@@ -672,7 +672,7 @@ JTextField rateField;
 		scaleConstraints.fill = GridBagConstraints.HORIZONTAL;
 		scaleConstraints.weightx = 0;
 		scaleConstraints.anchor = GridBagConstraints.WEST;
-		scalePanel.add(rateField, scaleConstraints);
+		scalePanel.add(zoomRateField, scaleConstraints);
 		
 	
 		
