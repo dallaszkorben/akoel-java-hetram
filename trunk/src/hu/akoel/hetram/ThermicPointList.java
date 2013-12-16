@@ -253,6 +253,7 @@ public class ThermicPointList{
 						
 			}
 
+			double maxLength = Math.max( maxDeltaX, maxDeltaY ) * 0.9;
 			double vY = 0;
 			double vX = 0;
 			double yLengthPercentage = 0;
@@ -389,18 +390,19 @@ public class ThermicPointList{
 				// Vektropar kirajzolasa
 				//
 				if( currentType.equals( CURRENT_TYPE.VECTORPAIR ) ){
-							
+	
+					//Fuggoleges nyil szara
 					g2.drawLine( position.getX(), position.getY(), position.getX(), vY);
 
+					//Fuggoleges nyil hegye
 					arrowLength = (vY - position.getY()) / 4;					
 					g2.drawLine( position.getX(), vY, position.getX() + arrowLength/2, vY - arrowLength );
 					g2.drawLine( position.getX(), vY, position.getX() - arrowLength/2, vY - arrowLength );
-				
-					//g2.setColor( getWhiteBlack( xLengthPercentage ) );
-					g2.setColor( Color.white);
-					g2.setStroke(new BasicStroke(1));
+
+					//Vizszintes nyil szara
 					g2.drawLine( position.getX(), position.getY(), vX, position.getY());
-				
+
+					//Vizszintes nyil hegye
 					arrowLength = (vX - position.getX()) / 4;					
 					g2.drawLine( vX, position.getY(), vX - arrowLength, position.getY() + arrowLength/2);
 					g2.drawLine( vX, position.getY(), vX - arrowLength, position.getY() - arrowLength/2 );
@@ -432,45 +434,29 @@ public class ThermicPointList{
 				//					
 				}else if( currentType.equals( CURRENT_TYPE.TRAJECTORY ) ){
 				
+					Vector2D vector = new Vector2D( vX - position.getX(), vY - position.getY() );
+					//vector = vector.getVector( maxLength );
+					
 					Path2D.Double trajektoriaPath = new Path2D.Double();
-					trajektoriaPath.moveTo( position.getX() - ( vX - position.getX() ) / 2, position.getY() - ( vY - position.getY() ) / 2 );
-					trajektoriaPath.lineTo( position.getX() + ( vX - position.getX() ) / 2, position.getY() + ( vY - position.getY() ) / 2 );
+					trajektoriaPath.moveTo(
+							position.getX() - vector.x / 2,
+							position.getY() - vector.y / 2
+					);
+					trajektoriaPath.lineTo(
+							position.getX() + vector.x / 2,
+							position.getY() + vector.y / 2
+					);
+					//trajektoriaPath.moveTo( position.getX() - ( vX - position.getX() ) / 2, position.getY() - ( vY - position.getY() ) / 2 );
+					//trajektoriaPath.lineTo( position.getX() + ( vX - position.getX() ) / 2, position.getY() + ( vY - position.getY() ) / 2 );
 
 					AffineTransform trajektoriaAT = new AffineTransform();				
 				
 					trajektoriaAT.rotate( Math.PI/2d, position.getX(), position.getY() );
 					trajektoriaPath.transform(trajektoriaAT);
 					g2.drawPath( trajektoriaPath );
-				}				
+				}	
 			}
 		}		
-	}
-	
-	class Vector2D{
-		double x;
-		double y;
-		double theta;
-		
-		public Vector2D( double x, double y ){
-			this.x = x;
-			this.y = y;	
-			this.theta = Math.atan2( y, x );
-		}
-		
-		public double getTheta(){
-			return theta;
-		}
-		
-		public double getLength(){
-			return Math.sqrt( x*x + y*y );
-		}
-		
-		public Vector2D getVector( double length ){
-			return new Vector2D(
-				length * Math.cos( theta ),
-				length * Math.sin( theta )
-			);
-		}
 	}
 	
 	/**
@@ -1219,5 +1205,32 @@ public class ThermicPointList{
 	 */
 	public ThermicPoint get( int position ){
 		return list[position];
+	}
+}
+
+class Vector2D{
+	public double x;
+	public double y;
+	double theta;
+	
+	public Vector2D( double x, double y ){
+		this.x = x;
+		this.y = y;	
+		this.theta = Math.atan2( y, x );
+	}
+	
+	public double getTheta(){
+		return theta;
+	}
+	
+/*		public double getLength(){
+		return Math.sqrt( x*x + y*y );
+	}
+*/		
+	public Vector2D getVector( double length ){
+		return new Vector2D(
+			length * Math.cos( theta ),
+			length * Math.sin( theta )
+		);
 	}
 }
