@@ -446,6 +446,33 @@ public class ThermicPointList{
 		}		
 	}
 	
+	class Vector2D{
+		double x;
+		double y;
+		double theta;
+		
+		public Vector2D( double x, double y ){
+			this.x = x;
+			this.y = y;	
+			this.theta = Math.atan2( y, x );
+		}
+		
+		public double getTheta(){
+			return theta;
+		}
+		
+		public double getLength(){
+			return Math.sqrt( x*x + y*y );
+		}
+		
+		public Vector2D getVector( double length ){
+			return new Vector2D(
+				length * Math.cos( theta ),
+				length * Math.sin( theta )
+			);
+		}
+	}
+	
 	/**
 	 * Szinekkel reprezentalja az egyes ThermicPoint pontok homersekletet a pontok geometriai poziciojaban
 	 * es korulotte delta tavolsagban
