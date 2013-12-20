@@ -1,6 +1,6 @@
 package hu.akoel.hetram.connectors;
 
-import hu.akoel.hetram.ThermicPoint;
+import hu.akoel.hetram.thermicpoint.ThermicPoint;
 
 public class XDThermicConnector extends DThermicConnector{
 	

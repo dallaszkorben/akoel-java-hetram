@@ -1,10 +1,23 @@
-package hu.akoel.hetram;
+package hu.akoel.hetram.structures;
 
 import hu.akoel.hetram.accessories.Position;
 
 import java.util.HashSet;
 
-public class Element {
+/**
+ * Egy epuletszerkezetet negyzet negyzet-keresztmetszetet reprezentalja a vizsgalt sikban
+ * Egy ilyen keresztmetszet a kovetkezo tulajdonsagokkal rendelkezik:
+ * -Hovezetokepesseggel (λ)
+ * -A negyzetkeresztmetszet kezdo es vegkoordinatai (startPosition, endPosition)
+ * 
+ * Egy ilyen epuletszerkezeti keresztmetszet az eleinel kapcsolodhat egy masik 
+ * -epuletszerkezeti keresztmetszethez (StructuralCrossSection), 
+ * -vagy egy zaro elemhez (ElementCloser). 
+ * 
+ * @author afoldvarszky
+ *
+ */
+public class Structure {
 	
 	public static enum SideOrientation{
 		NORTH,
@@ -16,19 +29,19 @@ public class Element {
 	private double lambda;
 	private Position startPosition;
 	private Position endPosition;
-	private HashSet<CloseElement> closeElementSet = new HashSet<>();
+	private HashSet<AStructureSealing> closeElementSet = new HashSet<>();
 	
-	public Element( double lambda, Position startPosition, Position endPosition ){
+	public Structure( double lambda, Position startPosition, Position endPosition ){
 		this.setLambda(lambda);
 		this.startPosition = new Position( startPosition );
 		this.endPosition = new Position( endPosition );
 	}
 
-	public void setCloseElement( CloseElement closeElement ){
+	public void setCloseElement( AStructureSealing closeElement ){
 		closeElementSet.add( closeElement );
 	}
 	
-	public HashSet<CloseElement> getCloseElements(){
+	public HashSet<AStructureSealing> getCloseElements(){
 		return closeElementSet;
 	}
 

@@ -1,5 +1,6 @@
-package hu.akoel.hetram;
+package hu.akoel.hetram.thermicpoint;
 
+import hu.akoel.hetram.accessories.CommonOperations;
 import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.connectors.OThermicConnector;
 import hu.akoel.hetram.connectors.DThermicConnector;
@@ -8,6 +9,7 @@ import hu.akoel.hetram.connectors.ThermicConnector;
 import hu.akoel.hetram.connectors.XDThermicConnector;
 import hu.akoel.hetram.connectors.YDThermicConnector;
 import hu.akoel.hetram.listeners.CalculationListener;
+import hu.akoel.hetram.structures.StructureSet;
 import hu.akoel.mgu.MCanvas;
 import hu.akoel.mgu.MGraphics;
 
@@ -24,7 +26,7 @@ import javax.swing.SwingUtilities;
 
 public class ThermicPointList{
 	private ThermicPoint[] list;
-	private ElementSet elementSet;
+	private StructureSet elementSet;
 	private int position = 0;
 	private CalculationListener calculationListener = null;
 	private CURRENT_TYPE currentType = CURRENT_TYPE.TRAJECTORY;
@@ -34,7 +36,7 @@ public class ThermicPointList{
 		VECTOR,
 		TRAJECTORY
 	}
-	public ThermicPointList( Collection<ThermicPoint> thermicPointCollection, ElementSet elementSet ){
+	public ThermicPointList( Collection<ThermicPoint> thermicPointCollection, StructureSet elementSet ){
 		
 		list = new ThermicPoint[ thermicPointCollection.size() ];
 		this.elementSet = elementSet;

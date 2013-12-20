@@ -1,6 +1,6 @@
 package hu.akoel.hetram.gui;
 
-import hu.akoel.hetram.CommonOperations;
+import hu.akoel.hetram.accessories.CommonOperations;
 import hu.akoel.hetram.listeners.CalculationListener;
 
 import java.awt.Color;

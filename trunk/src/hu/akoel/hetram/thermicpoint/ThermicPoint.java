@@ -1,4 +1,4 @@
-package hu.akoel.hetram;
+package hu.akoel.hetram.thermicpoint;
 
 import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.connectors.OThermicConnector;
