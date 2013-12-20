@@ -1,4 +1,4 @@
-package hu.akoel.hetram;
+package hu.akoel.hetram.accessories;
 
 import java.text.DecimalFormat;
 

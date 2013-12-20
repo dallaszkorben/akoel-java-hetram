@@ -1,14 +1,14 @@
-package hu.akoel.hetram;
+package hu.akoel.hetram.structures;
 
-import hu.akoel.hetram.Element.SideOrientation;
 import hu.akoel.hetram.accessories.Length;
+import hu.akoel.hetram.structures.Structure.SideOrientation;
 
-public class SurfaceClose extends CloseElement{
+public class SurfaceSealing extends AStructureSealing{
 	
 	private double alpha;
 	private double airTemperature;
 		
-	public SurfaceClose( SideOrientation orientation, Length length, double alpha, double airTemperature ){
+	public SurfaceSealing( SideOrientation orientation, Length length, double alpha, double airTemperature ){
 		super( orientation, length );		
 		this.alpha = alpha;
 		this.airTemperature = airTemperature;

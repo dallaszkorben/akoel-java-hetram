@@ -1,13 +1,18 @@
-package hu.akoel.hetram;
+package hu.akoel.hetram.structures;
 
-import hu.akoel.hetram.Element.SideOrientation;
 import hu.akoel.hetram.accessories.Length;
+import hu.akoel.hetram.structures.Structure.SideOrientation;
 
-public abstract class CloseElement {
+/**
+ * 
+ * @author afoldvarszky
+ *
+ */
+public abstract class AStructureSealing {
 	private SideOrientation orientation;
 	private Length length;
 	
-	public CloseElement( SideOrientation orientation, Length length ){
+	public AStructureSealing( SideOrientation orientation, Length length ){
 		this.orientation = orientation;
 		this.length = length;
 	}
@@ -22,9 +27,9 @@ public abstract class CloseElement {
 	
 	@Override
 	public boolean equals(Object o){
-		if( ( o instanceof CloseElement ) ){
+		if( ( o instanceof AStructureSealing ) ){
 
-			if( ( (CloseElement)o ).orientation.equals( this.orientation ) && ((CloseElement)o).length.equals(this.length) ){
+			if( ( (AStructureSealing)o ).orientation.equals( this.orientation ) && ((AStructureSealing)o).length.equals(this.length) ){
 				return true;
 			}
 		}

@@ -1,6 +1,6 @@
 package hu.akoel.hetram.gui;
 
-import hu.akoel.hetram.CommonOperations;
+import hu.akoel.hetram.accessories.CommonOperations;
 
 import java.awt.Color;
 import java.awt.FlowLayout;

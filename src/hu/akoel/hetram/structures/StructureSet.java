@@ -1,9 +1,12 @@
-package hu.akoel.hetram;
+package hu.akoel.hetram.structures;
 
-import hu.akoel.hetram.Element.SideOrientation;
-import hu.akoel.hetram.ThermicPoint.ThermicPointOrientation;
+import hu.akoel.hetram.accessories.CommonOperations;
 import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.connectors.DThermicConnector;
+import hu.akoel.hetram.structures.Structure.SideOrientation;
+import hu.akoel.hetram.thermicpoint.ThermicPoint;
+import hu.akoel.hetram.thermicpoint.ThermicPointList;
+import hu.akoel.hetram.thermicpoint.ThermicPoint.ThermicPointOrientation;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,10 +17,10 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-public class ElementSet{
+public class StructureSet{
 
 	private double precision = 10000;
-	private HashSet<Element> elementSet = new HashSet<>();	
+	private HashSet<Structure> elementSet = new HashSet<>();	
 	
 	private double verticalMaximumDifference = -1;
 	private double horizontalMaximumDifference = -1;
@@ -34,13 +37,13 @@ public class ElementSet{
 	 * @param element
 	 * @return
 	 */
-	public boolean add( Element element ){
+	public boolean add( Structure element ){
 		boolean result = elementSet.add( element );		
 		doGenerateMaximumDifference();		
 		return result;
 	}
 	
-	public boolean remove( Element element){
+	public boolean remove( Structure element){
 		boolean result = elementSet.remove(element);
 		doGenerateMaximumDifference();		
 		return result;
@@ -78,7 +81,7 @@ public class ElementSet{
 		this.horizontalDifferenceDivider = horizontalDifferenceDivider;
 	}
 
-	public Iterator<Element> iterator(){
+	public Iterator<Structure> iterator(){
 		return elementSet.iterator();
 	}
 	
@@ -107,7 +110,7 @@ public class ElementSet{
 		//----------------------------------------------
 		
 		//Minden elemen vegig megyek
-		for( Element element: elementSet ){
+		for( Structure element: elementSet ){
 			
 			//Veszem az elem kezdo es veg pozicioit
 			Position startPoint = element.getStartPosition();
@@ -211,9 +214,9 @@ public class ElementSet{
 		//--------------------------------------------------
 		
 		//Minden elemen vegig megyek megegyszer
-		for( Element element: elementSet ){
+		for( Structure element: elementSet ){
 		
-			HashSet<CloseElement> closeElements = element.getCloseElements();
+			HashSet<AStructureSealing> closeElements = element.getCloseElements();
 			
 			Position startPoint = element.getStartPosition();
 			Position endPoint = element.getEndPosition();			
@@ -259,20 +262,20 @@ public class ElementSet{
 					//
 					if( j == 0 && null == actualThermicPoint.getWestThermicConnector() ){
 						
-						for( CloseElement closeElement: closeElements ){
+						for( AStructureSealing closeElement: closeElements ){
 
 							//Megfelelo pozicio
 							if( closeElement.getOrientation().equals(SideOrientation.WEST ) && y >= closeElement.getLength().getStart() && y <= closeElement.getLength().getEnd() ){
 
 								//Fal felulet
-								if( closeElement instanceof SurfaceClose ){
+								if( closeElement instanceof SurfaceSealing ){
 
 									//Alfa es homerseklet kapcsolasa
-									actualThermicPoint.connectToO(ThermicPointOrientation.WEST, ((SurfaceClose)closeElement).getAlpha(), ((SurfaceClose)closeElement).getAirTemperature() );		
+									actualThermicPoint.connectToO(ThermicPointOrientation.WEST, ((SurfaceSealing)closeElement).getAlpha(), ((SurfaceSealing)closeElement).getAirTemperature() );		
 									break;
 								
 								//Szimmetria el
-								}else if( closeElement instanceof SymmetricClose ){
+								}else if( closeElement instanceof SymmetricSealing ){
 									
 									actualThermicPoint.connectToS( ThermicPointOrientation.WEST);
 									break;
@@ -297,20 +300,20 @@ public class ElementSet{
 					//Ha jobb-szelso Pont es a Pont-nak nincs EAST iranyu DThermicConnector-a
 					if( j == jSteps && null == actualThermicPoint.getEastThermicConnector() ){
 
-						for( CloseElement closeElement: closeElements ){
+						for( AStructureSealing closeElement: closeElements ){
 						
 							//Megfelelo pozicio
 							if( closeElement.getOrientation().equals(SideOrientation.EAST ) && y >= closeElement.getLength().getStart() && y <= closeElement.getLength().getEnd() ){
 							
 								//Fal felulet
-								if( closeElement instanceof SurfaceClose ){
+								if( closeElement instanceof SurfaceSealing ){
 								
 									//Alfa es homerseklet kapcsolasa
-									actualThermicPoint.connectToO(ThermicPointOrientation.EAST, ((SurfaceClose)closeElement).getAlpha(), ((SurfaceClose)closeElement).getAirTemperature() );
+									actualThermicPoint.connectToO(ThermicPointOrientation.EAST, ((SurfaceSealing)closeElement).getAlpha(), ((SurfaceSealing)closeElement).getAirTemperature() );
 									break;
 									
 								//Szimmetria el
-								}else if( closeElement instanceof SymmetricClose ){
+								}else if( closeElement instanceof SymmetricSealing ){
 	
 									actualThermicPoint.connectToS( ThermicPointOrientation.EAST );
 									break;
@@ -335,20 +338,20 @@ public class ElementSet{
 					//Ha also-szelso Pont es a Pont-nak nincs SOUTH iranyu DThermicConnector-a
 					if( i == 0 && null == actualThermicPoint.getSouthThermicConnector()){
 						
-						for( CloseElement closeElement: closeElements ){
+						for( AStructureSealing closeElement: closeElements ){
 						
 							//Megfelelo pozicio
 							if( closeElement.getOrientation().equals(SideOrientation.SOUTH ) && x >= closeElement.getLength().getStart() && x <= closeElement.getLength().getEnd() ){
 							
 								//Fal felulet
-								if( closeElement instanceof SurfaceClose ){
+								if( closeElement instanceof SurfaceSealing ){
 								
 									//Alfa es homerseklet kapcsolasa
-									actualThermicPoint.connectToO(ThermicPointOrientation.SOUTH, ((SurfaceClose)closeElement).getAlpha(), ((SurfaceClose)closeElement).getAirTemperature() );
+									actualThermicPoint.connectToO(ThermicPointOrientation.SOUTH, ((SurfaceSealing)closeElement).getAlpha(), ((SurfaceSealing)closeElement).getAirTemperature() );
 									break;
 										
 								//Szimmetria el
-								}else if( closeElement instanceof SymmetricClose ){
+								}else if( closeElement instanceof SymmetricSealing ){
 									
 									actualThermicPoint.connectToS( ThermicPointOrientation.SOUTH );
 									break;
@@ -373,19 +376,19 @@ public class ElementSet{
 					//Ha felso-szelso Pont es a Pont-nak nincs NORTH iranyu DThermicConnector-a
 					if( i == iSteps && null == actualThermicPoint.getNorthThermicConnector() ){
 						
-						for( CloseElement closeElement: closeElements ){
+						for( AStructureSealing closeElement: closeElements ){
 						
 							//Megfelelo pozicio
 							if( closeElement.getOrientation().equals(SideOrientation.NORTH ) && x >= closeElement.getLength().getStart() && x <= closeElement.getLength().getEnd() ){
 							
 								//Fal felulet
-								if( closeElement instanceof SurfaceClose ){								
+								if( closeElement instanceof SurfaceSealing ){								
 								
-									actualThermicPoint.connectToO(ThermicPointOrientation.NORTH, ((SurfaceClose)closeElement).getAlpha(), ((SurfaceClose)closeElement).getAirTemperature() );
+									actualThermicPoint.connectToO(ThermicPointOrientation.NORTH, ((SurfaceSealing)closeElement).getAlpha(), ((SurfaceSealing)closeElement).getAirTemperature() );
 									break;
 							
 								//Szimmetria el
-								}else if( closeElement instanceof SymmetricClose ){
+								}else if( closeElement instanceof SymmetricSealing ){
 								
 									actualThermicPoint.connectToS( ThermicPointOrientation.NORTH);
 									break;
@@ -442,7 +445,7 @@ public class ElementSet{
 		LinkedHashSet<Double> horizontalSpacingSet = new LinkedHashSet<>();
 		
 		//Osztaspontok kigyujtese
-		for( Element element: elementSet ){
+		for( Structure element: elementSet ){
 			verticalSpacingSet.add( element.getStartPosition().getY() );
 			verticalSpacingSet.add( element.getEndPosition().getY() );
 			

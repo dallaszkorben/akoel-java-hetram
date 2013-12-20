@@ -1,17 +1,17 @@
 package hu.akoel.hetram.gui;
 
-import hu.akoel.hetram.Element;
-import hu.akoel.hetram.ElementSet;
-import hu.akoel.hetram.SurfaceClose;
-import hu.akoel.hetram.SymmetricClose;
-import hu.akoel.hetram.ThermicPoint;
-import hu.akoel.hetram.ThermicPointList;
-import hu.akoel.hetram.Element.SideOrientation;
-import hu.akoel.hetram.ThermicPointList.CURRENT_TYPE;
 import hu.akoel.hetram.accessories.Length;
 import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.listeners.CalculationListener;
+import hu.akoel.hetram.structures.StructureSet;
+import hu.akoel.hetram.structures.Structure;
+import hu.akoel.hetram.structures.SurfaceSealing;
+import hu.akoel.hetram.structures.SymmetricSealing;
+import hu.akoel.hetram.structures.Structure.SideOrientation;
 import hu.akoel.hetram.test.Test;
+import hu.akoel.hetram.thermicpoint.ThermicPoint;
+import hu.akoel.hetram.thermicpoint.ThermicPointList;
+import hu.akoel.hetram.thermicpoint.ThermicPointList.CURRENT_TYPE;
 import hu.akoel.mgu.MCanvas;
 import hu.akoel.mgu.MGraphics;
 import hu.akoel.mgu.PainterListener;
@@ -43,7 +43,7 @@ public class MainPanel extends JFrame{
 	private static final long serialVersionUID = 3911667532503747257L;
 
 	private ThermicPointList thermicPointList = null;
-	private ElementSet elementSet = null;
+	private StructureSet elementSet = null;
 		
 	private StatusLine statusLine;
 	private SettingTabbedPanel controlPanel;
@@ -418,24 +418,24 @@ elementSet = temporarelyGenerateElementSet();
 		myCanvas.revalidateAndRepaintCoreCanvas();
 	}
 	
-	private ElementSet temporarelyGenerateElementSet() {
+	private StructureSet temporarelyGenerateElementSet() {
 		
 		//
 		// Falsarok
 		//
 
-		Element hWall = new Element( lambda1, new Position(0, 0.7), new Position(1.0, 1.0));
-		hWall.setCloseElement(new SurfaceClose( SideOrientation.SOUTH, new Length( 0.3, 1.0), alfaI, temperatureI ) );
+		Structure hWall = new Structure( lambda1, new Position(0, 0.7), new Position(1.0, 1.0));
+		hWall.setCloseElement(new SurfaceSealing( SideOrientation.SOUTH, new Length( 0.3, 1.0), alfaI, temperatureI ) );
 		
-		Element vWall = new Element( lambda1, new Position(0,0), new Position(0.3, 0.7 ) );
-		vWall.setCloseElement(new SurfaceClose( SideOrientation.EAST, new Length( 0.0, 0.7 ), alfaI, temperatureI ) );
+		Structure vWall = new Structure( lambda1, new Position(0,0), new Position(0.3, 0.7 ) );
+		vWall.setCloseElement(new SurfaceSealing( SideOrientation.EAST, new Length( 0.0, 0.7 ), alfaI, temperatureI ) );
 		
-		Element hInsul = new Element( lambda2, new Position( 0, 1.0), new Position(1.0, 1.1 ) );
-		hInsul.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 1.0 ), alfaE, temperatureE ) );
+		Structure hInsul = new Structure( lambda2, new Position( 0, 1.0), new Position(1.0, 1.1 ) );
+		hInsul.setCloseElement(new SurfaceSealing( SideOrientation.NORTH, new Length( 0.0, 1.0 ), alfaE, temperatureE ) );
 				
-		Element vInsul = new Element( lambda2, new Position(-0.1, 0), new Position(0, 1.1) );
-		vInsul.setCloseElement(new SurfaceClose( SideOrientation.WEST, new Length( 0, 1.1), alfaE, temperatureE ) );
-		vInsul.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( -0.1, 0.0 ), alfaE, temperatureE ) );
+		Structure vInsul = new Structure( lambda2, new Position(-0.1, 0), new Position(0, 1.1) );
+		vInsul.setCloseElement(new SurfaceSealing( SideOrientation.WEST, new Length( 0, 1.1), alfaE, temperatureE ) );
+		vInsul.setCloseElement(new SurfaceSealing( SideOrientation.NORTH, new Length( -0.1, 0.0 ), alfaE, temperatureE ) );
 
 		
 /*		//
@@ -450,9 +450,9 @@ elementSet = temporarelyGenerateElementSet();
 		//hWall.setCloseElement(new SymmetricClose( SideOrientation.EAST, new Length( 0.0, 0.38) ) );
 */
 		
-		ElementSet es;
+		StructureSet es;
 		
-		es = new ElementSet();
+		es = new StructureSet();
 		es.add( vWall );
 		es.add( hWall );
 		es.add( hInsul );
