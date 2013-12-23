@@ -1,4 +1,4 @@
-package hu.akoel.hetram.test;
+package hu.akoel.hetram;
 
 import hu.akoel.hetram.gui.MainPanel;
 
