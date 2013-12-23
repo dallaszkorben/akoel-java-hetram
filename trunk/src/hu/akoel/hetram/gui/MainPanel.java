@@ -1,5 +1,6 @@
 package hu.akoel.hetram.gui;
 
+import hu.akoel.hetram.Test;
 import hu.akoel.hetram.accessories.Length;
 import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.listeners.CalculationListener;
@@ -8,7 +9,6 @@ import hu.akoel.hetram.structures.Structure;
 import hu.akoel.hetram.structures.SurfaceSealing;
 import hu.akoel.hetram.structures.SymmetricSealing;
 import hu.akoel.hetram.structures.Structure.SideOrientation;
-import hu.akoel.hetram.test.Test;
 import hu.akoel.hetram.thermicpoint.ThermicPoint;
 import hu.akoel.hetram.thermicpoint.ThermicPointList;
 import hu.akoel.hetram.thermicpoint.ThermicPointList.CURRENT_TYPE;
