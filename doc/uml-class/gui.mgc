@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassDiagram>
+    <Class name="hu.akoel.hetram.gui.VisibilitySettingTab" x="726" y="489">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="hu.akoel.hetram.gui.MainPanel"
+            endpointName="mainPanel" kind="Simple"/>
+        <Communication destinationClassName="hu.akoel.hetram.gui.MainPanel"/>
+    </Class>
+    <Class name="hu.akoel.hetram.gui.ControlSettingTab" x="726" y="386">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="hu.akoel.hetram.gui.MainPanel"
+            endpointName="mainPanel" kind="Simple"/>
+    </Class>
+    <Class name="hu.akoel.hetram.gui.MainPanel" x="281" y="4">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="hu.akoel.hetram.gui.StatusLine"
+            endpointName="statusLine" kind="Simple"/>
+        <Association
+            destinationClassName="hu.akoel.hetram.gui.SettingTabbedPanel"
+            endpointName="controlPanel" kind="Simple"/>
+        <Communication destinationClassName="hu.akoel.hetram.gui.StatusLine"/>
+    </Class>
+    <Class name="hu.akoel.hetram.gui.StatusLine" x="15" y="459">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="hu.akoel.hetram.gui.SettingTabbedPanel" x="7" y="316">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="hu.akoel.hetram.gui.MainPanel"
+            endpointName="mainPanel" kind="Simple"/>
+    </Class>
+    <Class name="hu.akoel.hetram.gui.CanvasSettingTab" x="724" y="0">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="hu.akoel.hetram.gui.MainPanel"
+            endpointName="mainPanel" kind="Simple"/>
+        <Communication destinationClassName="hu.akoel.hetram.gui.MainPanel"/>
+    </Class>
+</ClassDiagram>

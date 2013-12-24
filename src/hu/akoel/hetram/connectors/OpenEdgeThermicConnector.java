@@ -1,17 +1,17 @@
 package hu.akoel.hetram.connectors;
 
 /**
- * Szabad feluletet biztosito kapcsolat
+ * Szabad feluletet biztosito konnektor
  * 
  * @author akoel
  *
  */
-public class OThermicConnector implements ThermicConnector{
+public class OpenEdgeThermicConnector implements IThermicConnector{
 
 	private double alpha;
 	private double airTemperature;
 	
-	public OThermicConnector( double alpha, double airTemperature ){
+	public OpenEdgeThermicConnector( double alpha, double airTemperature ){
 		this.alpha = alpha;
 		this.airTemperature = airTemperature;
 	}

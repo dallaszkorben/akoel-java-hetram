@@ -1,31 +1,26 @@
 package hu.akoel.hetram.thermicpoint;
 
+import hu.akoel.hetram.accessories.Orientation;
 import hu.akoel.hetram.accessories.Position;
-import hu.akoel.hetram.connectors.OThermicConnector;
-import hu.akoel.hetram.connectors.DThermicConnector;
-import hu.akoel.hetram.connectors.SThermicConnector;
-import hu.akoel.hetram.connectors.ThermicConnector;
-import hu.akoel.hetram.connectors.XDThermicConnector;
-import hu.akoel.hetram.connectors.YDThermicConnector;
+import hu.akoel.hetram.connectors.OpenEdgeThermicConnector;
+import hu.akoel.hetram.connectors.AThermicPointThermicConnector;
+import hu.akoel.hetram.connectors.SymmetricEdgeThermicConnector;
+import hu.akoel.hetram.connectors.IThermicConnector;
+import hu.akoel.hetram.connectors.XThermicPointThermicConnector;
+import hu.akoel.hetram.connectors.YThermicPointThermicConnector;
+
 import java.text.DecimalFormat;
 
 public class ThermicPoint {
-	
-	public static enum ThermicPointOrientation{
-		NORTH,
-		EAST,
-		SOUTH,
-		WEST
-	}
 	
 	private double tempDifference;
 	private int positionInTheList;
 	private double actualTemperature;
 	private Position position;
-	private ThermicConnector northThermicConnector;
-	private ThermicConnector eastThermicConnector;
-	private ThermicConnector southThermicConnector;
-	private ThermicConnector westThermicConnector;
+	private IThermicConnector northThermicConnector;
+	private IThermicConnector eastThermicConnector;
+	private IThermicConnector southThermicConnector;
+	private IThermicConnector westThermicConnector;
 	private Double northCurrent;
 	private Double eastCurrent;
 	private Double southCurrent;
@@ -46,23 +41,23 @@ public class ThermicPoint {
 	 * @param backThermicPoint
 	 * @param orientation
 	 */
-	public void connectToS( ThermicPointOrientation orientation ){
+	public void connectToSymmetricEdge( Orientation orientation ){
 		
-		SThermicConnector connector = new SThermicConnector( );	
+		SymmetricEdgeThermicConnector connector = new SymmetricEdgeThermicConnector( );	
 		
-		if( orientation.equals(ThermicPointOrientation.WEST) ){
+		if( orientation.equals(Orientation.WEST) ){
 
 			this.westThermicConnector = connector;			
 			
-		}else if( orientation.equals( ThermicPointOrientation.EAST ) ){
+		}else if( orientation.equals( Orientation.EAST ) ){
 			
 			this.eastThermicConnector = connector;
 			
-		}else if( orientation.equals( ThermicPointOrientation.NORTH ) ){
+		}else if( orientation.equals( Orientation.NORTH ) ){
 			
 			this.northThermicConnector = connector;
 			
-		}else if( orientation.equals( ThermicPointOrientation.SOUTH ) ){
+		}else if( orientation.equals( Orientation.SOUTH ) ){
 			
 			this.southThermicConnector = connector;
 			
@@ -77,17 +72,17 @@ public class ThermicPoint {
 	 * @param alfa
 	 * @param airTemperature
 	 */
-	public void connectToO( ThermicPointOrientation orientation, double alfa, double airTemperature ){
+	public void connectToOpenEdge( Orientation orientation, double alfa, double airTemperature ){
 		
-		 OThermicConnector connector = new OThermicConnector( alfa, airTemperature );
+		 OpenEdgeThermicConnector connector = new OpenEdgeThermicConnector( alfa, airTemperature );
 		
-		if( orientation.equals( ThermicPointOrientation.NORTH ) ){
+		if( orientation.equals( Orientation.NORTH ) ){
 			northThermicConnector = connector;
-		}else if( orientation.equals( ThermicPointOrientation.EAST ) ){
+		}else if( orientation.equals( Orientation.EAST ) ){
 			eastThermicConnector = connector;
-		}else if( orientation.equals( ThermicPointOrientation.SOUTH ) ){
+		}else if( orientation.equals( Orientation.SOUTH ) ){
 			southThermicConnector = connector;
-		}else if( orientation.equals( ThermicPointOrientation.WEST ) ){
+		}else if( orientation.equals( Orientation.WEST ) ){
 			westThermicConnector = connector;
 		}		
 	}
@@ -100,29 +95,29 @@ public class ThermicPoint {
 	 * @param delta
 	 * @param lambda
 	 */
-	public void connectToD( ThermicPoint pairThermicPoint, ThermicPointOrientation orientation, double lambda ){
+	public void connectToThermicPoint( ThermicPoint pairThermicPoint, Orientation orientation, double lambda ){
 		
-		if( orientation.equals(ThermicPointOrientation.WEST) ){
+		if( orientation.equals(Orientation.WEST) ){
 		
-			XDThermicConnector connector = new XDThermicConnector( pairThermicPoint, this, lambda );			
+			XThermicPointThermicConnector connector = new XThermicPointThermicConnector( pairThermicPoint, this, lambda );			
 			this.westThermicConnector = connector;
 			pairThermicPoint.eastThermicConnector = connector;
 			
-		}else if( orientation.equals( ThermicPointOrientation.EAST ) ){
+		}else if( orientation.equals( Orientation.EAST ) ){
 			
-			XDThermicConnector connector = new XDThermicConnector( this, pairThermicPoint, lambda );
+			XThermicPointThermicConnector connector = new XThermicPointThermicConnector( this, pairThermicPoint, lambda );
 			this.eastThermicConnector = connector;
 			pairThermicPoint.westThermicConnector = connector;
 			
-		}else if( orientation.equals( ThermicPointOrientation.NORTH ) ){
+		}else if( orientation.equals( Orientation.NORTH ) ){
 			
-			YDThermicConnector connector = new YDThermicConnector( pairThermicPoint, this, lambda );			
+			YThermicPointThermicConnector connector = new YThermicPointThermicConnector( pairThermicPoint, this, lambda );			
 			this.northThermicConnector = connector;
 			pairThermicPoint.southThermicConnector = connector;
 			
-		}else if( orientation.equals( ThermicPointOrientation.SOUTH ) ){
+		}else if( orientation.equals( Orientation.SOUTH ) ){
 			
-			YDThermicConnector connector = new YDThermicConnector( this, pairThermicPoint, lambda );
+			YThermicPointThermicConnector connector = new YThermicPointThermicConnector( this, pairThermicPoint, lambda );
 			this.southThermicConnector = connector;
 			pairThermicPoint.northThermicConnector = connector;
 		}
@@ -160,19 +155,19 @@ public class ThermicPoint {
 		this.westCurrent = westCurrent;
 	}
 
-	public ThermicConnector getNorthThermicConnector() {
+	public IThermicConnector getNorthThermicConnector() {
 		return northThermicConnector;
 	}
 
-	public ThermicConnector getEastThermicConnector() {
+	public IThermicConnector getEastThermicConnector() {
 		return eastThermicConnector;
 	}
 
-	public ThermicConnector getSouthThermicConnector() {
+	public IThermicConnector getSouthThermicConnector() {
 		return southThermicConnector;
 	}
 
-	public ThermicConnector getWestThermicConnector() {
+	public IThermicConnector getWestThermicConnector() {
 		return westThermicConnector;
 	}
 	
@@ -181,12 +176,12 @@ public class ThermicPoint {
 	}
 	
 	public ThermicPoint getNorthPair(){
-		ThermicConnector tc = getNorthThermicConnector();
+		IThermicConnector tc = getNorthThermicConnector();
 
 		//Igazi Termikus Pont kapcsolat van
-		if( tc instanceof YDThermicConnector ){
+		if( tc instanceof YThermicPointThermicConnector ){
 			
-			return ((YDThermicConnector)tc).getNorthThermicPoint();
+			return ((YThermicPointThermicConnector)tc).getNorthThermicPoint();
 			
 		//Nem Termikus Pont kapcsolat van
 		}else{
@@ -195,12 +190,12 @@ public class ThermicPoint {
 	}
 	
 	public ThermicPoint getSouthPair(){
-		ThermicConnector tc = getSouthThermicConnector();
+		IThermicConnector tc = getSouthThermicConnector();
 
 		//Igazi Termikus Pont kapcsolat van
-		if( tc instanceof YDThermicConnector ){
+		if( tc instanceof YThermicPointThermicConnector ){
 			
-			return ((YDThermicConnector)tc).getSouthThermicPoint();
+			return ((YThermicPointThermicConnector)tc).getSouthThermicPoint();
 			
 		//Nem Termikus Pont kapcsolat van
 		}else{
@@ -209,12 +204,12 @@ public class ThermicPoint {
 	}
 	
 	public ThermicPoint getWestPair(){
-		ThermicConnector tc = getWestThermicConnector();
+		IThermicConnector tc = getWestThermicConnector();
 
 		//Igazi Termikus Pont kapcsolat van
-		if( tc instanceof XDThermicConnector ){
+		if( tc instanceof XThermicPointThermicConnector ){
 			
-			return ((XDThermicConnector)tc).getWestThermicPoint();
+			return ((XThermicPointThermicConnector)tc).getWestThermicPoint();
 			
 		//Nem Termikus Pont kapcsolat van
 		}else{
@@ -223,12 +218,12 @@ public class ThermicPoint {
 	}
 	
 	public ThermicPoint getEastPair(){
-		ThermicConnector tc = getEastThermicConnector();
+		IThermicConnector tc = getEastThermicConnector();
 
 		//Igazi Termikus Pont kapcsolat van
-		if( tc instanceof XDThermicConnector ){
+		if( tc instanceof XThermicPointThermicConnector ){
 			
-			return ((XDThermicConnector)tc).getEastThermicPoint();
+			return ((XThermicPointThermicConnector)tc).getEastThermicPoint();
 			
 		//Nem Termikus Pont kapcsolat van
 		}else{
@@ -282,64 +277,64 @@ public class ThermicPoint {
 	public String toString(){
 		DecimalFormat temperatureFormat = new DecimalFormat("00.00");
 		DecimalFormat deltaFormat = new DecimalFormat("#.####");
-		ThermicConnector tc;
+		IThermicConnector tc;
 		
 		String back = "T=" + temperatureFormat.format( getActualTemperature() ) + " " + this.getPosition() + " -> "; 
 		
 				
 		back += " N: ";
 		tc = getNorthThermicConnector();
-		if( tc instanceof YDThermicConnector ){
-			back += "(λ=" + ((DThermicConnector)tc).getLambda() + " ";
-			back += "δ=" + deltaFormat.format( ((DThermicConnector)tc).getDelta() ) + " ";
+		if( tc instanceof YThermicPointThermicConnector ){
+			back += "(λ=" + ((AThermicPointThermicConnector)tc).getLambda() + " ";
+			back += "δ=" + deltaFormat.format( ((AThermicPointThermicConnector)tc).getDelta() ) + " ";
 			back += "q=" + this.getNorthCurrent() + " ";
 			back += getNorthPair().getPosition() + ")";
-		}else if( tc instanceof OThermicConnector ){
-			back += "(α=" + ((OThermicConnector)tc).getAlpha() + " ";
-			back += "T=" + ((OThermicConnector)tc).getAirTemperature() + ")";
-		}else if( tc instanceof SThermicConnector ){
+		}else if( tc instanceof OpenEdgeThermicConnector ){
+			back += "(α=" + ((OpenEdgeThermicConnector)tc).getAlpha() + " ";
+			back += "T=" + ((OpenEdgeThermicConnector)tc).getAirTemperature() + ")";
+		}else if( tc instanceof SymmetricEdgeThermicConnector ){
 			back += "_";
 		}
 		
 		back += " E: ";
 		tc = getEastThermicConnector();
-		if( tc instanceof XDThermicConnector ){
-			back += "(λ=" + ((DThermicConnector)tc).getLambda() + " ";
-			back += "δ=" + deltaFormat.format( ((DThermicConnector)tc).getDelta() ) + " ";
+		if( tc instanceof XThermicPointThermicConnector ){
+			back += "(λ=" + ((AThermicPointThermicConnector)tc).getLambda() + " ";
+			back += "δ=" + deltaFormat.format( ((AThermicPointThermicConnector)tc).getDelta() ) + " ";
 			back += "q=" + this.getEastCurrent() + " ";
 			back += getEastPair().getPosition() + ")";
-		}else if( tc instanceof OThermicConnector ){
-			back += "(α=" + ((OThermicConnector)tc).getAlpha() + " ";
-			back += "T=" + ((OThermicConnector)tc).getAirTemperature() + ")";
-		}else if( tc instanceof SThermicConnector ){
+		}else if( tc instanceof OpenEdgeThermicConnector ){
+			back += "(α=" + ((OpenEdgeThermicConnector)tc).getAlpha() + " ";
+			back += "T=" + ((OpenEdgeThermicConnector)tc).getAirTemperature() + ")";
+		}else if( tc instanceof SymmetricEdgeThermicConnector ){
 			back += "|";
 		}
 		
 		back += " S: ";
 		tc = getSouthThermicConnector();
-		if( tc instanceof YDThermicConnector ){
-			back += "(λ=" + ((DThermicConnector)tc).getLambda() + " ";
-			back += "δ=" + deltaFormat.format( ((DThermicConnector)tc).getDelta() ) + " ";
+		if( tc instanceof YThermicPointThermicConnector ){
+			back += "(λ=" + ((AThermicPointThermicConnector)tc).getLambda() + " ";
+			back += "δ=" + deltaFormat.format( ((AThermicPointThermicConnector)tc).getDelta() ) + " ";
 			back += getSouthPair().getPosition() + ")";
 			back += "q=" + this.getSouthCurrent() + " ";
-		}else if( tc instanceof OThermicConnector ){
-			back += "(α=" + ((OThermicConnector)tc).getAlpha() + " ";
-			back += "T=" + ((OThermicConnector)tc).getAirTemperature() + ")";
-		}else if( tc instanceof SThermicConnector ){
+		}else if( tc instanceof OpenEdgeThermicConnector ){
+			back += "(α=" + ((OpenEdgeThermicConnector)tc).getAlpha() + " ";
+			back += "T=" + ((OpenEdgeThermicConnector)tc).getAirTemperature() + ")";
+		}else if( tc instanceof SymmetricEdgeThermicConnector ){
 			back += "_";
 		}
 		
 		back += " W: ";		
 		tc = getWestThermicConnector();
-		if( tc instanceof XDThermicConnector ){
-			back += "(λ=" + ((DThermicConnector)tc).getLambda() + " ";
-			back += "δ=" + deltaFormat.format( ((DThermicConnector)tc).getDelta() ) + " ";
+		if( tc instanceof XThermicPointThermicConnector ){
+			back += "(λ=" + ((AThermicPointThermicConnector)tc).getLambda() + " ";
+			back += "δ=" + deltaFormat.format( ((AThermicPointThermicConnector)tc).getDelta() ) + " ";
 			back += "q=" + this.getWestCurrent() + " ";
 			back += getWestPair().getPosition() + ")";
-		}else if( tc instanceof OThermicConnector ){
-			back += "(α=" + ((OThermicConnector)tc).getAlpha() + " ";
-			back += "T=" + ((OThermicConnector)tc).getAirTemperature() + ")";
-		}else if( tc instanceof SThermicConnector ){
+		}else if( tc instanceof OpenEdgeThermicConnector ){
+			back += "(α=" + ((OpenEdgeThermicConnector)tc).getAlpha() + " ";
+			back += "T=" + ((OpenEdgeThermicConnector)tc).getAirTemperature() + ")";
+		}else if( tc instanceof SymmetricEdgeThermicConnector ){
 			back += "|";
 		}
 		
