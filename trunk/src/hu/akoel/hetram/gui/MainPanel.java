@@ -2,13 +2,13 @@ package hu.akoel.hetram.gui;
 
 import hu.akoel.hetram.Test;
 import hu.akoel.hetram.accessories.Length;
+import hu.akoel.hetram.accessories.Orientation;
 import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.listeners.CalculationListener;
 import hu.akoel.hetram.structures.StructureSet;
 import hu.akoel.hetram.structures.Structure;
 import hu.akoel.hetram.structures.SurfaceSealing;
 import hu.akoel.hetram.structures.SymmetricSealing;
-import hu.akoel.hetram.structures.Structure.SideOrientation;
 import hu.akoel.hetram.thermicpoint.ThermicPoint;
 import hu.akoel.hetram.thermicpoint.ThermicPointList;
 import hu.akoel.hetram.thermicpoint.ThermicPointList.CURRENT_TYPE;
@@ -425,17 +425,17 @@ elementSet = temporarelyGenerateElementSet();
 		//
 
 		Structure hWall = new Structure( lambda1, new Position(0, 0.7), new Position(1.0, 1.0));
-		hWall.setCloseElement(new SurfaceSealing( SideOrientation.SOUTH, new Length( 0.3, 1.0), alfaI, temperatureI ) );
+		hWall.setCloseElement(new SurfaceSealing( Orientation.SOUTH, new Length( 0.3, 1.0), alfaI, temperatureI ) );
 		
 		Structure vWall = new Structure( lambda1, new Position(0,0), new Position(0.3, 0.7 ) );
-		vWall.setCloseElement(new SurfaceSealing( SideOrientation.EAST, new Length( 0.0, 0.7 ), alfaI, temperatureI ) );
+		vWall.setCloseElement(new SurfaceSealing( Orientation.EAST, new Length( 0.0, 0.7 ), alfaI, temperatureI ) );
 		
 		Structure hInsul = new Structure( lambda2, new Position( 0, 1.0), new Position(1.0, 1.1 ) );
-		hInsul.setCloseElement(new SurfaceSealing( SideOrientation.NORTH, new Length( 0.0, 1.0 ), alfaE, temperatureE ) );
+		hInsul.setCloseElement(new SurfaceSealing( Orientation.NORTH, new Length( 0.0, 1.0 ), alfaE, temperatureE ) );
 				
 		Structure vInsul = new Structure( lambda2, new Position(-0.1, 0), new Position(0, 1.1) );
-		vInsul.setCloseElement(new SurfaceSealing( SideOrientation.WEST, new Length( 0, 1.1), alfaE, temperatureE ) );
-		vInsul.setCloseElement(new SurfaceSealing( SideOrientation.NORTH, new Length( -0.1, 0.0 ), alfaE, temperatureE ) );
+		vInsul.setCloseElement(new SurfaceSealing( Orientation.WEST, new Length( 0, 1.1), alfaE, temperatureE ) );
+		vInsul.setCloseElement(new SurfaceSealing( Orientation.NORTH, new Length( -0.1, 0.0 ), alfaE, temperatureE ) );
 
 		
 /*		//

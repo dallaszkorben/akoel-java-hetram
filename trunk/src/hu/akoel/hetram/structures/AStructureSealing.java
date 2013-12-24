@@ -1,7 +1,7 @@
 package hu.akoel.hetram.structures;
 
 import hu.akoel.hetram.accessories.Length;
-import hu.akoel.hetram.structures.Structure.SideOrientation;
+import hu.akoel.hetram.accessories.Orientation;
 
 /**
  * 
@@ -9,15 +9,15 @@ import hu.akoel.hetram.structures.Structure.SideOrientation;
  *
  */
 public abstract class AStructureSealing {
-	private SideOrientation orientation;
+	private Orientation orientation;
 	private Length length;
 	
-	public AStructureSealing( SideOrientation orientation, Length length ){
+	public AStructureSealing( Orientation orientation, Length length ){
 		this.orientation = orientation;
 		this.length = length;
 	}
 
-	public SideOrientation getOrientation() {
+	public Orientation getOrientation() {
 		return orientation;
 	}
 

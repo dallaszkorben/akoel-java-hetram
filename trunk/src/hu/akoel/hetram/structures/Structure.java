@@ -19,13 +19,6 @@ import java.util.HashSet;
  */
 public class Structure {
 	
-	public static enum SideOrientation{
-		NORTH,
-		EAST,
-		SOUTH,
-		WEST
-	}
-	
 	private double lambda;
 	private Position startPosition;
 	private Position endPosition;

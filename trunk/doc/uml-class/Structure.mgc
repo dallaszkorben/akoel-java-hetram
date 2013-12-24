@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassDiagram>
+    <Class name="hu.akoel.hetram.structures.Structure.SideOrientation"
+        x="-27" y="214">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="hu.akoel.hetram.structures.SymmetricSealing" x="95" y="387">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Extension destinationClassName="hu.akoel.hetram.structures.AStructureSealing"/>
+    </Class>
+    <Class
+        name="hu.akoel.hetram.thermicpoint.ThermicPointList.CURRENT_TYPE"
+        x="-16" y="-301">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="hu.akoel.hetram.structures.AStructureSealing" x="152" y="209">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="hu.akoel.hetram.structures.Structure.SideOrientation"
+            endpointName="orientation" kind="Simple"/>
+    </Class>
+    <Class name="hu.akoel.hetram.thermicpoint.ThermicPointList" x="190" y="-331">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="hu.akoel.hetram.structures.StructureSet"
+            endpointName="elementSet" kind="Simple"/>
+        <Association
+            destinationClassName="hu.akoel.hetram.thermicpoint.ThermicPoint"
+            endpointName="list" kind="Simple"/>
+        <Association
+            destinationClassName="hu.akoel.hetram.thermicpoint.ThermicPointList.CURRENT_TYPE"
+            endpointName="currentType" kind="Simple"/>
+        <Communication destinationClassName="hu.akoel.hetram.thermicpoint.ThermicPoint"/>
+    </Class>
+    <Class name="hu.akoel.hetram.structures.StructureSet" x="386" y="-131">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="hu.akoel.hetram.structures.Structure"
+            endpointName="elementSet" kind="Simple"/>
+        <Communication destinationClassName="hu.akoel.hetram.thermicpoint.ThermicPoint"/>
+        <Communication destinationClassName="hu.akoel.hetram.structures.Structure"/>
+    </Class>
+    <Class name="hu.akoel.hetram.thermicpoint.ThermicPoint" x="-67" y="-134">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="hu.akoel.hetram.structures.SurfaceSealing" x="262" y="393">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Extension destinationClassName="hu.akoel.hetram.structures.AStructureSealing"/>
+    </Class>
+    <Class name="hu.akoel.hetram.structures.Structure" x="440" y="219">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="hu.akoel.hetram.structures.AStructureSealing"
+            endpointName="closeElementSet" kind="Simple"/>
+    </Class>
+</ClassDiagram>

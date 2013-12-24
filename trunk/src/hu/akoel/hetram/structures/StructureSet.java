@@ -1,12 +1,11 @@
 package hu.akoel.hetram.structures;
 
 import hu.akoel.hetram.accessories.CommonOperations;
+import hu.akoel.hetram.accessories.Orientation;
 import hu.akoel.hetram.accessories.Position;
-import hu.akoel.hetram.connectors.DThermicConnector;
-import hu.akoel.hetram.structures.Structure.SideOrientation;
+import hu.akoel.hetram.connectors.AThermicPointThermicConnector;
 import hu.akoel.hetram.thermicpoint.ThermicPoint;
 import hu.akoel.hetram.thermicpoint.ThermicPointList;
-import hu.akoel.hetram.thermicpoint.ThermicPoint.ThermicPointOrientation;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -165,7 +164,7 @@ public class StructureSet{
 					if( j != 0 ){
 						
 						//Akkor elkerem a regi WEST kapcsolatat, hatha letezik  
-						DThermicConnector oldWestConnector = (DThermicConnector)tp.getWestThermicConnector();
+						AThermicPointThermicConnector oldWestConnector = (AThermicPointThermicConnector)tp.getWestThermicConnector();
 						
 						//Akkor letezik ha legalso vagy legfelso Point-rol van szo es kapcsolodik egy masik, mar lehelyezett Element-hez
 						if( null != oldWestConnector ){
@@ -178,7 +177,7 @@ public class StructureSet{
 						double previousX = CommonOperations.get10Decimals( startPoint.getX() + (j - 1) * horizontalAppliedDifference );
 
 						//Es osszekottetest letesitek vele
-						tp.connectToD(thermicPointMap.get(new Position(previousX, y)), ThermicPointOrientation.WEST, lambda );
+						tp.connectToThermicPoint(thermicPointMap.get(new Position(previousX, y)), Orientation.WEST, lambda );
 					
 					}
 					
@@ -188,7 +187,7 @@ public class StructureSet{
 					if( i != 0 ){
 						
 						//Akkor elkerem a regi SOUTH kapcsolatat, hatha letezik  
-						DThermicConnector oldSouthConnector = (DThermicConnector)tp.getSouthThermicConnector();
+						AThermicPointThermicConnector oldSouthConnector = (AThermicPointThermicConnector)tp.getSouthThermicConnector();
 						
 						//Akkor letezik ha jobb vagy baloldali Point-rol van szo es kapcsolodik egy masik, mar lehelyezett Element-hez
 						if( null != oldSouthConnector ){
@@ -199,7 +198,7 @@ public class StructureSet{
 
 						//Veszem az alatta levo kozvetlen kapcsolatat, ami bizonyosan letezik, mivel belso pont
 						double previousY = CommonOperations.get10Decimals( startPoint.getY() + (i - 1) * verticalAppliedDifference );						
-						tp.connectToD(thermicPointMap.get(new Position(x, previousY)), ThermicPointOrientation.SOUTH, lambda );
+						tp.connectToThermicPoint(thermicPointMap.get(new Position(x, previousY)), Orientation.SOUTH, lambda );
 					}					
 				}
 			}		
@@ -265,19 +264,19 @@ public class StructureSet{
 						for( AStructureSealing closeElement: closeElements ){
 
 							//Megfelelo pozicio
-							if( closeElement.getOrientation().equals(SideOrientation.WEST ) && y >= closeElement.getLength().getStart() && y <= closeElement.getLength().getEnd() ){
+							if( closeElement.getOrientation().equals( Orientation.WEST ) && y >= closeElement.getLength().getStart() && y <= closeElement.getLength().getEnd() ){
 
 								//Fal felulet
 								if( closeElement instanceof SurfaceSealing ){
 
 									//Alfa es homerseklet kapcsolasa
-									actualThermicPoint.connectToO(ThermicPointOrientation.WEST, ((SurfaceSealing)closeElement).getAlpha(), ((SurfaceSealing)closeElement).getAirTemperature() );		
+									actualThermicPoint.connectToOpenEdge( Orientation.WEST, ((SurfaceSealing)closeElement).getAlpha(), ((SurfaceSealing)closeElement).getAirTemperature() );		
 									break;
 								
 								//Szimmetria el
 								}else if( closeElement instanceof SymmetricSealing ){
 									
-									actualThermicPoint.connectToS( ThermicPointOrientation.WEST);
+									actualThermicPoint.connectToSymmetricEdge( Orientation.WEST);
 									break;
 								
 								}									
@@ -288,7 +287,7 @@ public class StructureSet{
 					//Ha esetleg meg mindig nincs lezarva a bal-szelso pont WEST iranyban
 					//Ha nincs definialva semmilyen lezaras, akkor az szimmetria pont lesz
 					if( j == 0 && null == actualThermicPoint.getWestThermicConnector() ){
-						actualThermicPoint.connectToS( ThermicPointOrientation.WEST );
+						actualThermicPoint.connectToSymmetricEdge( Orientation.WEST );
 					}						
 					
 					//-----------------------------
@@ -303,19 +302,19 @@ public class StructureSet{
 						for( AStructureSealing closeElement: closeElements ){
 						
 							//Megfelelo pozicio
-							if( closeElement.getOrientation().equals(SideOrientation.EAST ) && y >= closeElement.getLength().getStart() && y <= closeElement.getLength().getEnd() ){
+							if( closeElement.getOrientation().equals( Orientation.EAST ) && y >= closeElement.getLength().getStart() && y <= closeElement.getLength().getEnd() ){
 							
 								//Fal felulet
 								if( closeElement instanceof SurfaceSealing ){
 								
 									//Alfa es homerseklet kapcsolasa
-									actualThermicPoint.connectToO(ThermicPointOrientation.EAST, ((SurfaceSealing)closeElement).getAlpha(), ((SurfaceSealing)closeElement).getAirTemperature() );
+									actualThermicPoint.connectToOpenEdge( Orientation.EAST, ((SurfaceSealing)closeElement).getAlpha(), ((SurfaceSealing)closeElement).getAirTemperature() );
 									break;
 									
 								//Szimmetria el
 								}else if( closeElement instanceof SymmetricSealing ){
 	
-									actualThermicPoint.connectToS( ThermicPointOrientation.EAST );
+									actualThermicPoint.connectToSymmetricEdge( Orientation.EAST );
 									break;
 									
 								}
@@ -326,7 +325,7 @@ public class StructureSet{
 					//Ha esetleg meg mindig nincs lezarva a jobb-szelso pont EAST iranyban
 					//Ha nincs definialva semmilyen lezaras, akkor az szimmetria pont lesz
 					if( j == jSteps && null == actualThermicPoint.getEastThermicConnector() ){
-						actualThermicPoint.connectToS( ThermicPointOrientation.EAST );
+						actualThermicPoint.connectToSymmetricEdge( Orientation.EAST );
 					}	
 					
 					//------------------------------
@@ -341,19 +340,19 @@ public class StructureSet{
 						for( AStructureSealing closeElement: closeElements ){
 						
 							//Megfelelo pozicio
-							if( closeElement.getOrientation().equals(SideOrientation.SOUTH ) && x >= closeElement.getLength().getStart() && x <= closeElement.getLength().getEnd() ){
+							if( closeElement.getOrientation().equals( Orientation.SOUTH ) && x >= closeElement.getLength().getStart() && x <= closeElement.getLength().getEnd() ){
 							
 								//Fal felulet
 								if( closeElement instanceof SurfaceSealing ){
 								
 									//Alfa es homerseklet kapcsolasa
-									actualThermicPoint.connectToO(ThermicPointOrientation.SOUTH, ((SurfaceSealing)closeElement).getAlpha(), ((SurfaceSealing)closeElement).getAirTemperature() );
+									actualThermicPoint.connectToOpenEdge( Orientation.SOUTH, ((SurfaceSealing)closeElement).getAlpha(), ((SurfaceSealing)closeElement).getAirTemperature() );
 									break;
 										
 								//Szimmetria el
 								}else if( closeElement instanceof SymmetricSealing ){
 									
-									actualThermicPoint.connectToS( ThermicPointOrientation.SOUTH );
+									actualThermicPoint.connectToSymmetricEdge(  Orientation.SOUTH );
 									break;
 									
 								}
@@ -364,7 +363,7 @@ public class StructureSet{
 					//Ha esetleg meg mindig nincs lezarva az also-szelso pont SOUTH iranyban
 					//Ha nincs definialva semmilyen lezaras, akkor az szimmetria pont lesz
 					if( i == 0 && null == actualThermicPoint.getSouthThermicConnector() ){
-						actualThermicPoint.connectToS( ThermicPointOrientation.SOUTH );
+						actualThermicPoint.connectToSymmetricEdge(  Orientation.SOUTH );
 					}	
 					
 					//------------------------------
@@ -379,18 +378,18 @@ public class StructureSet{
 						for( AStructureSealing closeElement: closeElements ){
 						
 							//Megfelelo pozicio
-							if( closeElement.getOrientation().equals(SideOrientation.NORTH ) && x >= closeElement.getLength().getStart() && x <= closeElement.getLength().getEnd() ){
+							if( closeElement.getOrientation().equals( Orientation.NORTH ) && x >= closeElement.getLength().getStart() && x <= closeElement.getLength().getEnd() ){
 							
 								//Fal felulet
 								if( closeElement instanceof SurfaceSealing ){								
 								
-									actualThermicPoint.connectToO(ThermicPointOrientation.NORTH, ((SurfaceSealing)closeElement).getAlpha(), ((SurfaceSealing)closeElement).getAirTemperature() );
+									actualThermicPoint.connectToOpenEdge( Orientation.NORTH, ((SurfaceSealing)closeElement).getAlpha(), ((SurfaceSealing)closeElement).getAirTemperature() );
 									break;
 							
 								//Szimmetria el
 								}else if( closeElement instanceof SymmetricSealing ){
 								
-									actualThermicPoint.connectToS( ThermicPointOrientation.NORTH);
+									actualThermicPoint.connectToSymmetricEdge(  Orientation.NORTH);
 									break;
 								}
 							}						
@@ -400,7 +399,7 @@ public class StructureSet{
 					//Ha esetleg meg mindig nincs lezarva a felso-szelso pont NORTH iranyban
 					//Ha nincs definialva semmilyen lezaras, akkor az szimmetria pont lesz
 					if( i == iSteps && null == actualThermicPoint.getNorthThermicConnector() ){
-						actualThermicPoint.connectToS( ThermicPointOrientation.NORTH );
+						actualThermicPoint.connectToSymmetricEdge(  Orientation.NORTH );
 					}	
 
 				}

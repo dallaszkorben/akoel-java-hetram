@@ -1,11 +1,11 @@
 package hu.akoel.hetram.structures;
 
 import hu.akoel.hetram.accessories.Length;
-import hu.akoel.hetram.structures.Structure.SideOrientation;
+import hu.akoel.hetram.accessories.Orientation;
 
 public class SymmetricSealing extends AStructureSealing{
 
-	public SymmetricSealing( SideOrientation orientation, Length length ) {
+	public SymmetricSealing( Orientation orientation, Length length ) {
 		super( orientation, length );
 	}
 	
