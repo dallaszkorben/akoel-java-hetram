@@ -3,20 +3,27 @@ package hu.akoel.hetram.accessories;
 import java.awt.Color;
 
 public class ColorTransient {
-	Color coldColor;
-	Color hotColor;
+	double minimumHue = 0;
+	double maximumHue = 0.7;
 	
 	public ColorTransient(){
-		this.coldColor = Color.blue;
-		this.hotColor = Color.red;
+		
 	}
 	
-	public void setRange( Color coldColor, Color hotColor ){
-		this.coldColor = coldColor;
-		this.hotColor = hotColor;
+	public ColorTransient( double minimumHue, double maximumHue ){
+		this.minimumHue = minimumHue;
+		this.maximumHue = maximumHue;
 	}
 	
 	public Color getColor( double percent ){
-		return null;
+		if( percent > 1.0 ){
+			percent = 1.0;
+		}
+		if( percent < 0.0 ){
+			percent = 0.0;
+		}
+				
+		float hue = (float) (( this.maximumHue - this.minimumHue ) * (1 - percent ) + this.minimumHue); 
+		return Color.getHSBColor(hue, 1.0f, 1.0f);
 	}
 }

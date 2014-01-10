@@ -1,5 +1,6 @@
 package hu.akoel.hetram.thermicpoint;
 
+import hu.akoel.hetram.accessories.ColorTransient;
 import hu.akoel.hetram.accessories.CommonOperations;
 import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.connectors.OpenEdgeThermicConnector;
@@ -30,6 +31,7 @@ public class ThermicPointList{
 	private int position = 0;
 	private CalculationListener calculationListener = null;
 	private CURRENT_TYPE currentType = CURRENT_TYPE.TRAJECTORY;
+	private ColorTransient colorTransient;
 	
 	public static enum CURRENT_TYPE{
 		VECTORPAIR,
@@ -37,6 +39,7 @@ public class ThermicPointList{
 		TRAJECTORY
 	}
 	public ThermicPointList( Collection<ThermicPoint> thermicPointCollection, StructureSet elementSet ){
+		colorTransient = new ColorTransient();
 		
 		list = new ThermicPoint[ thermicPointCollection.size() ];
 		this.elementSet = elementSet;
@@ -542,7 +545,8 @@ public class ThermicPointList{
 				double yStart = position.getY();
 
 				//A Termikus Ponthoz tartozo szin
-				g2.setColor(getRedBluByPercent((this.get(j).getActualTemperature() - minimumTemperature) / deltaTemperature));
+				//g2.setColor(getRedBluByPercent((this.get(j).getActualTemperature() - minimumTemperature) / deltaTemperature));
+				g2.setColor( colorTransient.getColor( (this.get(j).getActualTemperature() - minimumTemperature) / deltaTemperature) );
 				
 				//
 				//A teljes negyzet negyedekre valo felbontasa azert szukseges, mert
@@ -639,7 +643,7 @@ public class ThermicPointList{
 	 * @param percent
 	 * @return
 	 */
-	private Color getRedBluByPercent(double percent) {
+//	private Color getRedBluByPercent(double percent) {
 
 		/*
 				int maxLength = 255;
@@ -651,7 +655,7 @@ public class ThermicPointList{
 				
 				return new Color(red, 0, blue);
 		*/		
-		int red = 0;
+/*		int red = 0;
 		int blue = 0;
 		int maxLength = 255;
 		
@@ -678,7 +682,7 @@ public class ThermicPointList{
 
 		return new Color(red, green, blue);
 	}
-
+*/
 	private class CalculationListenerThread extends Thread{
 		private double difference;
 		private CalculationListener calculationListener;
