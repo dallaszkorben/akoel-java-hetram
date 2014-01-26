@@ -77,7 +77,7 @@ public class MainPanel extends JFrame{
 	private double thermicPointRadius = 0.002;
 
 	private boolean needDrawTemperatureByFont = false;
-	private boolean needDrawCurrentByArrow = true;
+	private boolean needDrawCurrentByArrow = false;
 	private CURRENT_TYPE currentType = CURRENT_TYPE.TRAJECTORY;
 	
 	//
@@ -164,19 +164,37 @@ elementSet = temporarelyGenerateElementSet();
 		this.createBufferStrategy(1);
 
 		myCanvas = new MCanvas(BorderFactory.createLoweredBevelBorder(), background, possiblePixelPerUnits, positionToMiddle);
+		
+		//
+		// Szamitott eredmenyek grafikus megjelenitese a legfelsobb layer-en
+		//
 		myCanvas.addPainterListenerToHighest(new PainterListener() {
 
 			@Override
 			public void paintByWorldPosition(MCanvas canvas, MGraphics g2) {
+				
+				//
+				// Ha szukseges a homerseklet-szin megjelenitetse
+				//
 				if( needDrawTemperatureByColor && null != thermicPointList ){
 					thermicPointList.drawTemperatureByColor(canvas, g2);
 				}
+				
+				//
+				// Ha szukseges a termikus PONT megjelenitese
+				//
 				if( needDrawThermicPoint && null != thermicPointList ){
 					thermicPointList.drawPoint(canvas, g2, thermicPointColor, thermicPointRadius );
 				}
+				
+				//
+				// Ha szukseges a homerseklet megjelenitese
+				//
 				if( needDrawTemperatureByFont && null != thermicPointList ){
 					thermicPointList.drawPointTemperatureByFont(canvas, g2);
 				}
+				
+				// Ha szukseges a hoaram megjelenitese (vektor, vektorpar, trajektoria)
 				if( needDrawCurrentByArrow && null != thermicPointList ){
 					thermicPointList.setCurrentType(currentType);
 					thermicPointList.drawCurrent(canvas, g2);
@@ -184,7 +202,7 @@ elementSet = temporarelyGenerateElementSet();
 			}
 
 			@Override
-			public void paintByViewer(MCanvas canvas, Graphics2D g2) {
+			public void paintByCanvasAfterTransfer(MCanvas canvas, Graphics2D g2) {
 			}
 		});
 
@@ -241,10 +259,22 @@ elementSet = temporarelyGenerateElementSet();
 			}
 		});
 
+		//
+		// Status Line letrehozasa
+		//
 		this.statusLine = new StatusLine();
+		
+		//
+		// Vezerlo egyseg letrehozasa
+		//
 		this.controlPanel = new SettingTabbedPanel( this );
 			
+		//
 		//Mezooszto
+		//
+		// baloldalan a rajzfelulet
+		// jobboldalan a vezerloegyseg
+		//
 		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,  myCanvas, controlPanel );
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setDividerLocation(400);
@@ -252,8 +282,17 @@ elementSet = temporarelyGenerateElementSet();
 
 			
 		this.getContentPane().setLayout(new BorderLayout(10, 10));
+		
+		//
+		// A rajzfelulet a vezerloegyseggel jobboldalan, elvalasztva egymastol
+		//
 		this.getContentPane().add( splitPane, BorderLayout.CENTER );
+		
+		//
+		// Status line
+		//
 		this.getContentPane().add( statusLine, BorderLayout.SOUTH );
+		
 		this.setVisible(true);
 
 		//Meretarany kezdoertek kiirasa
@@ -403,7 +442,14 @@ elementSet = temporarelyGenerateElementSet();
 		this.calculationListener = calculationListener;
 	}
 	
+	/**
+	 * Termikus pontok letrehozasa es homersekleteik kiszamitasa
+	 * 
+	 * @param precision
+	 */
 	public void doCalculate( double precision ){
+		
+		//Termikus pontok legyartasa, kozottuk levo kapcsolatok megteremtese (nics szamolas meg) 
 		thermicPointList = elementSet.generateThermicPoints();
 		
 		//Figyelo osztaly a szamitas nyomonkovetesere
@@ -411,6 +457,7 @@ elementSet = temporarelyGenerateElementSet();
 			thermicPointList.setCalculationListener(calculationListener);
 		}
 		
+		//Sokismeretlenes egyenletrendszer megoldasa, eredmenye: a termikus pontok homerseklete
 		thermicPointList.solve( precision );		
 	}
 	
