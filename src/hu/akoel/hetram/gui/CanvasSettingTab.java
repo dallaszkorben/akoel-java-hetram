@@ -1,6 +1,7 @@
 package hu.akoel.hetram.gui;
 
 import hu.akoel.mgu.MCanvas;
+import hu.akoel.mgu.MControlPanel;
 import hu.akoel.mgu.axis.Axis;
 import hu.akoel.mgu.axis.Axis.AxisPosition;
 import hu.akoel.mgu.crossline.CrossLine;
@@ -29,17 +30,17 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
-public class CanvasSettingTab extends JPanel {
+public class CanvasSettingTab extends MControlPanel {
 
 	private static final long serialVersionUID = -8535907380457734338L;
-
-	private MainPanel mainPanel;
 
 	private MCanvas myCanvas;
 	private CrossLine myCrossLine;
 	private Grid myGrid;
 	private Axis myAxis;
 	private Scale myScale;
+/*	
+	private MainPanel mainPanel;
 	
 	private JRadioButton lbAxisSelector;
 	private JRadioButton rbAxisSelector;
@@ -63,11 +64,11 @@ public class CanvasSettingTab extends JPanel {
 	private JTextField yScaleField;
 	private JTextField xPositionField;
 	private JTextField yPositionField;
-	
+*/	
 	public CanvasSettingTab(MainPanel mainPanel) {
 		super();
 
-		this.mainPanel = mainPanel;
+		//this.mainPanel = mainPanel;
 
 		this.myCanvas = mainPanel.getMCanvas();
 		this.myGrid = mainPanel.getGrid();
@@ -81,13 +82,23 @@ public class CanvasSettingTab extends JPanel {
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints canvasSettingConstraints = new GridBagConstraints();
 
+		JPanel gridControl = myGrid.getControl( myScale );
+		JPanel crossLineControl = myCrossLine.getControl( myScale );
+		JPanel scaleControl = myScale.getControl();
+		JPanel axisControl = myAxis.getControl();		
+		
+		this.addElement( gridControl );
+		this.addElement( crossLineControl );
+		this.addElement( scaleControl );
+		this.addElement( axisControl );
+		
 		// ----------------------------------------------
 		//
 		// Canvas Setting TAB elemek letrehozasa
 		//
 		// ----------------------------------------------
 
-
+/*
 		//--------------------------
 		//
 		// Grid 
@@ -290,7 +301,8 @@ public class CanvasSettingTab extends JPanel {
 		gridPanelConstraints.gridwidth = 1;
 		gridPanelConstraints.weightx = 0;
 		gridPanel.add(new JLabel(" " + myScale.getUnitY().getSign()), gridPanelConstraints);
-
+*/
+/*		
 		// -------------------------
 		//
 		// Crossline
@@ -551,7 +563,7 @@ public class CanvasSettingTab extends JPanel {
 		crossLinePanelConstraints.gridwidth = 1;
 		crossLinePanelConstraints.weightx = 0;
 		crossLinePanel.add(new JLabel(" " + myScale.getUnitY().getSign()), crossLinePanelConstraints);
-
+*/
 		
 		
 		
@@ -565,7 +577,7 @@ public class CanvasSettingTab extends JPanel {
 		// Scale
 		//
 		// -------------------------
-	
+/*	
 JTextField pixelPerCmField;		
 		
 		//Pixel per cm
@@ -673,12 +685,12 @@ JTextField zoomRateField;
 		scaleConstraints.weightx = 0;
 		scaleConstraints.anchor = GridBagConstraints.WEST;
 		scalePanel.add(zoomRateField, scaleConstraints);
-		
+*/		
 	
 		
 		
 		
-		
+/*		
 		// ----
 		//
 		// Axis
@@ -804,43 +816,43 @@ JTextField zoomRateField;
 		axisPanelConstraints.gridwidth = 1;
 		axisPanel.add(zzAxisSelector, axisPanelConstraints);
 
-	
+*/	
 
 		//-----------------------------------
 		//
 		// CanvasSetting TAB feltoltese
 		//
 		//-----------------------------------
-		
+/*		
 		row = 0;
 		canvasSettingConstraints.gridx = 0;
 		canvasSettingConstraints.gridy = row;
 		canvasSettingConstraints.anchor = GridBagConstraints.NORTH;
 		canvasSettingConstraints.weighty = 0;
 		canvasSettingConstraints.fill = GridBagConstraints.HORIZONTAL;
-		this.add(gridPanel, canvasSettingConstraints);
+		this.add(gridControl, canvasSettingConstraints);
 
 		row++;
 		canvasSettingConstraints.weighty = 0;
 		canvasSettingConstraints.gridy = row;
-		this.add(crossLinePanel, canvasSettingConstraints);
+		this.add(crossLineControl, canvasSettingConstraints);
 
 		row++;
 		canvasSettingConstraints.weighty = 0;
 		canvasSettingConstraints.gridy = row;
-		this.add(scalePanel, canvasSettingConstraints);
+		this.add(scaleControl, canvasSettingConstraints);
 
 		row++;
 		canvasSettingConstraints.weighty = 0;
 		canvasSettingConstraints.gridy = row;
-		this.add(axisPanel, canvasSettingConstraints);
+		this.add(axisControl, canvasSettingConstraints);
 
 		// Azert hogy felfele legyen igazitva
 		row++;
 		canvasSettingConstraints.weighty = 1;
 		canvasSettingConstraints.gridy = row;
 		this.add(new JLabel(), canvasSettingConstraints);
-
+*/
 	}
 
 }
