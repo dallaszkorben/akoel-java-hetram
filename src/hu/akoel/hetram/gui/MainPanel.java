@@ -15,7 +15,7 @@ import hu.akoel.hetram.thermicpoint.ThermicPointList.CURRENT_TYPE;
 import hu.akoel.mgu.MCanvas;
 import hu.akoel.mgu.MGraphics;
 import hu.akoel.mgu.PainterListener;
-import hu.akoel.mgu.PositionChangeListener;
+import hu.akoel.mgu.CursorPositionChangeListener;
 import hu.akoel.mgu.PossiblePixelPerUnits;
 import hu.akoel.mgu.axis.Axis;
 import hu.akoel.mgu.crossline.CrossLine;
@@ -223,7 +223,7 @@ elementSet = temporarelyGenerateElementSet();
 		});
 			
 		//Pozicio kijelzese
-		myCanvas.addPositionChangeListener(new PositionChangeListener() {			
+		myCanvas.addCursorPositionChangeListener(new CursorPositionChangeListener() {			
 			@Override
 			public void getWorldPosition(double xPosition, double yPosition) {
 				statusLine.setXPosition( xPosition );
@@ -232,7 +232,7 @@ elementSet = temporarelyGenerateElementSet();
 		});
 
 		//Homerseklet es Hoaram kijelzese
-		myCanvas.addPositionChangeListener(new PositionChangeListener() {			
+		myCanvas.addCursorPositionChangeListener(new CursorPositionChangeListener() {			
 			@Override
 			public void getWorldPosition(double xPosition, double yPosition) {				
 					
