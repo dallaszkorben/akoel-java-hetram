@@ -8,7 +8,6 @@ import hu.akoel.hetram.listeners.CalculationListener;
 import hu.akoel.hetram.structures.StructureSet;
 import hu.akoel.hetram.structures.Structure;
 import hu.akoel.hetram.structures.SurfaceSealing;
-import hu.akoel.hetram.structures.SymmetricSealing;
 import hu.akoel.hetram.thermicpoint.ThermicPoint;
 import hu.akoel.hetram.thermicpoint.ThermicPointList;
 import hu.akoel.hetram.thermicpoint.ThermicPointList.CURRENT_TYPE;
@@ -19,6 +18,7 @@ import hu.akoel.mgu.CursorPositionChangeListener;
 import hu.akoel.mgu.PossiblePixelPerUnits;
 import hu.akoel.mgu.axis.Axis;
 import hu.akoel.mgu.crossline.CrossLine;
+import hu.akoel.mgu.drawnblock.DrawnBlockCanvas;
 import hu.akoel.mgu.grid.Grid;
 import hu.akoel.mgu.scale.Scale;
 import hu.akoel.mgu.scale.ScaleChangeListener;
@@ -42,6 +42,10 @@ public class MainPanel extends JFrame{
 
 	private static final long serialVersionUID = 3911667532503747257L;
 
+	private static final int DEFAULT_WIDTH = 700;
+	private static final int DEFAULT_HEIGHT = 700;
+	private static final int DEFAULT_SETTINGTABBEDPANEL = 300;
+	
 	private ThermicPointList thermicPointList = null;
 	private StructureSet elementSet = null;
 		
@@ -49,7 +53,7 @@ public class MainPanel extends JFrame{
 	private SettingTabbedPanel controlPanel;
 
 	// GCanvas parameterei
-	private MCanvas myCanvas;
+	private DrawnBlockCanvas myCanvas;
 	private Color background = Color.black;
 	private PossiblePixelPerUnits possiblePixelPerUnits = new PossiblePixelPerUnits( new PixelPerUnitValue(1, 1));
 	private TranslateValue positionToMiddle = new TranslateValue(0.3, 0.6);
@@ -132,7 +136,7 @@ public class MainPanel extends JFrame{
 		new Test();
 	}
 
-	public MCanvas getMCanvas(){
+	public DrawnBlockCanvas getMCanvas(){
 		return myCanvas;
 	}
 	
@@ -160,10 +164,10 @@ elementSet = temporarelyGenerateElementSet();
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("Proba");
 		this.setUndecorated(false);
-		this.setSize(700, 600);
+		this.setSize( DEFAULT_WIDTH, DEFAULT_HEIGHT );
 		this.createBufferStrategy(1);
 
-		myCanvas = new MCanvas(BorderFactory.createLoweredBevelBorder(), background, possiblePixelPerUnits, positionToMiddle);
+		myCanvas = new DrawnBlockCanvas(BorderFactory.createLoweredBevelBorder(), background, possiblePixelPerUnits, positionToMiddle);
 		
 		//
 		// Szamitott eredmenyek grafikus megjelenitese a legfelsobb layer-en
@@ -277,7 +281,7 @@ elementSet = temporarelyGenerateElementSet();
 		//
 		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,  myCanvas, controlPanel );
 		splitPane.setOneTouchExpandable(true);
-		splitPane.setDividerLocation(400);
+		splitPane.setDividerLocation( DEFAULT_WIDTH - DEFAULT_SETTINGTABBEDPANEL );
 		splitPane.setResizeWeight(1.0);
 
 			
