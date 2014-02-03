@@ -4,6 +4,7 @@ import hu.akoel.hetram.Test;
 import hu.akoel.hetram.accessories.Length;
 import hu.akoel.hetram.accessories.Orientation;
 import hu.akoel.hetram.accessories.Position;
+import hu.akoel.hetram.gui.ElementSettingTab.DRAWING_ELEMENT;
 import hu.akoel.hetram.listeners.CalculationListener;
 import hu.akoel.hetram.structures.StructureSet;
 import hu.akoel.hetram.structures.Structure;
@@ -19,6 +20,7 @@ import hu.akoel.mgu.PossiblePixelPerUnits;
 import hu.akoel.mgu.axis.Axis;
 import hu.akoel.mgu.crossline.CrossLine;
 import hu.akoel.mgu.drawnblock.DrawnBlockCanvas;
+import hu.akoel.mgu.drawnblock.DrawnBlockFactory;
 import hu.akoel.mgu.grid.Grid;
 import hu.akoel.mgu.scale.Scale;
 import hu.akoel.mgu.scale.ScaleChangeListener;
@@ -44,8 +46,9 @@ public class MainPanel extends JFrame{
 
 	private static final int DEFAULT_WIDTH = 700;
 	private static final int DEFAULT_HEIGHT = 700;
-	private static final int DEFAULT_SETTINGTABBEDPANEL = 300;
+	private static final int DEFAULT_SETTINGTABBEDPANEL = 310;
 	
+		
 	private ThermicPointList thermicPointList = null;
 	private StructureSet elementSet = null;
 		
@@ -66,6 +69,11 @@ public class MainPanel extends JFrame{
 	//
 	//------------------------
 
+	//
+	//Element Settings
+	//	
+	private DRAWING_ELEMENT drawingElement = DRAWING_ELEMENT.BUILDINGELEMENT;
+	
 	//
 	//ControlSettings
 	//
@@ -444,6 +452,19 @@ elementSet = temporarelyGenerateElementSet();
 	
 	public void setCalculationListener( CalculationListener calculationListener ){
 		this.calculationListener = calculationListener;
+	}
+	
+	
+	public void setDrawingElement( DRAWING_ELEMENT drawingElement ){
+		this.drawingElement = drawingElement;
+	}
+	
+	public DRAWING_ELEMENT getDrawingElement(){
+		return this.drawingElement;
+	}
+	
+	public void setDrawnBlockFactory( DrawnBlockFactory dbf ){
+		this.myCanvas.setDrawnBlockFactory( dbf );
 	}
 	
 	/**
