@@ -2,6 +2,7 @@ package hu.akoel.hetram.gui;
 
 import hu.akoel.hetram.drawingelements.BuildingStructureElement;
 import hu.akoel.hetram.drawingelements.OpenEdgeElement;
+import hu.akoel.hetram.drawingelements.SymmetricEdgeElement;
 import hu.akoel.mgu.drawnblock.DrawnBlock;
 import hu.akoel.mgu.drawnblock.DrawnBlockFactory;
 import hu.akoel.mgu.drawnblock.DrawnBlock.Status;
@@ -78,6 +79,10 @@ public class ElementSettingTab extends JPanel{
 					
 				} else if ( e.getSource() == symmetricEdgeSelector ) {
 					ElementSettingTab.this.mainPanel.setDrawingElement( DRAWING_ELEMENT.SYMMETRICEDGE );
+					
+					DrawnBlockFactory dbf = new SymmetricEdgeFactory();
+					ElementSettingTab.this.mainPanel.setDrawnBlockFactory( dbf );
+					
 				} else if ( e.getSource() == openEdgeSelector ) {
 					ElementSettingTab.this.mainPanel.setDrawingElement( DRAWING_ELEMENT.OPENEDGE );
 					
@@ -174,6 +179,27 @@ public class ElementSettingTab extends JPanel{
 	}
 	
 	/**
+	 * Szimmetria oldal legyartasat vegzo osztaly
+	 * 
+	 * @author akoel
+	 *
+	 */
+	class SymmetricEdgeFactory implements DrawnBlockFactory{
+
+		private DrawnBlock bs;
+		
+		@Override
+		public DrawnBlock getNewDrawnBlock(Status status, double x1, double y1) {
+			
+			//Ezeket szerzi parameterkent
+			Color color = Color.green;
+			
+			bs = new SymmetricEdgeElement( status , x1, y1, null, null, null, 0.0, color );
+			return bs;
+		}		
+	}
+	
+	/**
 	 * Szabad felszin legyartasat vegzo osztaly
 	 * 
 	 * @author akoel
@@ -193,11 +219,9 @@ public class ElementSettingTab extends JPanel{
 			Color color = Color.red;
 			
 			bs = new OpenEdgeElement( status , x1, y1, null, null, null, 0.0, alphaBegin, alphaEnd, temperature, color );
-//
-			
+		
 			return bs;
 		}
-		
 	}
 	
 	/**
