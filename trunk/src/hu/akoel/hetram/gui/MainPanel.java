@@ -52,7 +52,7 @@ public class MainPanel extends JFrame{
 	private StatusLine statusLine;
 	private SettingTabbedPanel controlPanel;
 
-	// GCanvas parameterei
+	// Canvas parameterei
 	private DrawnBlockCanvas myCanvas;
 	private Color background = Color.black;
 	private PossiblePixelPerUnits possiblePixelPerUnits = new PossiblePixelPerUnits( new PixelPerUnitValue(1, 1));
