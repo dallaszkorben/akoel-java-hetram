@@ -17,7 +17,12 @@ public class SettingTabbedPanel extends JTabbedPane{
 		super(LEFT);
 		
 		this.mainPanel = mainPanel;
-		
+	
+		ElementSettingTab elementSettingTab = new ElementSettingTab(mainPanel);
+		VTextIcon elementSettingTabTextIcon = new VTextIcon(elementSettingTab, "Rajzi elemek", VTextIcon.ROTATE_LEFT);
+		Icon elementSettingTabGraphicIcon = UIManager.getIcon("FileView.computerIcon");
+		CompositeIcon elementSettingTabIcon = new CompositeIcon( elementSettingTabGraphicIcon, elementSettingTabTextIcon );
+
 		ControlSettingTab controlSettingTab = new ControlSettingTab(mainPanel);
 		VTextIcon controlSettingTabTextIcon = new VTextIcon(controlSettingTab, "Vezérlés", VTextIcon.ROTATE_LEFT);
 		Icon controlSettingTabGraphicIcon = UIManager.getIcon("FileView.computerIcon");
@@ -33,6 +38,7 @@ public class SettingTabbedPanel extends JTabbedPane{
 		Icon canvasSettingTabGraphicIcon = UIManager.getIcon("FileView.computerIcon");
 		CompositeIcon canvasSettingTabIcon = new CompositeIcon( canvasSettingTabGraphicIcon, canvasSettingTabTextIcon );
 
+		this.addTab( null, elementSettingTabIcon, elementSettingTab );
 		this.addTab( null, controlSettingTabIcon, controlSettingTab );
 		this.addTab( null, visibilitySettingTabIcon, visibilitySettingTab);
 		this.addTab( null, canvasSettingTabIcon, canvasSettingTab);
