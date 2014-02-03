@@ -29,7 +29,7 @@ public class SettingTabbedPanel extends JTabbedPane{
 		CompositeIcon visibilitySettingTabIcon = new CompositeIcon( visibilitySettingTabGraphicIcon, visibilitySettingTabTextIcon );
 
 		CanvasSettingTab canvasSettingTab = new  CanvasSettingTab(mainPanel);
-		VTextIcon canvasSettingTabTextIcon = new VTextIcon(canvasSettingTab, "Szerkesztőfelület", VTextIcon.ROTATE_LEFT);
+		VTextIcon canvasSettingTabTextIcon = new VTextIcon(canvasSettingTab, "Rajzoló felület", VTextIcon.ROTATE_LEFT);
 		Icon canvasSettingTabGraphicIcon = UIManager.getIcon("FileView.computerIcon");
 		CompositeIcon canvasSettingTabIcon = new CompositeIcon( canvasSettingTabGraphicIcon, canvasSettingTabTextIcon );
 
