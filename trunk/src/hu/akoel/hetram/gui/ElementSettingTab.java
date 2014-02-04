@@ -1,6 +1,7 @@
 package hu.akoel.hetram.gui;
 
 import hu.akoel.hetram.drawingelements.BuildingStructureElement;
+import hu.akoel.hetram.drawingelements.BuildingStructureFullFilledElement;
 import hu.akoel.hetram.drawingelements.OpenEdgeElement;
 import hu.akoel.hetram.drawingelements.SymmetricEdgeElement;
 import hu.akoel.mgu.drawnblock.DrawnBlock;
@@ -264,7 +265,7 @@ public class ElementSettingTab extends JPanel{
 			
 			//Ha Hatched /// mintazat kell
 			
-				int patternSize = 15;
+/*				int patternSize = 15;
 			
 				TexturePaint normalTexturePaint;
 				TexturePaint selectedTexturePaint;
@@ -322,7 +323,12 @@ public class ElementSettingTab extends JPanel{
 				bs.setSelected( SELECTED_COLOR, SELECTED_STROKE, selectedTexturePaint );
 				bs.setInfocus(INFOCUS_COLOR, INFOCUS_STROKE, infocusTexturePaint );
 				bs.setInprocess( color, INPROCESS_STROKE, inprocessTexturePaint );
-			
+
+*/	
+		//Ha fullfilled
+		
+		bs = new BuildingStructureFullFilledElement(mainPanel, status, x1, y1, lambda, color, background);	
+
 			return bs;
 		}		
 	}

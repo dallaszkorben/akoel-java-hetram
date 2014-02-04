@@ -18,7 +18,6 @@ import java.util.List;
 
 public class StructureSet{
 
-	private double precision = 10000;
 	private HashSet<Structure> elementSet = new HashSet<>();	
 	
 	private double verticalMaximumDifference = -1;
@@ -157,7 +156,7 @@ public class StructureSet{
 						
 					}
 					
-					//Az elem lamba-ja
+					//Az elem lambda-ja
 					lambda = element.getLambda();	
 					
 					//Ha nem az elso elem balrol, de fuggolegesen lehet barmelyik

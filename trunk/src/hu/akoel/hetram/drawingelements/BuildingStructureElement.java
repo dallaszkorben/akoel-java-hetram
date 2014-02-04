@@ -3,7 +3,6 @@ package hu.akoel.hetram.drawingelements;
 import java.awt.Color;
 
 import hu.akoel.mgu.drawnblock.DrawnBlock;
-import hu.akoel.mgu.drawnblock.DrawnBlock.Status;
 
 public class BuildingStructureElement extends DrawnBlock{
 

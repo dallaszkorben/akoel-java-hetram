@@ -26,7 +26,7 @@ public class CanvasSettingTab extends MControlPanel {
 
 		//this.mainPanel = mainPanel;
 
-		this.myCanvas = mainPanel.getMCanvas();
+		this.myCanvas = mainPanel.getCanvas();
 		this.myGrid = mainPanel.getGrid();
 		this.myCrossLine = mainPanel.getCrossLine();
 		this.myScale = mainPanel.getScale();
