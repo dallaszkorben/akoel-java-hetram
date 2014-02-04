@@ -144,7 +144,7 @@ public class MainPanel extends JFrame{
 		new Test();
 	}
 
-	public DrawnBlockCanvas getMCanvas(){
+	public DrawnBlockCanvas getCanvas(){
 		return myCanvas;
 	}
 	
