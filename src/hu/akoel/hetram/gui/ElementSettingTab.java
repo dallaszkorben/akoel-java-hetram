@@ -1,30 +1,17 @@
 package hu.akoel.hetram.gui;
 
 import hu.akoel.hetram.drawingelements.FullPatternBuildingStructuralElement;
-import hu.akoel.hetram.drawingelements.ColoredBuildingSturcturalElement;
-import hu.akoel.hetram.drawingelements.RowPatternBuildingStructuralElement;
 import hu.akoel.hetram.drawingelements.HatchFullPatternAdapter;
 import hu.akoel.hetram.drawingelements.OpenEdgeElement;
 import hu.akoel.hetram.drawingelements.SymmetricEdgeElement;
-import hu.akoel.hetram.drawingelements.ZigZagRowPatternAdapter;
 import hu.akoel.mgu.drawnblock.DrawnBlock;
 import hu.akoel.mgu.drawnblock.DrawnBlockFactory;
 import hu.akoel.mgu.drawnblock.DrawnBlock.Status;
-import hu.akoel.mgu.drawnblock.example.BuildingMaterialBlock;
-import hu.akoel.mgu.drawnblock.example.InsulationBlock;
-
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Rectangle;
-import java.awt.Stroke;
-import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
@@ -47,8 +34,6 @@ public class ElementSettingTab extends JPanel{
 	JRadioButton openEdgeSelector;
 	
 	private MainPanel mainPanel ;
-	
-
 	
 	public ElementSettingTab( MainPanel mainPanel ){
 		super();
