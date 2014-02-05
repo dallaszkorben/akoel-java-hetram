@@ -12,10 +12,15 @@ import hu.akoel.hetram.gui.MainPanel;
 import hu.akoel.mgu.MGraphics;
 import hu.akoel.mgu.drawnblock.DrawnBlock;
 
-public class BuildingStructureFullFilledElement extends DrawnBlock{
+public class RowPatternBuildingStructuralElement extends DrawnBlock{
 
+	public static enum ORIENTATION{
+		HORIZONTAL,
+		VERTICAL
+	}
+	
 	private static final long serialVersionUID = -8868671968355924643L;
-
+	
 	private final Stroke NORMAL_STROKE = new BasicStroke(1);
 	
 	private final Color SELECTED_COLOR = Color.red;
@@ -30,24 +35,26 @@ public class BuildingStructureFullFilledElement extends DrawnBlock{
 	//private static final Color INFOCUS_BACKGROUND = Color.gray;
 	private final Stroke INFOCUS_STROKE = new BasicStroke(1);
 	
+	private RowPatternInterface rowPatternInterface;
 	private MainPanel mainPanel;
 	private double lambda;
 	private Color color;
 	private Color background; 
-
-	private BuildingStructureFullFilledElement(Status status, double x1, double y1,
+	
+	private RowPatternBuildingStructuralElement(Status status, double x1, double y1,
 			java.lang.Double minLength, java.lang.Double maxLength,
 			java.lang.Double minWidth, java.lang.Double maxWidth) {
 		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth);
 	}
 
-	private BuildingStructureFullFilledElement( Status status, double x1, double y1 ){
+	private RowPatternBuildingStructuralElement( Status status, double x1, double y1 ){
 		super( status, x1, y1 );
 	}
 	
-	public BuildingStructureFullFilledElement(MainPanel mainPanel, Status status, double x1, double y1, double lambda, Color color, Color background ) {
+	public RowPatternBuildingStructuralElement( RowPatternInterface rowPatternInterface, MainPanel mainPanel, Status status, double x1, double y1, double lambda, Color color, Color background ) {
 		super(status, x1, y1);
 				
+		this.rowPatternInterface = rowPatternInterface;
 		this.mainPanel = mainPanel;
 		this.lambda = lambda;		
 		this.color = color;
@@ -65,9 +72,11 @@ public class BuildingStructureFullFilledElement extends DrawnBlock{
 	
 	public void draw( MGraphics g2 ){
 
+		ORIENTATION orientation; 
+		
 		int patternWidth;
 		int patternHeight;
-
+		
 		TexturePaint normalTexturePaint = null;
 		TexturePaint selectedTexturePaint = null;
 		TexturePaint infocusTexturePaint = null;
@@ -75,15 +84,15 @@ public class BuildingStructureFullFilledElement extends DrawnBlock{
 
 		//Szelesebb mint magas
 		if( getWidth() > getHeight() ){
-			
+			orientation = ORIENTATION.HORIZONTAL;
 			patternHeight = mainPanel.getCanvas().getPixelYLengthByWorld(getHeight() ) ;
-			patternWidth = patternHeight / 2;
+			patternWidth = (int)(patternHeight / rowPatternInterface.getHeightPerWidth());
 			
 		//Magasabb mint szeles
 		}else{
-			
+			orientation = ORIENTATION.VERTICAL;
 			patternWidth = mainPanel.getCanvas().getPixelXLengthByWorld(getWidth() );
-			patternHeight = patternWidth / 2;
+			patternHeight = (int)(patternWidth / rowPatternInterface.getHeightPerWidth() );
 			
 		}
 	
@@ -119,11 +128,13 @@ public class BuildingStructureFullFilledElement extends DrawnBlock{
 			big4.fillRect( 0, 0, patternWidth, patternHeight );
 			big4.setColor( color ); 
 		
+			int shift;
+			
 			//Szelesebb mint magas
-			if( getWidth() > getHeight() ){
+			if( orientation.equals( ORIENTATION.HORIZONTAL ) ){
 
 				int pos = mainPanel.getCanvas().getPixelYPositionByWorldBeforeTranslate( getY1() );
-				int shift = pos - ( (int)(pos / patternHeight ) ) * patternHeight;
+				shift = pos - ( (int)(pos / patternHeight ) ) * patternHeight;
 			
 				if( pos < 0 ){
 				
@@ -133,43 +144,11 @@ public class BuildingStructureFullFilledElement extends DrawnBlock{
 					big4.translate(0, patternHeight);
 				}
 			
-				//Normal
-				big1.setStroke(NORMAL_STROKE);
-				big1.drawLine( 0, shift, patternWidth / 2, patternHeight + shift );
-				big1.drawLine( patternWidth, shift, patternWidth / 2, patternHeight + shift );	
-				
-				big1.drawLine( 0, shift-patternHeight, patternWidth / 2, shift );
-				big1.drawLine( patternWidth, shift-patternHeight, patternWidth / 2, shift );
-			
-				//Selected
-				big2.setStroke(SELECTED_STROKE);
-				big2.drawLine( 0, shift, patternWidth / 2, patternHeight + shift );
-				big2.drawLine( patternWidth, shift, patternWidth / 2, patternHeight + shift );	
-			
-				big2.drawLine( 0, shift-patternHeight, patternWidth / 2, shift );
-				big2.drawLine( patternWidth, shift-patternHeight, patternWidth / 2, shift );
-		
-				//Infocus
-				big3.setStroke(INFOCUS_STROKE);
-				big3.drawLine( 0, shift, patternWidth / 2, patternHeight + shift );
-				big3.drawLine( patternWidth, shift, patternWidth / 2, patternHeight + shift );	
-			
-				big3.drawLine( 0, shift-patternHeight, patternWidth / 2, shift );
-				big3.drawLine( patternWidth, shift-patternHeight, patternWidth / 2, shift );	
-			
-				//Inprocess
-				big4.setStroke(INPROCESS_STROKE);
-				big4.drawLine( 0, shift, patternWidth / 2, patternHeight + shift );
-				big4.drawLine( patternWidth, shift, patternWidth / 2, patternHeight + shift );	
-			
-				big4.drawLine( 0, shift-patternHeight, patternWidth / 2, shift );
-				big4.drawLine( patternWidth, shift-patternHeight, patternWidth / 2, shift );
-			
 			//Magasabb mint szeles
 			}else{
 			
 				int pos = mainPanel.getCanvas().getPixelXPositionByWorldBeforeTranslate( getX1() );
-				int shift = pos - ( (int)(pos / patternWidth ) ) * patternWidth;
+				shift = pos - ( (int)(pos / patternWidth ) ) * patternWidth;
 			
 				if( pos < 0 ){
 				
@@ -178,41 +157,25 @@ public class BuildingStructureFullFilledElement extends DrawnBlock{
 					big3.translate( patternWidth, 0 );
 					big4.translate( patternWidth, 0 );
 				}
-
-				//Normal
-				big1.setStroke(NORMAL_STROKE);
-				big1.drawLine( shift, 0, patternWidth + shift, patternHeight / 2 );
-				big1.drawLine( shift, patternHeight, patternWidth + shift, patternHeight / 2 );
-
-				big1.drawLine( shift - patternWidth, 0, shift, patternHeight / 2 );
-				big1.drawLine( shift - patternWidth, patternHeight, shift, patternHeight / 2 );
-			
-				//Selected
-				big2.setStroke(SELECTED_STROKE);
-				big2.drawLine( shift, 0, patternWidth + shift, patternHeight / 2 );
-				big2.drawLine( shift, patternHeight, patternWidth + shift, patternHeight / 2 );
-
-				big2.drawLine( shift - patternWidth, 0, shift, patternHeight / 2 );
-				big2.drawLine( shift - patternWidth, patternHeight, shift, patternHeight / 2 );
-			
-				//Infocus
-				big3.setStroke(INFOCUS_STROKE);
-				big3.drawLine( shift, 0, patternWidth + shift, patternHeight / 2 );
-				big3.drawLine( shift, patternHeight, patternWidth + shift, patternHeight / 2 );
-
-				big3.drawLine( shift - patternWidth, 0, shift, patternHeight / 2 );
-				big3.drawLine( shift - patternWidth, patternHeight, shift, patternHeight / 2 );
-			
-				//Inprocess
-				big4.setStroke(INPROCESS_STROKE);
-				big4.drawLine( shift, 0, patternWidth + shift, patternHeight / 2 );
-				big4.drawLine( shift, patternHeight, patternWidth + shift, patternHeight / 2 );
-
-				big4.drawLine( shift - patternWidth, 0, shift, patternHeight / 2 );
-				big4.drawLine( shift - patternWidth, patternHeight, shift, patternHeight / 2 );
 		
 			}
+
+			//Normal
+			big1.setStroke(NORMAL_STROKE);
+			rowPatternInterface.drawPattern(big1, orientation, shift, patternWidth, patternHeight);
 		
+			//Selected
+			big2.setStroke(SELECTED_STROKE);
+			rowPatternInterface.drawPattern(big2, orientation, shift, patternWidth, patternHeight);
+	
+			//Infocus
+			big3.setStroke(INFOCUS_STROKE);
+			rowPatternInterface.drawPattern(big3, orientation, shift, patternWidth, patternHeight);
+		
+			//Inprocess
+			big4.setStroke(INPROCESS_STROKE);
+			rowPatternInterface.drawPattern(big4, orientation, shift, patternWidth, patternHeight);
+			
 			Rectangle r = new Rectangle( 0, 0, patternWidth, patternHeight );
 			normalTexturePaint = new TexturePaint( bi1,r );
 			selectedTexturePaint = new TexturePaint( bi2,r ); 

@@ -1,9 +1,12 @@
 package hu.akoel.hetram.gui;
 
-import hu.akoel.hetram.drawingelements.BuildingStructureElement;
-import hu.akoel.hetram.drawingelements.BuildingStructureFullFilledElement;
+import hu.akoel.hetram.drawingelements.FullPatternBuildingStructuralElement;
+import hu.akoel.hetram.drawingelements.ColoredBuildingSturcturalElement;
+import hu.akoel.hetram.drawingelements.RowPatternBuildingStructuralElement;
+import hu.akoel.hetram.drawingelements.HatchFullPatternAdapter;
 import hu.akoel.hetram.drawingelements.OpenEdgeElement;
 import hu.akoel.hetram.drawingelements.SymmetricEdgeElement;
+import hu.akoel.hetram.drawingelements.ZigZagRowPatternAdapter;
 import hu.akoel.mgu.drawnblock.DrawnBlock;
 import hu.akoel.mgu.drawnblock.DrawnBlockFactory;
 import hu.akoel.mgu.drawnblock.DrawnBlock.Status;
@@ -233,19 +236,7 @@ public class ElementSettingTab extends JPanel{
 	 */
 	class BuildingStructureFactory implements DrawnBlockFactory{
 		
-		private final Stroke NORMAL_STROKE = new BasicStroke(1);
-		
-		private final Color SELECTED_COLOR = Color.red;
-		private final Color SELECTED_BACKGROUND = Color.yellow;
-		private final Stroke SELECTED_STROKE = new BasicStroke(1);
 
-		//private static final Color INPROCESS_COLOR = Color.yellow;
-		//private static final Color INPROCESS_BACKGROUND = Color.gray;
-		private final Stroke INPROCESS_STROKE = new BasicStroke(3);
-		
-		private final Color INFOCUS_COLOR = Color.yellow;
-		//private static final Color INFOCUS_BACKGROUND = Color.gray;
-		private final Stroke INFOCUS_STROKE = new BasicStroke(1);
 
 		private DrawnBlock bs;
 		
@@ -261,73 +252,12 @@ public class ElementSettingTab extends JPanel{
 			double lambda = 0.01;
 			Color color = Color.blue;
 			Color background = Color.black;
-//
-			
-			//Ha Hatched /// mintazat kell
-			
-/*				int patternSize = 15;
-			
-				TexturePaint normalTexturePaint;
-				TexturePaint selectedTexturePaint;
-				TexturePaint infocusTexturePaint;
-				TexturePaint inprocessTexturePaint;
-
-				Rectangle r = new Rectangle( 0, 0, patternSize, patternSize );
-			
-				//
-				//Normal
-				//
-				BufferedImage bi1 = new BufferedImage( patternSize, patternSize, BufferedImage.TYPE_INT_RGB); 
-				Graphics2D big1 = bi1.createGraphics();
-				big1.setColor( background );
-				big1.fillRect( 0, 0, patternSize, patternSize );
-				big1.setColor( color ); 
-				big1.drawLine( 0, 0, patternSize, patternSize );			 
-				normalTexturePaint = new TexturePaint( bi1,r ); 
-			
-				//
-				// Selected
-				//
-				BufferedImage bi2 = new BufferedImage( patternSize, patternSize, BufferedImage.TYPE_INT_RGB); 
-				Graphics2D big2 = bi2.createGraphics();
-				big2.setColor( SELECTED_BACKGROUND );
-				big2.fillRect( 0, 0, patternSize, patternSize );
-				big2.setColor( SELECTED_COLOR ); 
-				big2.drawLine( 0, 0, patternSize, patternSize );			 
-				selectedTexturePaint = new TexturePaint( bi2,r ); 
-			
-				//
-				// Infocus
-				//
-				BufferedImage bi3 = new BufferedImage( patternSize, patternSize, BufferedImage.TYPE_INT_RGB); 
-				Graphics2D big3 = bi3.createGraphics();
-				big3.setColor( background );
-				big3.fillRect( 0, 0, patternSize, patternSize );
-				big3.setColor( INFOCUS_COLOR ); 
-				big3.drawLine( 0, 0, patternSize, patternSize );			 
-				infocusTexturePaint = new TexturePaint( bi3,r ); 
-			
-				//
-				// Inprocess
-				//
-				BufferedImage bi4 = new BufferedImage( patternSize, patternSize, BufferedImage.TYPE_INT_RGB); 
-				Graphics2D big4 = bi4.createGraphics();
-				big4.setColor( background );
-				big4.fillRect( 0, 0, patternSize, patternSize );
-				big4.setColor( color ); 
-				big4.drawLine( 0, 0, patternSize, patternSize );			 
-				inprocessTexturePaint = new TexturePaint( bi4,r ); 
-			
-				bs = new BuildingStructureElement( status , x1, y1, lambda, color, background );
-				bs.setNormal( color, NORMAL_STROKE, normalTexturePaint );
-				bs.setSelected( SELECTED_COLOR, SELECTED_STROKE, selectedTexturePaint );
-				bs.setInfocus(INFOCUS_COLOR, INFOCUS_STROKE, infocusTexturePaint );
-				bs.setInprocess( color, INPROCESS_STROKE, inprocessTexturePaint );
-
-*/	
-		//Ha fullfilled
 		
-		bs = new BuildingStructureFullFilledElement(mainPanel, status, x1, y1, lambda, color, background);	
+			bs = new FullPatternBuildingStructuralElement( new HatchFullPatternAdapter(), status, x1, y1, lambda, color, background );
+			
+			//bs = new FillColorElement( status, x1, y1, lambda, color, background );
+			
+			//bs = new FillRowPatternElement( new ZigZagRowPatternAdapter(), mainPanel, status, x1, y1, lambda, color, background);	
 
 			return bs;
 		}		
