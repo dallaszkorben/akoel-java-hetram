@@ -3,9 +3,12 @@ package hu.akoel.hetram.gui;
 import hu.akoel.hetram.drawingelements.FullPatternBuildingStructuralElement;
 import hu.akoel.hetram.drawingelements.HatchFullPatternAdapter;
 import hu.akoel.hetram.drawingelements.OpenEdgeElement;
+import hu.akoel.hetram.drawingelements.RowPatternBuildingStructuralElement;
 import hu.akoel.hetram.drawingelements.SymmetricEdgeElement;
+import hu.akoel.hetram.drawingelements.ZigZagRowPatternAdapter;
 import hu.akoel.mgu.drawnblock.DrawnBlock;
 import hu.akoel.mgu.drawnblock.DrawnBlockFactory;
+import hu.akoel.mgu.drawnblock.DrawnBlockSnapControl;
 import hu.akoel.mgu.drawnblock.DrawnBlock.Status;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -14,9 +17,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.InputVerifier;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 public class ElementSettingTab extends JPanel{
@@ -136,16 +142,88 @@ public class ElementSettingTab extends JPanel{
 		drawingElementPanel.add( openEdgeSelector, drawingElementSelectorConstraints);		
 
 				
-		//-----------------------------------
-		//
-		// Visibility TAB feltoltese
-		//
-		//-----------------------------------
 		
+		//----------------------------------
+		//
+		// Epulet szerkezet - BLOKK
+		//
+		//----------------------------------
+		JPanel buildingStructureElementPanel = new JPanel();
+		buildingStructureElementPanel.setLayout( new GridBagLayout() );
+		buildingStructureElementPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Épulet szerkezet", TitledBorder.LEFT, TitledBorder.TOP ) );		
+		GridBagConstraints buildingStructureElementSelectorConstraints = new GridBagConstraints();
+		
+		JTextField lambdaField = new JTextField();
+		lambdaField.setColumns( 8 );
+		lambdaField.setText( String.valueOf( ElementSettingTab.this.mainPanel.getBuildingStructureLambda() ) );
+		lambdaField.setInputVerifier( new InputVerifier() {
+			String goodValue =  String.valueOf( ElementSettingTab.this.mainPanel.getBuildingStructureLambda() );
+			
+			@Override
+			public boolean verify(JComponent input) {
+				JTextField text = (JTextField)input;
+	            String possibleValue = text.getText();
+	            try{
+	            	Double.valueOf(possibleValue);
+	            	goodValue = possibleValue;
+	            }catch(NumberFormatException e){
+	            	text.setText(goodValue);
+	            	return false;
+	            }
+	            ElementSettingTab.this.mainPanel.setBuildingStructureLambda( Double.valueOf( goodValue ) );
+	            //ElementSettingTab.this.mainPanel.revalidateAndRepaint();
+
+	            return true;
+			}
+		});
+		
+		//1. sor lambda
+		buildingStructureElementSelectorConstraints.gridx = 0;
+		buildingStructureElementSelectorConstraints.gridy = 0;
+		buildingStructureElementSelectorConstraints.gridwidth = 1;
+		buildingStructureElementSelectorConstraints.weightx = 0;
+		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		buildingStructureElementPanel.add( new JLabel("λ: "), buildingStructureElementSelectorConstraints);
+
+		buildingStructureElementSelectorConstraints.gridx = 1;
+		buildingStructureElementSelectorConstraints.gridwidth = 1;
+		buildingStructureElementSelectorConstraints.weightx = 1;
+		buildingStructureElementPanel.add( lambdaField, buildingStructureElementSelectorConstraints);
+				
+		buildingStructureElementSelectorConstraints.gridx = 2;
+		buildingStructureElementSelectorConstraints.gridwidth = 1;
+		buildingStructureElementSelectorConstraints.weightx = 0;
+		buildingStructureElementPanel.add( new JLabel(" W/mK" ), buildingStructureElementSelectorConstraints );	
+		
+		//2. sor szin
+		
+		//3. sor hatter szin
+		
+		//4. sor kitoltes tipusa
+		
+	
+		//----------------------------------
+		//
+		// Szbad felulet - BLOKK
+		//
+		//----------------------------------
+		JPanel openEdgeElementPanel = new JPanel();
+		openEdgeElementPanel.setLayout( new GridBagLayout() );
+		openEdgeElementPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Szabad felület", TitledBorder.LEFT, TitledBorder.TOP ) );		
+		GridBagConstraints openEdgeElementSelectorConstraints = new GridBagConstraints();
+
+		
+		//-----------------------------------
+		//
+		// Rajzolo elemek TAB feltoltese
+		//
+		//-----------------------------------
+
+		row = 0;
+
 		//
 		// Rajzolando elem
 		//
-		row = 0;
 		drawingElementSettingPanelConstraints.gridx = 0;
 		drawingElementSettingPanelConstraints.gridy = row;
 		drawingElementSettingPanelConstraints.anchor = GridBagConstraints.NORTH;
@@ -153,6 +231,30 @@ public class ElementSettingTab extends JPanel{
 		drawingElementSettingPanelConstraints.weightx = 1;
 		drawingElementSettingPanelConstraints.fill = GridBagConstraints.HORIZONTAL;
 		this.add(drawingElementPanel, drawingElementSettingPanelConstraints);
+		
+		//
+		// Epuletszerkezet
+		//
+		row++;
+		drawingElementSettingPanelConstraints.gridx = 0;
+		drawingElementSettingPanelConstraints.gridy = row;
+		drawingElementSettingPanelConstraints.anchor = GridBagConstraints.NORTH;
+		drawingElementSettingPanelConstraints.weighty = 0;
+		drawingElementSettingPanelConstraints.weightx = 1;
+		drawingElementSettingPanelConstraints.fill = GridBagConstraints.HORIZONTAL;
+		this.add( buildingStructureElementPanel, drawingElementSettingPanelConstraints );
+		
+		//
+		// Szabad felulet
+		//
+		row++;
+		drawingElementSettingPanelConstraints.gridx = 0;
+		drawingElementSettingPanelConstraints.gridy = row;
+		drawingElementSettingPanelConstraints.anchor = GridBagConstraints.NORTH;
+		drawingElementSettingPanelConstraints.weighty = 0;
+		drawingElementSettingPanelConstraints.weightx = 1;
+		drawingElementSettingPanelConstraints.fill = GridBagConstraints.HORIZONTAL;
+		this.add( openEdgeElementPanel, drawingElementSettingPanelConstraints );
 		
 		//
 		// Felfele igazitas
@@ -230,19 +332,16 @@ public class ElementSettingTab extends JPanel{
 
 			//TODO lehet hogy at kellene pakolni a BuildingSturctureElement osztalyba			
 			
-//A beallitastol fuggoen a megfelelo DrawnBlock-ot hozza letre
-//es szinten a beallitasoktol fuggo beallitast vegez
-
-//Ezeket szerzi parameterkent
-			double lambda = 0.01;
+			//Parameterek megszerzese
+			double lambda = ElementSettingTab.this.mainPanel.getBuildingStructureLambda();
 			Color color = Color.blue;
 			Color background = Color.black;
 		
-			bs = new FullPatternBuildingStructuralElement( new HatchFullPatternAdapter(), status, x1, y1, lambda, color, background );
+			//bs = new FullPatternBuildingStructuralElement( new HatchFullPatternAdapter(), status, x1, y1, lambda, color, background );
 			
-			//bs = new FillColorElement( status, x1, y1, lambda, color, background );
+			//bs = new ColorPatternBuioldingStucturalElement( status, x1, y1, lambda, color, background );
 			
-			//bs = new FillRowPatternElement( new ZigZagRowPatternAdapter(), mainPanel, status, x1, y1, lambda, color, background);	
+			bs = new RowPatternBuildingStructuralElement( new ZigZagRowPatternAdapter(), mainPanel, status, x1, y1, lambda, color, background);	
 
 			return bs;
 		}		

@@ -6,7 +6,7 @@ import java.awt.Stroke;
 
 import hu.akoel.mgu.drawnblock.DrawnBlock;
 
-public class ColoredBuildingSturcturalElement extends DrawnBlock{
+public class ColoredPatternBuildingSturcturalElement extends DrawnBlock{
 
 	private final Stroke NORMAL_STROKE = new BasicStroke(1);
 	
@@ -26,17 +26,17 @@ public class ColoredBuildingSturcturalElement extends DrawnBlock{
 
 	private double lambda;
 
-	private ColoredBuildingSturcturalElement(Status status, double x1, double y1,
+	private ColoredPatternBuildingSturcturalElement(Status status, double x1, double y1,
 			java.lang.Double minLength, java.lang.Double maxLength,
 			java.lang.Double minWidth, java.lang.Double maxWidth) {
 		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth);
 	}
 
-	private ColoredBuildingSturcturalElement( Status status, double x1, double y1 ){
+	private ColoredPatternBuildingSturcturalElement( Status status, double x1, double y1 ){
 		super( status, x1, y1 );
 	}
 	
-	public ColoredBuildingSturcturalElement(Status status, double x1, double y1, double lambda, Color color, Color background ) {
+	public ColoredPatternBuildingSturcturalElement(Status status, double x1, double y1, double lambda, Color color, Color background ) {
 		super(status, x1, y1);
 		
 		this.lambda = lambda;		
