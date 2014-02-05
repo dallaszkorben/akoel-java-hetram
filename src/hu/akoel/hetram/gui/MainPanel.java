@@ -73,6 +73,8 @@ public class MainPanel extends JFrame{
 	//Element Settings
 	//	
 	private DRAWING_ELEMENT drawingElement = DRAWING_ELEMENT.BUILDINGELEMENT;
+	private double buildingStructureLambda = 0.02;
+
 	
 	//
 	//ControlSettings
@@ -127,6 +129,9 @@ public class MainPanel extends JFrame{
 	private Scale.UNIT unit = Scale.UNIT.m;
 	private double startScale = 10;
 	private double rate = 1.2;	
+	
+	
+	
 	
 	//
 	//Temporary data
@@ -455,6 +460,8 @@ elementSet = temporarelyGenerateElementSet();
 	}
 	
 	
+	
+	// Element Setting
 	public void setDrawingElement( DRAWING_ELEMENT drawingElement ){
 		this.drawingElement = drawingElement;
 	}
@@ -462,6 +469,16 @@ elementSet = temporarelyGenerateElementSet();
 	public DRAWING_ELEMENT getDrawingElement(){
 		return this.drawingElement;
 	}
+	
+	public void setBuildingStructureLambda( double buildingStructureLambda ){
+		this.buildingStructureLambda = buildingStructureLambda;
+	}
+	
+	public double getBuildingStructureLambda(){
+		return this.buildingStructureLambda;
+	}
+	
+	
 	
 	public void setDrawnBlockFactory( DrawnBlockFactory dbf ){
 		this.myCanvas.setDrawnBlockFactory( dbf );
