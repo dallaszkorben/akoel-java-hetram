@@ -4,6 +4,7 @@ import hu.akoel.hetram.drawingelements.OpenEdgeElement;
 import hu.akoel.hetram.drawingelements.RowPatternBuildingStructuralElement;
 import hu.akoel.hetram.drawingelements.SymmetricEdgeElement;
 import hu.akoel.hetram.drawingelements.ZigZagRowPatternAdapter;
+import hu.akoel.mgu.ColorSelector;
 import hu.akoel.mgu.drawnblock.DrawnBlock;
 import hu.akoel.mgu.drawnblock.DrawnBlockFactory;
 import hu.akoel.mgu.drawnblock.DrawnBlock.Status;
@@ -181,7 +182,52 @@ public class ElementSettingTab extends JPanel{
 		});
 		
 		ColorSelector lineColorSelector = new ColorSelector();
+		lineColorSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getElementLineColor() );
+		lineColorSelector.addActionListener( new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				ColorSelector cs = (ColorSelector) e.getSource();
+				ElementSettingTab.this.mainPanel.setElementLineColor( cs.getSelectedColor() );
+			}
+			
+		});
+				
+		ColorSelector backgroundColorSelector = new ColorSelector();
+		backgroundColorSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getElementBackgroundColor() );
+		backgroundColorSelector.addActionListener( new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				ColorSelector cs = (ColorSelector) e.getSource();
+				ElementSettingTab.this.mainPanel.setElementBackgroundColor( cs.getSelectedColor() );
+				
+			}
+		});
 	
+		
+		
+		ButtonGroup fillingTypeGroup = new ButtonGroup();
+		JRadioButton fillingTypeColorSelector = new JRadioButton("Szín", false );
+//		fillingTypeColorSelector.addActionListener(drawingElementSelectorActionListener);
+		fillingTypeGroup.add( fillingTypeColorSelector );
+		JRadioButton fillingTypeHomogenSelector = new JRadioButton("Homogén kitöltés", false );
+//		fillingTypeHomogenSelector.addActionListener(drawingElementSelectorActionListener);
+		fillingTypeGroup.add( fillingTypeHomogenSelector );
+		JRadioButton fillingTypeRowSelector = new JRadioButton("Sor kitöltés", false );
+//		fillingTypeRowSelector.addActionListener(drawingElementSelectorActionListener);
+		fillingTypeGroup.add( fillingTypeRowSelector );
+		
+		
+		symmetricEdgeSelector = new JRadioButton("Szimmetria él", false );
+		symmetricEdgeSelector.addActionListener(drawingElementSelectorActionListener);
+		bg.add( symmetricEdgeSelector );
+		openEdgeSelector = new JRadioButton("Szabad felszín", false );
+		openEdgeSelector.addActionListener(drawingElementSelectorActionListener);
+		bg.add( openEdgeSelector );
+		
 		
 		//1. sor lambda
 		buildingStructureElementSelectorConstraints.gridx = 0;
@@ -216,7 +262,7 @@ public class ElementSettingTab extends JPanel{
 		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
 		buildingStructureElementPanel.add( lineColorSelector, buildingStructureElementSelectorConstraints);
 		
-		//3. kitolto szin
+		//3. kitolto szin - Background
 		buildingStructureElementSelectorConstraints.gridx = 0;
 		buildingStructureElementSelectorConstraints.gridy = 2;
 		buildingStructureElementSelectorConstraints.gridwidth = 1;
@@ -224,7 +270,36 @@ public class ElementSettingTab extends JPanel{
 		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
 		buildingStructureElementPanel.add( new JLabel("Kitöltő szín: "), buildingStructureElementSelectorConstraints);
 		
-		//3. sor hatter szin
+		buildingStructureElementSelectorConstraints.gridx = 1;
+		buildingStructureElementSelectorConstraints.gridwidth = 1;
+		buildingStructureElementSelectorConstraints.weightx = 0;
+		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		buildingStructureElementPanel.add( backgroundColorSelector, buildingStructureElementSelectorConstraints);
+	
+		//4. Minta: szin
+		buildingStructureElementSelectorConstraints.gridx = 0;
+		buildingStructureElementSelectorConstraints.gridy = 3;
+		buildingStructureElementSelectorConstraints.gridwidth = 1;
+		buildingStructureElementSelectorConstraints.weightx = 0;
+		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		buildingStructureElementPanel.add( fillingTypeColorSelector, buildingStructureElementSelectorConstraints);
+
+		//5. Minta: homogen
+		buildingStructureElementSelectorConstraints.gridx = 0;
+		buildingStructureElementSelectorConstraints.gridy = 4;
+		buildingStructureElementSelectorConstraints.gridwidth = 1;
+		buildingStructureElementSelectorConstraints.weightx = 0;
+		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		buildingStructureElementPanel.add( fillingTypeHomogenSelector, buildingStructureElementSelectorConstraints);
+
+		//4. Minta: sor
+		buildingStructureElementSelectorConstraints.gridx = 0;
+		buildingStructureElementSelectorConstraints.gridy = 5;
+		buildingStructureElementSelectorConstraints.gridwidth = 1;
+		buildingStructureElementSelectorConstraints.weightx = 0;
+		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		buildingStructureElementPanel.add( fillingTypeRowSelector, buildingStructureElementSelectorConstraints);
+
 		
 		//4. sor kitoltes tipusa
 		
@@ -361,8 +436,8 @@ public class ElementSettingTab extends JPanel{
 			
 			//Parameterek megszerzese
 			double lambda = ElementSettingTab.this.mainPanel.getBuildingStructureLambda();
-			Color color = Color.blue;
-			Color background = Color.black;
+			Color color = ElementSettingTab.this.mainPanel.getElementLineColor();
+			Color background = ElementSettingTab.this.mainPanel.getElementBackgroundColor();
 		
 			//bs = new FullPatternBuildingStructuralElement( new HatchFullPatternAdapter(), status, x1, y1, lambda, color, background );
 			
