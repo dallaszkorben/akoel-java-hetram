@@ -1,33 +1,40 @@
 package hu.akoel.hetram.gui;
 
+import hu.akoel.hetram.drawingelements.ColoredPatternBuildingSturcturalElement;
+import hu.akoel.hetram.drawingelements.DotFullPatternAdapter;
+import hu.akoel.hetram.drawingelements.FullPatternBuildingStructuralElement;
+import hu.akoel.hetram.drawingelements.FullPatternInterface;
+import hu.akoel.hetram.drawingelements.HatchFullPatternAdapter;
 import hu.akoel.hetram.drawingelements.OpenEdgeElement;
 import hu.akoel.hetram.drawingelements.RowPatternBuildingStructuralElement;
+import hu.akoel.hetram.drawingelements.RowPatternInterface;
 import hu.akoel.hetram.drawingelements.SymmetricEdgeElement;
 import hu.akoel.hetram.drawingelements.ZigZagRowPatternAdapter;
 import hu.akoel.mgu.ColorSelector;
 import hu.akoel.mgu.drawnblock.DrawnBlock;
 import hu.akoel.mgu.drawnblock.DrawnBlockFactory;
 import hu.akoel.mgu.drawnblock.DrawnBlock.Status;
-import hu.akoel.mgu.grid.Grid;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
 import javax.swing.InputVerifier;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class ElementSettingTab extends JPanel{
 
@@ -39,9 +46,53 @@ public class ElementSettingTab extends JPanel{
 		OPENEDGE
 	}
 	
+	public static enum PATTERN_TYPE{
+		COLOR,
+		HOMOGEN,
+		ROW
+	}
+	
+	public static enum HOMOGEN_PATTERN{
+		HATCH( new HatchPatternSelectorItem() ),
+		DOT( new DotPatternSelectorItem() ),
+		;	
+		
+		PatternSelectorItem patternSelectorItem;
+		
+		HOMOGEN_PATTERN( PatternSelectorItem patternSelectorItem ){
+			this.patternSelectorItem = patternSelectorItem;
+		}
+		
+		public PatternSelectorItem getPatternSelectorItem(){
+			return patternSelectorItem;
+		}
+	}
+	
+	public static enum ROW_PATTERN{
+		ZIGZAG( new ZigZagPatternSelectorItem() );
+		
+		PatternSelectorItem patternSelectorItem;
+		
+		ROW_PATTERN( PatternSelectorItem patternSelectorItem ){
+			this.patternSelectorItem = patternSelectorItem;
+		}
+		
+		public PatternSelectorItem getPatternSelectorItem(){
+			return patternSelectorItem;
+		}
+	}
+	
+	
 	JRadioButton buildingElementSelector;
 	JRadioButton symmetricEdgeSelector;
 	JRadioButton openEdgeSelector;
+	
+	JRadioButton patternTypeColorSelector;
+	JRadioButton patternTypeHomogenSelector;
+	JRadioButton patternTypeRowSelector;
+	
+	PatternSelector homogenPatternSelector;
+	PatternSelector rowPatternSelector;
 	
 	private MainPanel mainPanel ;
 	
@@ -70,19 +121,19 @@ public class ElementSettingTab extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if ( e.getSource() == buildingElementSelector ) {
+				if ( e.getSource().equals( buildingElementSelector ) ) {
 					ElementSettingTab.this.mainPanel.setDrawingElement( DRAWING_ELEMENT.BUILDINGELEMENT );
 				
 					DrawnBlockFactory dbf = new BuildingStructureFactory();
 					ElementSettingTab.this.mainPanel.setDrawnBlockFactory( dbf );
 					
-				} else if ( e.getSource() == symmetricEdgeSelector ) {
+				} else if ( e.getSource().equals( symmetricEdgeSelector ) ) {
 					ElementSettingTab.this.mainPanel.setDrawingElement( DRAWING_ELEMENT.SYMMETRICEDGE );
 					
 					DrawnBlockFactory dbf = new SymmetricEdgeFactory();
 					ElementSettingTab.this.mainPanel.setDrawnBlockFactory( dbf );
 					
-				} else if ( e.getSource() == openEdgeSelector ) {
+				} else if ( e.getSource().equals( openEdgeSelector ) ){
 					ElementSettingTab.this.mainPanel.setDrawingElement( DRAWING_ELEMENT.OPENEDGE );
 					
 					DrawnBlockFactory dbf = new OpenEdgeFactory();
@@ -107,6 +158,8 @@ public class ElementSettingTab extends JPanel{
 		//Default ertek beallitasa
 		if( ElementSettingTab.this.mainPanel.getDrawingElement().equals( DRAWING_ELEMENT.BUILDINGELEMENT ) ){
 			buildingElementSelector.setSelected( true );
+
+//TODO changelistener actionlistener helyett
 			
 			//Code ismetles, de nem tehetek rola, a setselected(true) nem inditja el az actionPerformed() metodust
 			DrawnBlockFactory dbf = new BuildingStructureFactory();
@@ -206,28 +259,104 @@ public class ElementSettingTab extends JPanel{
 				
 			}
 		});
-	
-		
 		
 		ButtonGroup fillingTypeGroup = new ButtonGroup();
-		JRadioButton fillingTypeColorSelector = new JRadioButton("Szín", false );
-//		fillingTypeColorSelector.addActionListener(drawingElementSelectorActionListener);
-		fillingTypeGroup.add( fillingTypeColorSelector );
-		JRadioButton fillingTypeHomogenSelector = new JRadioButton("Homogén kitöltés", false );
-//		fillingTypeHomogenSelector.addActionListener(drawingElementSelectorActionListener);
-		fillingTypeGroup.add( fillingTypeHomogenSelector );
-		JRadioButton fillingTypeRowSelector = new JRadioButton("Sor kitöltés", false );
-//		fillingTypeRowSelector.addActionListener(drawingElementSelectorActionListener);
-		fillingTypeGroup.add( fillingTypeRowSelector );
+		patternTypeColorSelector = new JRadioButton("Szín", false );
+		fillingTypeGroup.add( patternTypeColorSelector );
+		patternTypeHomogenSelector = new JRadioButton("Homogén kitöltés", false );
+		fillingTypeGroup.add( patternTypeHomogenSelector );
+		patternTypeRowSelector = new JRadioButton("Sor kitöltés", false );
+		fillingTypeGroup.add( patternTypeRowSelector );
 		
+		//Letrehozza a Homogen mintazatot valaszto combobox-ot
+		homogenPatternSelector = new PatternSelector();
+		//Feltolti a combobox-ot az elemekkel
+		for( int i = 0; i < HOMOGEN_PATTERN.values().length; i++ ){
+			homogenPatternSelector.addItem( HOMOGEN_PATTERN.values()[i].getPatternSelectorItem() );
+		}
+		//Kivalasztja a default erteket
+		homogenPatternSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getHomogenPattern().ordinal() );
+		//Figyelo interfesz hozzaadasa
+		homogenPatternSelector.addActionListener( new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				PatternSelector ps = (PatternSelector)e.getSource();
+				ElementSettingTab.this.mainPanel.setHomogenPattern( HOMOGEN_PATTERN.values()[ ps.getSelectedIndex() ] );
+				
+			}
+		});
+
+		//Letrehozza a Row mintazatot valaszto combobox-ot
+		rowPatternSelector = new PatternSelector();
+		//Feltolti a combobox-ot az elemekkel
+		for( int i = 0; i < ROW_PATTERN.values().length; i++ ){
+			rowPatternSelector.addItem( ROW_PATTERN.values()[i].getPatternSelectorItem() );
+		}
+		//Kivalasztja a default erteket
+		rowPatternSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getRowPattern().ordinal() );
+		//Figyelo interface hozzaadasa
+		rowPatternSelector.addActionListener( new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				PatternSelector ps = (PatternSelector)e.getSource();
+				ElementSettingTab.this.mainPanel.setRowPattern( ROW_PATTERN.values()[ ps.getSelectedIndex() ] );
+				
+			}
+		});
 		
-		symmetricEdgeSelector = new JRadioButton("Szimmetria él", false );
-		symmetricEdgeSelector.addActionListener(drawingElementSelectorActionListener);
-		bg.add( symmetricEdgeSelector );
-		openEdgeSelector = new JRadioButton("Szabad felszín", false );
-		openEdgeSelector.addActionListener(drawingElementSelectorActionListener);
-		bg.add( openEdgeSelector );
+		//Ide kell helyezni, mert olyan mezore hivatkozik ami kesobb lenne definialva
+		patternTypeColorSelector.addChangeListener( new ChangeListener(){
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				AbstractButton aButton = (AbstractButton)e.getSource();
+		        ButtonModel aModel = aButton.getModel();
+		        //boolean armed = aModel.isArmed();
+		        //boolean pressed = aModel.isPressed();
+		        boolean selected = aModel.isSelected();
+		        
+		        if( selected ){
+		        	ElementSettingTab.this.mainPanel.setPatternType( PATTERN_TYPE.COLOR );
+		        	homogenPatternSelector.setEnabled( false );
+		        	rowPatternSelector.setEnabled( false );
+		        }
+			}			
+		});
+		patternTypeHomogenSelector.addChangeListener( new ChangeListener(){
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				
+		        ButtonModel aModel = ((AbstractButton)e.getSource()).getModel();
+		        if( aModel.isSelected() ){		        
+		        	ElementSettingTab.this.mainPanel.setPatternType( PATTERN_TYPE.HOMOGEN );
+		        	homogenPatternSelector.setEnabled( true );
+		        	rowPatternSelector.setEnabled( false );
+		        }
+			}			
+		});
+		patternTypeRowSelector.addChangeListener( new ChangeListener(){
+			@Override
+			public void stateChanged(ChangeEvent e) {
+		        ButtonModel aModel = ((AbstractButton)e.getSource()).getModel();
+		        if( aModel.isSelected() ){		        
+		        	ElementSettingTab.this.mainPanel.setPatternType( PATTERN_TYPE.ROW );
+		        	homogenPatternSelector.setEnabled( false );
+		        	rowPatternSelector.setEnabled( true );
+		        }
+			}			
+		});
 		
+		PATTERN_TYPE patternSelector = ElementSettingTab.this.mainPanel.getPatternType();
+		if( patternSelector.equals( PATTERN_TYPE.COLOR ) ){
+			patternTypeColorSelector.setSelected(true);			
+		}else if( patternSelector.equals( PATTERN_TYPE.HOMOGEN ) ){			
+			patternTypeHomogenSelector.setSelected(true);
+		}else if( patternSelector.equals( PATTERN_TYPE.ROW ) ){
+			patternTypeRowSelector.setSelected(true);		
+		}
 		
 		//1. sor lambda
 		buildingStructureElementSelectorConstraints.gridx = 0;
@@ -251,12 +380,12 @@ public class ElementSettingTab extends JPanel{
 		//2. rajzolat szin
 		buildingStructureElementSelectorConstraints.gridx = 0;
 		buildingStructureElementSelectorConstraints.gridy = 1;
-		buildingStructureElementSelectorConstraints.gridwidth = 1;
+		buildingStructureElementSelectorConstraints.gridwidth = 2;
 		buildingStructureElementSelectorConstraints.weightx = 0;
 		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
 		buildingStructureElementPanel.add( new JLabel("Rajzolat szín: "), buildingStructureElementSelectorConstraints);
 		
-		buildingStructureElementSelectorConstraints.gridx = 1;
+		buildingStructureElementSelectorConstraints.gridx = 2;
 		buildingStructureElementSelectorConstraints.gridwidth = 1;
 		buildingStructureElementSelectorConstraints.weightx = 0;
 		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
@@ -265,12 +394,12 @@ public class ElementSettingTab extends JPanel{
 		//3. kitolto szin - Background
 		buildingStructureElementSelectorConstraints.gridx = 0;
 		buildingStructureElementSelectorConstraints.gridy = 2;
-		buildingStructureElementSelectorConstraints.gridwidth = 1;
+		buildingStructureElementSelectorConstraints.gridwidth = 2;
 		buildingStructureElementSelectorConstraints.weightx = 0;
 		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
 		buildingStructureElementPanel.add( new JLabel("Kitöltő szín: "), buildingStructureElementSelectorConstraints);
 		
-		buildingStructureElementSelectorConstraints.gridx = 1;
+		buildingStructureElementSelectorConstraints.gridx = 2;
 		buildingStructureElementSelectorConstraints.gridwidth = 1;
 		buildingStructureElementSelectorConstraints.weightx = 0;
 		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
@@ -279,29 +408,42 @@ public class ElementSettingTab extends JPanel{
 		//4. Minta: szin
 		buildingStructureElementSelectorConstraints.gridx = 0;
 		buildingStructureElementSelectorConstraints.gridy = 3;
-		buildingStructureElementSelectorConstraints.gridwidth = 1;
+		buildingStructureElementSelectorConstraints.gridwidth = 2;
 		buildingStructureElementSelectorConstraints.weightx = 0;
 		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
-		buildingStructureElementPanel.add( fillingTypeColorSelector, buildingStructureElementSelectorConstraints);
+		buildingStructureElementPanel.add( patternTypeColorSelector, buildingStructureElementSelectorConstraints);
 
 		//5. Minta: homogen
 		buildingStructureElementSelectorConstraints.gridx = 0;
 		buildingStructureElementSelectorConstraints.gridy = 4;
+		buildingStructureElementSelectorConstraints.gridwidth = 2;
+		buildingStructureElementSelectorConstraints.weightx = 0;
+		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		buildingStructureElementPanel.add( patternTypeHomogenSelector, buildingStructureElementSelectorConstraints);
+
+		//5. Homogen pattern selector 
+		buildingStructureElementSelectorConstraints.gridx = 2;
+		buildingStructureElementSelectorConstraints.gridy = 4;
 		buildingStructureElementSelectorConstraints.gridwidth = 1;
 		buildingStructureElementSelectorConstraints.weightx = 0;
 		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
-		buildingStructureElementPanel.add( fillingTypeHomogenSelector, buildingStructureElementSelectorConstraints);
-
-		//4. Minta: sor
+		buildingStructureElementPanel.add( homogenPatternSelector, buildingStructureElementSelectorConstraints);
+		
+		//6. Minta: sor
 		buildingStructureElementSelectorConstraints.gridx = 0;
+		buildingStructureElementSelectorConstraints.gridy = 5;
+		buildingStructureElementSelectorConstraints.gridwidth = 2;
+		buildingStructureElementSelectorConstraints.weightx = 0;
+		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		buildingStructureElementPanel.add( patternTypeRowSelector, buildingStructureElementSelectorConstraints);
+
+		//6. Row pattern selector 
+		buildingStructureElementSelectorConstraints.gridx = 2;
 		buildingStructureElementSelectorConstraints.gridy = 5;
 		buildingStructureElementSelectorConstraints.gridwidth = 1;
 		buildingStructureElementSelectorConstraints.weightx = 0;
 		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
-		buildingStructureElementPanel.add( fillingTypeRowSelector, buildingStructureElementSelectorConstraints);
-
-		
-		//4. sor kitoltes tipusa
+		buildingStructureElementPanel.add( rowPatternSelector, buildingStructureElementSelectorConstraints);
 		
 	
 		//----------------------------------
@@ -371,6 +513,8 @@ public class ElementSettingTab extends JPanel{
 		
 	}
 	
+
+	
 	/**
 	 * Szimmetria oldal legyartasat vegzo osztaly
 	 * 
@@ -424,8 +568,6 @@ public class ElementSettingTab extends JPanel{
 	 *
 	 */
 	class BuildingStructureFactory implements DrawnBlockFactory{
-		
-
 
 		private DrawnBlock bs;
 		
@@ -439,15 +581,85 @@ public class ElementSettingTab extends JPanel{
 			Color color = ElementSettingTab.this.mainPanel.getElementLineColor();
 			Color background = ElementSettingTab.this.mainPanel.getElementBackgroundColor();
 		
-			//bs = new FullPatternBuildingStructuralElement( new HatchFullPatternAdapter(), status, x1, y1, lambda, color, background );
-			
-			//bs = new ColorPatternBuioldingStucturalElement( status, x1, y1, lambda, color, background );
-			
-			bs = new RowPatternBuildingStructuralElement( new ZigZagRowPatternAdapter(), mainPanel, status, x1, y1, lambda, color, background);	
+			PATTERN_TYPE patternSelector = ElementSettingTab.this.mainPanel.getPatternType();
+			if( patternSelector.equals( PATTERN_TYPE.COLOR ) ){
+				bs = new ColoredPatternBuildingSturcturalElement( status, x1, y1, lambda, color, background );
+			}else if( patternSelector.equals( PATTERN_TYPE.HOMOGEN ) ){	
+				HOMOGEN_PATTERN homogenPattern = ElementSettingTab.this.mainPanel.getHomogenPattern();
+				FullPatternInterface fullPatternInterface = null;
+				if( homogenPattern.equals( HOMOGEN_PATTERN.HATCH ) ){
+					fullPatternInterface = new HatchFullPatternAdapter();
+				}else if( homogenPattern.equals( HOMOGEN_PATTERN.DOT ) ){
+					fullPatternInterface = new DotFullPatternAdapter();
+				}
+				
+				bs = new FullPatternBuildingStructuralElement( fullPatternInterface, status, x1, y1, lambda, color, background );
+			}else if( patternSelector.equals( PATTERN_TYPE.ROW ) ){
+				ROW_PATTERN rowPattern = ElementSettingTab.this.mainPanel.getRowPattern();
+				RowPatternInterface rowPatternInterface = null;
+				if( rowPattern.equals( ROW_PATTERN.ZIGZAG ) ){
+					rowPatternInterface = new ZigZagRowPatternAdapter();
+				}
+				
+				bs = new RowPatternBuildingStructuralElement( rowPatternInterface, mainPanel, status, x1, y1, lambda, color, background);		
+			}
 
 			return bs;
 		}		
 	}
 }
 
+
+class HatchPatternSelectorItem implements PatternSelectorItem{
+
+	@Override
+	public void drawImageIcon( Graphics2D g2, int width, int height ) {
+		int divider = 3;				
+		double growth = width / divider;
+		
+		for( int i = 0; i <= divider; i++ ){
+		
+			int xPos = (int)( i * growth );
+		
+			g2.drawLine( xPos, 0, (int)(xPos + growth), height);
+		
+		}
+	}			
+}
+
+class DotPatternSelectorItem implements PatternSelectorItem{
+
+	@Override
+	public void drawImageIcon( Graphics2D g2, int width, int height ) {
+		int divider = 7;				
+		double growth = width / divider;
+		
+		for( double i = 0; i < width; i += growth ){
+			
+			for( double j = 0; j < height; j += growth ){
+
+				g2.drawLine( (int)i, (int)j, (int)i, (int)j);
+
+			}
+		}
+	}			
+}
+
+class ZigZagPatternSelectorItem implements PatternSelectorItem{
+
+	@Override
+	public void drawImageIcon( Graphics2D g2, int width, int height ) {
+		int divider = 3;				
+		double growth = width / divider;
+		
+		for( int i = 0; i <= divider; i++ ){
+			
+			int xPos = (int)( i * growth );
+		
+			g2.drawLine( xPos, 0, (int)(xPos + growth/2), height);
+			g2.drawLine( (int)(xPos + growth), 0, (int)(xPos + growth/2), height);
+		
+		}
+	}			
+}
 

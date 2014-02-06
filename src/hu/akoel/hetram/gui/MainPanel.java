@@ -5,6 +5,9 @@ import hu.akoel.hetram.accessories.Length;
 import hu.akoel.hetram.accessories.Orientation;
 import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.gui.ElementSettingTab.DRAWING_ELEMENT;
+import hu.akoel.hetram.gui.ElementSettingTab.HOMOGEN_PATTERN;
+import hu.akoel.hetram.gui.ElementSettingTab.PATTERN_TYPE;
+import hu.akoel.hetram.gui.ElementSettingTab.ROW_PATTERN;
 import hu.akoel.hetram.listeners.CalculationListener;
 import hu.akoel.hetram.structures.StructureSet;
 import hu.akoel.hetram.structures.Structure;
@@ -76,8 +79,10 @@ public class MainPanel extends JFrame{
 	private double buildingStructureLambda = 0.02;
 	private Color elementLineColor = Color.blue;
 	private Color elementBackgroundColor = Color.black;
+	private PATTERN_TYPE patternType = PATTERN_TYPE.COLOR;
+	private HOMOGEN_PATTERN homogenPattern = HOMOGEN_PATTERN.HATCH;
+	private ROW_PATTERN rowPattern = ROW_PATTERN.ZIGZAG;
 
-	
 	//
 	//Vezerles - ControlSettings
 	//
@@ -509,9 +514,34 @@ elementSet = temporarelyGenerateElementSet();
 		this.elementBackgroundColor = color;
 	}
 	
+	public PATTERN_TYPE getPatternType() {
+		return patternType;
+	}
+
+	public void setPatternType(PATTERN_TYPE patternType) {
+		this.patternType = patternType;
+	}
+	
+	public HOMOGEN_PATTERN getHomogenPattern() {
+		return homogenPattern;
+	}
+
+	public void setHomogenPattern(HOMOGEN_PATTERN homogenPattern) {
+		this.homogenPattern = homogenPattern;
+	}
+
+	public ROW_PATTERN getRowPattern() {
+		return rowPattern;
+	}
+
+	public void setRowPattern(ROW_PATTERN rowPattern) {
+		this.rowPattern = rowPattern;
+	}
+	
 	public void setDrawnBlockFactory( DrawnBlockFactory dbf ){
 		this.myCanvas.setDrawnBlockFactory( dbf );
 	}
+	
 	
 	/**
 	 * Termikus pontok letrehozasa es homersekleteik kiszamitasa
