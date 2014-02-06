@@ -70,19 +70,21 @@ public class MainPanel extends JFrame{
 	//------------------------
 
 	//
-	//Element Settings
+	//Rajzi elemek - ElementSettings
 	//	
 	private DRAWING_ELEMENT drawingElement = DRAWING_ELEMENT.BUILDINGELEMENT;
 	private double buildingStructureLambda = 0.02;
+	private Color elementLineColor = Color.blue;
+	private Color elementBackgroundColor = Color.black;
 
 	
 	//
-	//ControlSettings
+	//Vezerles - ControlSettings
 	//
 	double calculationPrecision = 0.001;
 	
 	//
-	//VisibilitySettings
+	//Megjelenites - VisibilitySettings
 	//
 	private boolean needDrawTemperatureByColor = true;
 
@@ -95,7 +97,7 @@ public class MainPanel extends JFrame{
 	private CURRENT_TYPE currentType = CURRENT_TYPE.TRAJECTORY;
 	
 	//
-	//CanvasSettings
+	//Rajzolofelulet - CanvasSettings
 	//	
 	// Axis parameterei	
 	private boolean needDrawAxis = false;
@@ -320,6 +322,12 @@ elementSet = temporarelyGenerateElementSet();
 //			}
 	}
 	
+	
+	//-----------------------------------
+	//
+	// Megjelenites - Visibility setting
+	//
+	//-----------------------------------
 	public void setThermicPointList( ThermicPointList thermicPointList ){
 		this.thermicPointList = thermicPointList;
 		myCanvas.revalidateAndRepaintCoreCanvas();
@@ -370,7 +378,11 @@ elementSet = temporarelyGenerateElementSet();
 	
 	
 	
-	
+	//-------------------------------
+	//
+	// Rajzolofelulet - CanvasSetting
+	//
+	//-------------------------------
 	public boolean isNeedDrawAxis(){
 		return needDrawAxis;
 	}
@@ -460,8 +472,11 @@ elementSet = temporarelyGenerateElementSet();
 	}
 	
 	
-	
-	// Element Setting
+	//------------------------------
+	//
+	// Rajzi elemenk -ElementSetting
+	//
+	//------------------------------
 	public void setDrawingElement( DRAWING_ELEMENT drawingElement ){
 		this.drawingElement = drawingElement;
 	}
@@ -478,7 +493,21 @@ elementSet = temporarelyGenerateElementSet();
 		return this.buildingStructureLambda;
 	}
 	
+	public Color getElementLineColor(){
+		return elementLineColor;
+	}
 	
+	public void setElementLineColor( Color color ){
+		this.elementLineColor = color;
+	}
+	
+	public Color getElementBackgroundColor(){
+		return elementBackgroundColor;
+	}
+	
+	public void setElementBackgroundColor( Color color ){
+		this.elementBackgroundColor = color;
+	}
 	
 	public void setDrawnBlockFactory( DrawnBlockFactory dbf ){
 		this.myCanvas.setDrawnBlockFactory( dbf );
