@@ -1,23 +1,26 @@
 package hu.akoel.hetram.gui;
 
-import hu.akoel.hetram.drawingelements.FullPatternBuildingStructuralElement;
-import hu.akoel.hetram.drawingelements.HatchFullPatternAdapter;
 import hu.akoel.hetram.drawingelements.OpenEdgeElement;
 import hu.akoel.hetram.drawingelements.RowPatternBuildingStructuralElement;
 import hu.akoel.hetram.drawingelements.SymmetricEdgeElement;
 import hu.akoel.hetram.drawingelements.ZigZagRowPatternAdapter;
 import hu.akoel.mgu.drawnblock.DrawnBlock;
 import hu.akoel.mgu.drawnblock.DrawnBlockFactory;
-import hu.akoel.mgu.drawnblock.DrawnBlockSnapControl;
 import hu.akoel.mgu.drawnblock.DrawnBlock.Status;
+import hu.akoel.mgu.grid.Grid;
+
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.InputVerifier;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -177,6 +180,9 @@ public class ElementSettingTab extends JPanel{
 			}
 		});
 		
+		ColorSelector lineColorSelector = new ColorSelector();
+	
+		
 		//1. sor lambda
 		buildingStructureElementSelectorConstraints.gridx = 0;
 		buildingStructureElementSelectorConstraints.gridy = 0;
@@ -188,6 +194,7 @@ public class ElementSettingTab extends JPanel{
 		buildingStructureElementSelectorConstraints.gridx = 1;
 		buildingStructureElementSelectorConstraints.gridwidth = 1;
 		buildingStructureElementSelectorConstraints.weightx = 1;
+		//buildingStructureElementSelectorConstraints.fill = GridBagConstraints.HORIZONTAL;
 		buildingStructureElementPanel.add( lambdaField, buildingStructureElementSelectorConstraints);
 				
 		buildingStructureElementSelectorConstraints.gridx = 2;
@@ -195,7 +202,27 @@ public class ElementSettingTab extends JPanel{
 		buildingStructureElementSelectorConstraints.weightx = 0;
 		buildingStructureElementPanel.add( new JLabel(" W/mK" ), buildingStructureElementSelectorConstraints );	
 		
-		//2. sor szin
+		//2. rajzolat szin
+		buildingStructureElementSelectorConstraints.gridx = 0;
+		buildingStructureElementSelectorConstraints.gridy = 1;
+		buildingStructureElementSelectorConstraints.gridwidth = 1;
+		buildingStructureElementSelectorConstraints.weightx = 0;
+		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		buildingStructureElementPanel.add( new JLabel("Rajzolat szín: "), buildingStructureElementSelectorConstraints);
+		
+		buildingStructureElementSelectorConstraints.gridx = 1;
+		buildingStructureElementSelectorConstraints.gridwidth = 1;
+		buildingStructureElementSelectorConstraints.weightx = 0;
+		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		buildingStructureElementPanel.add( lineColorSelector, buildingStructureElementSelectorConstraints);
+		
+		//3. kitolto szin
+		buildingStructureElementSelectorConstraints.gridx = 0;
+		buildingStructureElementSelectorConstraints.gridy = 2;
+		buildingStructureElementSelectorConstraints.gridwidth = 1;
+		buildingStructureElementSelectorConstraints.weightx = 0;
+		buildingStructureElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		buildingStructureElementPanel.add( new JLabel("Kitöltő szín: "), buildingStructureElementSelectorConstraints);
 		
 		//3. sor hatter szin
 		
