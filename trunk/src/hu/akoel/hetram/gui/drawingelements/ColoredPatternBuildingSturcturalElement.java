@@ -1,4 +1,4 @@
-package hu.akoel.hetram.drawingelements;
+package hu.akoel.hetram.gui.drawingelements;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

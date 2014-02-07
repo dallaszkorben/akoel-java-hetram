@@ -1,6 +1,6 @@
-package hu.akoel.hetram.drawingelements;
+package hu.akoel.hetram.gui.drawingelements;
 
-import hu.akoel.hetram.drawingelements.RowPatternBuildingStructuralElement.ORIENTATION;
+import hu.akoel.hetram.gui.drawingelements.RowPatternBuildingStructuralElement.ORIENTATION;
 
 import java.awt.Graphics2D;
 

@@ -1,4 +1,4 @@
-package hu.akoel.hetram.drawingelements;
+package hu.akoel.hetram.gui.drawingelements;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -6,9 +6,9 @@ import java.awt.Stroke;
 
 import hu.akoel.mgu.drawnblock.DrawnBlock;
 
-public class SymmetricEdgeElement extends DrawnBlock{
+public class OpenEdgeElement extends DrawnBlock{
 
-	private static final long serialVersionUID = -1063105162303271067L;
+	private static final long serialVersionUID = -1063105162303471067L;
 	
 	private static final Stroke NORMAL_STROKE = new BasicStroke(3);
 	
@@ -19,19 +19,27 @@ public class SymmetricEdgeElement extends DrawnBlock{
 	private static final Stroke INFOCUS_STROKE = new BasicStroke(3);
 	
 	private static final Stroke INPROCESS_STROKE = new BasicStroke(5);
+	
+	private double alphaBegin;
+	private double alphaEnd;
+	private double temperature;
 
-	private SymmetricEdgeElement(Status status, double x1, double y1,
+	private OpenEdgeElement(Status status, double x1, double y1,
 			java.lang.Double minLength, java.lang.Double maxLength,
 			java.lang.Double minWidth, java.lang.Double maxWidth) {
 		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth);
 	}
 
-	private SymmetricEdgeElement( Status status, double x1, double y1 ){
+	private OpenEdgeElement( Status status, double x1, double y1 ){
 		super( status, x1, y1 );
 	}
 	
-	public SymmetricEdgeElement( Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth, Color color ){
+	public OpenEdgeElement( Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth, double alphaBegin, double alphaEnd, double temperature, Color color ){
 		super( status, x1, y1, minLength, maxLength, minWidth, maxWidth );
+		
+		this.alphaBegin = alphaBegin;
+		this.alphaEnd = alphaEnd;
+		this.temperature = temperature;
 		
 		setNormal( color, NORMAL_STROKE, color );
 		setSelected( SELECTED_COLOR, SELECTED_STROKE, color );
@@ -41,4 +49,17 @@ public class SymmetricEdgeElement extends DrawnBlock{
 		refreshStatus();
 		
 	}
+
+	public double getAlphaStart() {
+		return alphaBegin;
+	}
+
+	public double getAlphaEnd() {
+		return alphaEnd;
+	}
+
+	public double getTemperature() {
+		return temperature;
+	}
+	
 }
