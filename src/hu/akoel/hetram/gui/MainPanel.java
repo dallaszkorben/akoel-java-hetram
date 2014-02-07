@@ -47,10 +47,11 @@ public class MainPanel extends JFrame{
 
 	private static final long serialVersionUID = 3911667532503747257L;
 
+	private static final String version = "v 0.0.2";
+	
 	private static final int DEFAULT_WIDTH = 700;
 	private static final int DEFAULT_HEIGHT = 700;
 	private static final int DEFAULT_SETTINGTABBEDPANEL = 310;
-	
 		
 	private ThermicPointList thermicPointList = null;
 	private StructureSet elementSet = null;
@@ -82,6 +83,11 @@ public class MainPanel extends JFrame{
 	private PATTERN_TYPE patternType = PATTERN_TYPE.COLOR;
 	private HOMOGEN_PATTERN homogenPattern = HOMOGEN_PATTERN.HATCH;
 	private ROW_PATTERN rowPattern = ROW_PATTERN.ZIGZAG;
+	private double openEdgeAlphaBegin = 8;
+	private double openEdgeAlphaEnd = 8;
+	private double openEdgeTemperature = 20;
+	private Color openEdgeColor = Color.red;
+	private Color symmetricEdgeColor = Color.green;
 
 	//
 	//Vezerles - ControlSettings
@@ -182,7 +188,7 @@ public class MainPanel extends JFrame{
 elementSet = temporarelyGenerateElementSet();
 			
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setTitle("Proba");
+		this.setTitle("Hetram " + version );
 		this.setUndecorated(false);
 		this.setSize( DEFAULT_WIDTH, DEFAULT_HEIGHT );
 		this.createBufferStrategy(1);
@@ -538,6 +544,46 @@ elementSet = temporarelyGenerateElementSet();
 		this.rowPattern = rowPattern;
 	}
 	
+	public double getOpenEdgeAlphaBegin() {
+		return openEdgeAlphaBegin;
+	}
+
+	public void setAlphaBegin(double alphaBegin) {
+		this.openEdgeAlphaBegin = alphaBegin;
+	}
+
+	public double getOpenEdgeAlphaEnd() {
+		return openEdgeAlphaEnd;
+	}
+
+	public void setAlphaEnd(double alphaEnd) {
+		this.openEdgeAlphaEnd = alphaEnd;
+	}
+
+	public double getOpenEdgeTemperature() {
+		return openEdgeTemperature;
+	}
+
+	public void setOpenEdgeTemperature(double temperature) {
+		this.openEdgeTemperature = temperature;
+	}
+
+	public Color getOpenEdgeColor() {
+		return openEdgeColor;
+	}
+
+	public void setOpenEdgeColor(Color openEdgeColor) {
+		this.openEdgeColor = openEdgeColor;
+	}
+	
+	public Color getSymmetricEdgeColor() {
+		return symmetricEdgeColor;
+	}
+
+	public void setSymmetricEdgeColor(Color symmetricEdgeColor) {
+		this.symmetricEdgeColor = symmetricEdgeColor;
+	}
+
 	public void setDrawnBlockFactory( DrawnBlockFactory dbf ){
 		this.myCanvas.setDrawnBlockFactory( dbf );
 	}
