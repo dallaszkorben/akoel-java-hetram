@@ -15,6 +15,7 @@ import hu.akoel.mgu.drawnblock.DrawnBlock;
 import hu.akoel.mgu.drawnblock.DrawnBlockFactory;
 import hu.akoel.mgu.drawnblock.DrawnBlock.Status;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -32,6 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -83,9 +85,9 @@ public class ElementSettingTab extends JPanel{
 	}
 	
 	
-	JRadioButton buildingElementSelector;
-	JRadioButton symmetricEdgeSelector;
-	JRadioButton openEdgeSelector;
+	JToggleButton buildingElementSelector;
+	JToggleButton symmetricEdgeSelector;
+	JToggleButton openEdgeSelector;
 	
 	JRadioButton patternTypeColorSelector;
 	JRadioButton patternTypeHomogenSelector;
@@ -107,96 +109,6 @@ public class ElementSettingTab extends JPanel{
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints drawingElementSettingPanelConstraints = new GridBagConstraints();		
 		
-		//----------------------------------
-		//
-		// Rajzolando elem - BLOKK
-		//
-		//----------------------------------
-		JPanel drawingElementPanel = new JPanel();
-		drawingElementPanel.setLayout( new GridBagLayout() );
-		drawingElementPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Rajzolandó elem", TitledBorder.LEFT, TitledBorder.TOP ) );		
-		GridBagConstraints drawingElementSelectorConstraints = new GridBagConstraints();
-
-		ActionListener drawingElementSelectorActionListener = new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if ( e.getSource().equals( buildingElementSelector ) ) {
-					ElementSettingTab.this.mainPanel.setDrawingElement( DRAWING_ELEMENT.BUILDINGELEMENT );
-				
-					DrawnBlockFactory dbf = new BuildingStructureFactory();
-					ElementSettingTab.this.mainPanel.setDrawnBlockFactory( dbf );
-					
-				} else if ( e.getSource().equals( symmetricEdgeSelector ) ) {
-					ElementSettingTab.this.mainPanel.setDrawingElement( DRAWING_ELEMENT.SYMMETRICEDGE );
-					
-					DrawnBlockFactory dbf = new SymmetricEdgeFactory();
-					ElementSettingTab.this.mainPanel.setDrawnBlockFactory( dbf );
-					
-				} else if ( e.getSource().equals( openEdgeSelector ) ){
-					ElementSettingTab.this.mainPanel.setDrawingElement( DRAWING_ELEMENT.OPENEDGE );
-					
-					DrawnBlockFactory dbf = new OpenEdgeFactory();
-					ElementSettingTab.this.mainPanel.setDrawnBlockFactory( dbf );
-
-				}
-			}
-		};
-		
-		//Rajzolando elem kivalasztasa
-		ButtonGroup bg = new ButtonGroup();
-		buildingElementSelector = new JRadioButton("Épületszerkezeti elem", false );
-		buildingElementSelector.addActionListener(drawingElementSelectorActionListener);
-		bg.add( buildingElementSelector );
-		symmetricEdgeSelector = new JRadioButton("Szimmetria él", false );
-		symmetricEdgeSelector.addActionListener(drawingElementSelectorActionListener);
-		bg.add( symmetricEdgeSelector );
-		openEdgeSelector = new JRadioButton("Szabad felszín", false );
-		openEdgeSelector.addActionListener(drawingElementSelectorActionListener);
-		bg.add( openEdgeSelector );
-
-		//Default ertek beallitasa
-		if( ElementSettingTab.this.mainPanel.getDrawingElement().equals( DRAWING_ELEMENT.BUILDINGELEMENT ) ){
-			buildingElementSelector.setSelected( true );
-
-//TODO changelistener actionlistener helyett
-			
-			//Code ismetles, de nem tehetek rola, a setselected(true) nem inditja el az actionPerformed() metodust
-			DrawnBlockFactory dbf = new BuildingStructureFactory();
-			ElementSettingTab.this.mainPanel.setDrawnBlockFactory( dbf );
-		}else if( ElementSettingTab.this.mainPanel.getDrawingElement().equals( DRAWING_ELEMENT.SYMMETRICEDGE ) ){
-			symmetricEdgeSelector.setSelected( true );
-		}else if( ElementSettingTab.this.mainPanel.getDrawingElement().equals( DRAWING_ELEMENT.OPENEDGE ) ){
-			openEdgeSelector.setSelected( true );
-		}
-		
-		row = 0;
-		
-		//1. sor - Rajzolando elem - Epuletszerkezeti elem
-		row++;
-		drawingElementSelectorConstraints.gridx = 0;
-		drawingElementSelectorConstraints.gridy = row;
-		drawingElementSelectorConstraints.gridwidth = 1;
-		drawingElementSelectorConstraints.weightx = 1;
-		drawingElementSelectorConstraints.anchor = GridBagConstraints.WEST;
-		drawingElementSelectorConstraints.fill = GridBagConstraints.HORIZONTAL;
-		drawingElementPanel.add( buildingElementSelector, drawingElementSelectorConstraints);		
-		
-		//2. sor - Rajzolando elem - Szimmetria felszin
-		row++;
-		drawingElementSelectorConstraints.gridx = 0;
-		drawingElementSelectorConstraints.gridy = row;
-		drawingElementSelectorConstraints.gridwidth = 1;
-		drawingElementSelectorConstraints.weightx = 1;
-		drawingElementPanel.add( symmetricEdgeSelector, drawingElementSelectorConstraints);		
-		
-		//3. sor - Rajzolando elem - Szabad felszin
-		row++;
-		drawingElementSelectorConstraints.gridx = 0;
-		drawingElementSelectorConstraints.gridy = row;
-		drawingElementSelectorConstraints.gridwidth = 1;
-		drawingElementSelectorConstraints.weightx = 1;
-		drawingElementPanel.add( openEdgeSelector, drawingElementSelectorConstraints);		
 
 				
 		
@@ -448,13 +360,326 @@ public class ElementSettingTab extends JPanel{
 	
 		//----------------------------------
 		//
-		// Szbad felulet - BLOKK
+		// Szabad felulet - BLOKK
 		//
 		//----------------------------------
 		JPanel openEdgeElementPanel = new JPanel();
 		openEdgeElementPanel.setLayout( new GridBagLayout() );
 		openEdgeElementPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Szabad felület", TitledBorder.LEFT, TitledBorder.TOP ) );		
 		GridBagConstraints openEdgeElementSelectorConstraints = new GridBagConstraints();
+
+		//AlphaBegin
+		JTextField openEdgeAlphaBeginField = new JTextField();
+		openEdgeAlphaBeginField.setColumns( 8 );
+		openEdgeAlphaBeginField.setText( String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeAlphaBegin() ) );
+		openEdgeAlphaBeginField.setInputVerifier( new InputVerifier() {
+			String goodValue =  String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeAlphaBegin() );
+			
+			@Override
+			public boolean verify(JComponent input) {
+				JTextField text = (JTextField)input;
+	            String possibleValue = text.getText();
+	            try{
+	            	Double.valueOf(possibleValue);
+	            	goodValue = possibleValue;
+	            }catch(NumberFormatException e){
+	            	text.setText(goodValue);
+	            	return false;
+	            }
+	            ElementSettingTab.this.mainPanel.setAlphaBegin( Double.valueOf( goodValue ) );
+	            //ElementSettingTab.this.mainPanel.revalidateAndRepaint();
+
+	            return true;
+			}
+		});
+
+		//AlphaEnd
+		JTextField openEdgeAlphaEndField = new JTextField();
+		openEdgeAlphaEndField.setColumns( 8 );
+		openEdgeAlphaEndField.setText( String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeAlphaEnd() ) );
+		openEdgeAlphaEndField.setInputVerifier( new InputVerifier() {
+			String goodValue =  String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeAlphaEnd() );
+			
+			@Override
+			public boolean verify(JComponent input) {
+				JTextField text = (JTextField)input;
+	            String possibleValue = text.getText();
+	            try{
+	            	Double.valueOf(possibleValue);
+	            	goodValue = possibleValue;
+	            }catch(NumberFormatException e){
+	            	text.setText(goodValue);
+	            	return false;
+	            }
+	            ElementSettingTab.this.mainPanel.setAlphaEnd( Double.valueOf( goodValue ) );
+	            //ElementSettingTab.this.mainPanel.revalidateAndRepaint();
+
+	            return true;
+			}
+		});
+
+		//Temperature
+		JTextField openEdgeTemperatureField = new JTextField();
+		openEdgeTemperatureField.setColumns( 8 );
+		openEdgeTemperatureField.setText( String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeTemperature() ) );
+		openEdgeTemperatureField.setInputVerifier( new InputVerifier() {
+			String goodValue =  String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeTemperature() );
+			
+			@Override
+			public boolean verify(JComponent input) {
+				JTextField text = (JTextField)input;
+	            String possibleValue = text.getText();
+	            try{
+	            	Double.valueOf(possibleValue);
+	            	goodValue = possibleValue;
+	            }catch(NumberFormatException e){
+	            	text.setText(goodValue);
+	            	return false;
+	            }
+	            ElementSettingTab.this.mainPanel.setOpenEdgeTemperature( Double.valueOf( goodValue ) );
+	            //ElementSettingTab.this.mainPanel.revalidateAndRepaint();
+
+	            return true;
+			}
+		});
+
+		//Color
+		ColorSelector openEdgeColorSelector = new ColorSelector();
+		openEdgeColorSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getOpenEdgeColor() );
+		openEdgeColorSelector.addActionListener( new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				ColorSelector cs = (ColorSelector) e.getSource();
+				ElementSettingTab.this.mainPanel.setOpenEdgeColor( cs.getSelectedColor() );
+				
+			}
+		});
+		
+		row = 0;
+		//1. sor alpha begin
+		openEdgeElementSelectorConstraints.gridx = 0;
+		openEdgeElementSelectorConstraints.gridy = row;
+		openEdgeElementSelectorConstraints.gridwidth = 1;
+		openEdgeElementSelectorConstraints.weightx = 0;
+		openEdgeElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		openEdgeElementPanel.add( new JLabel("α kezdő: "), openEdgeElementSelectorConstraints);
+
+		openEdgeElementSelectorConstraints.gridx = 1;
+		openEdgeElementSelectorConstraints.gridwidth = 1;
+		openEdgeElementSelectorConstraints.weightx = 1;
+		//buildingStructureElementSelectorConstraints.fill = GridBagConstraints.HORIZONTAL;
+		openEdgeElementPanel.add( openEdgeAlphaBeginField, openEdgeElementSelectorConstraints);
+				
+		openEdgeElementSelectorConstraints.gridx = 2;
+		openEdgeElementSelectorConstraints.gridwidth = 1;
+		openEdgeElementSelectorConstraints.weightx = 0;
+		openEdgeElementPanel.add( new JLabel(" W/m²K" ), openEdgeElementSelectorConstraints );	
+		
+		//2. sor alpha end
+		row++;
+		openEdgeElementSelectorConstraints.gridx = 0;
+		openEdgeElementSelectorConstraints.gridy = row;
+		openEdgeElementSelectorConstraints.gridwidth = 1;
+		openEdgeElementSelectorConstraints.weightx = 0;
+		openEdgeElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		openEdgeElementPanel.add( new JLabel("α vég: "), openEdgeElementSelectorConstraints);
+
+		openEdgeElementSelectorConstraints.gridx = 1;
+		openEdgeElementSelectorConstraints.gridwidth = 1;
+		openEdgeElementSelectorConstraints.weightx = 1;
+		//buildingStructureElementSelectorConstraints.fill = GridBagConstraints.HORIZONTAL;
+		openEdgeElementPanel.add( openEdgeAlphaEndField, openEdgeElementSelectorConstraints);
+				
+		openEdgeElementSelectorConstraints.gridx = 2;
+		openEdgeElementSelectorConstraints.gridwidth = 1;
+		openEdgeElementSelectorConstraints.weightx = 0;
+		openEdgeElementPanel.add( new JLabel(" W/m²K" ), openEdgeElementSelectorConstraints );	
+		
+		//3. sor T
+		row++;
+		openEdgeElementSelectorConstraints.gridx = 0;
+		openEdgeElementSelectorConstraints.gridy = row;
+		openEdgeElementSelectorConstraints.gridwidth = 1;
+		openEdgeElementSelectorConstraints.weightx = 0;
+		openEdgeElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		openEdgeElementPanel.add( new JLabel("T: "), openEdgeElementSelectorConstraints);
+
+		openEdgeElementSelectorConstraints.gridx = 1;
+		openEdgeElementSelectorConstraints.gridwidth = 1;
+		openEdgeElementSelectorConstraints.weightx = 1;
+		//buildingStructureElementSelectorConstraints.fill = GridBagConstraints.HORIZONTAL;
+		openEdgeElementPanel.add( openEdgeTemperatureField, openEdgeElementSelectorConstraints);
+				
+		openEdgeElementSelectorConstraints.gridx = 2;
+		openEdgeElementSelectorConstraints.gridwidth = 1;
+		openEdgeElementSelectorConstraints.weightx = 0;
+		openEdgeElementPanel.add( new JLabel(" °C" ), openEdgeElementSelectorConstraints );	
+		
+		//4. sor Color
+		row++;
+		openEdgeElementSelectorConstraints.gridx = 0;
+		openEdgeElementSelectorConstraints.gridy = row;
+		openEdgeElementSelectorConstraints.gridwidth = 1;
+		openEdgeElementSelectorConstraints.weightx = 0;
+		openEdgeElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		openEdgeElementPanel.add( new JLabel("Szín: "), openEdgeElementSelectorConstraints);
+
+		openEdgeElementSelectorConstraints.gridx = 1;
+		openEdgeElementSelectorConstraints.gridwidth = 1;
+		openEdgeElementSelectorConstraints.weightx = 1;
+		//openEdgeElementSelectorConstraints.fill = GridBagConstraints.HORIZONTAL;
+		openEdgeElementPanel.add( openEdgeColorSelector, openEdgeElementSelectorConstraints);
+				
+		//----------------------------------
+		//
+		// Szimmetria el - BLOKK
+		//
+		//----------------------------------
+		JPanel symmetricEdgeElementPanel = new JPanel();
+		symmetricEdgeElementPanel.setLayout( new GridBagLayout() );
+		symmetricEdgeElementPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Szimmetria él", TitledBorder.LEFT, TitledBorder.TOP ) );		
+		GridBagConstraints symmetricEdgeElementSelectorConstraints = new GridBagConstraints();
+
+		//Color
+		ColorSelector symmetricEdgeColorSelector = new ColorSelector();
+		symmetricEdgeColorSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getSymmetricEdgeColor() );
+		symmetricEdgeColorSelector.addActionListener( new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				ColorSelector cs = (ColorSelector) e.getSource();
+				ElementSettingTab.this.mainPanel.setSymmetricEdgeColor( cs.getSelectedColor() );
+				
+			}
+		});
+		
+		row = 0;
+		//1. sor alpha begin
+		symmetricEdgeElementSelectorConstraints.gridx = 0;
+		symmetricEdgeElementSelectorConstraints.gridy = row;
+		symmetricEdgeElementSelectorConstraints.gridwidth = 1;
+		symmetricEdgeElementSelectorConstraints.weightx = 0;
+		symmetricEdgeElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		symmetricEdgeElementPanel.add( new JLabel("Szín:       "), symmetricEdgeElementSelectorConstraints );
+
+		symmetricEdgeElementSelectorConstraints.gridx = 1;
+		symmetricEdgeElementSelectorConstraints.gridwidth = 1;
+		symmetricEdgeElementSelectorConstraints.weightx = 1;
+		//symmetricEdgeElementSelectorConstraints.fill = GridBagConstraints.HORIZONTAL;
+		symmetricEdgeElementPanel.add( symmetricEdgeColorSelector, symmetricEdgeElementSelectorConstraints);
+		
+		//----------------------------------
+		//
+		// Rajzolando elem - BLOKK
+		//
+		//----------------------------------
+		JPanel drawingElementPanel = new JPanel();
+		drawingElementPanel.setLayout( new GridBagLayout() );
+		//drawingElementPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Rajzolandó elem", TitledBorder.LEFT, TitledBorder.TOP ) );		
+		GridBagConstraints drawingElementSelectorConstraints = new GridBagConstraints();
+
+		
+		ChangeListener drawingElementSelectorChangeListener = new ChangeListener(){
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				AbstractButton aButton = (AbstractButton)e.getSource();
+				ButtonModel aModel = aButton.getModel();
+				boolean selected = aModel.isSelected();
+		        if( selected ){
+				
+		        	if ( aButton.equals( buildingElementSelector ) ) {		        
+		        		ElementSettingTab.this.mainPanel.setDrawingElement( DRAWING_ELEMENT.BUILDINGELEMENT );
+						
+						DrawnBlockFactory dbf = new BuildingStructureFactory();
+						ElementSettingTab.this.mainPanel.setDrawnBlockFactory( dbf );
+		        	
+		        	} else if ( e.getSource().equals( symmetricEdgeSelector ) ) {
+						ElementSettingTab.this.mainPanel.setDrawingElement( DRAWING_ELEMENT.SYMMETRICEDGE );
+						
+						DrawnBlockFactory dbf = new SymmetricEdgeFactory();
+						ElementSettingTab.this.mainPanel.setDrawnBlockFactory( dbf );
+						
+					} else if ( e.getSource().equals( openEdgeSelector ) ){
+						ElementSettingTab.this.mainPanel.setDrawingElement( DRAWING_ELEMENT.OPENEDGE );
+						
+						DrawnBlockFactory dbf = new OpenEdgeFactory();
+						ElementSettingTab.this.mainPanel.setDrawnBlockFactory( dbf );
+					}
+		        }
+			}			
+		};
+	
+		//Rajzolando elem kivalasztasa
+		ButtonGroup bg = new ButtonGroup();
+		buildingElementSelector = new JToggleButton("Épületszerkezeti elem", false );
+		buildingElementSelector.addChangeListener(drawingElementSelectorChangeListener);
+		bg.add( buildingElementSelector );		
+		openEdgeSelector = new JToggleButton("Szabad felszín", false );
+		openEdgeSelector.addChangeListener(drawingElementSelectorChangeListener);
+		bg.add( openEdgeSelector );
+		symmetricEdgeSelector = new JToggleButton("Szimmetria él", false );
+		symmetricEdgeSelector.addChangeListener(drawingElementSelectorChangeListener);
+		bg.add( symmetricEdgeSelector );
+
+		//Default ertek beallitasa
+		if( ElementSettingTab.this.mainPanel.getDrawingElement().equals( DRAWING_ELEMENT.BUILDINGELEMENT ) ){
+			buildingElementSelector.setSelected( true );
+		}else if( ElementSettingTab.this.mainPanel.getDrawingElement().equals( DRAWING_ELEMENT.SYMMETRICEDGE ) ){
+			symmetricEdgeSelector.setSelected( true );
+		}else if( ElementSettingTab.this.mainPanel.getDrawingElement().equals( DRAWING_ELEMENT.OPENEDGE ) ){
+			openEdgeSelector.setSelected( true );
+		}
+		
+		
+		
+		//1. sor - Rajzolando elem - Epuletszerkezeti elem
+		row = 0;
+		drawingElementSelectorConstraints.gridx = 0;
+		drawingElementSelectorConstraints.gridy = row;
+		drawingElementSelectorConstraints.gridwidth = 1;
+		drawingElementSelectorConstraints.weightx = 1;
+		drawingElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		drawingElementSelectorConstraints.fill = GridBagConstraints.HORIZONTAL;
+		drawingElementPanel.add( new JLabel( ), drawingElementSelectorConstraints);
+		
+		drawingElementSelectorConstraints.gridx = 1;
+		drawingElementSelectorConstraints.gridy = row;
+		drawingElementSelectorConstraints.gridwidth = 1;
+		drawingElementSelectorConstraints.weightx = 0;
+		drawingElementSelectorConstraints.anchor = GridBagConstraints.CENTER;
+		drawingElementSelectorConstraints.fill = GridBagConstraints.NONE;
+		drawingElementPanel.add( buildingElementSelector, drawingElementSelectorConstraints);		
+		
+		drawingElementSelectorConstraints.gridx = 2;
+		drawingElementSelectorConstraints.gridy = row;
+		drawingElementSelectorConstraints.gridwidth = 1;
+		drawingElementSelectorConstraints.weightx = 1;
+		drawingElementSelectorConstraints.anchor = GridBagConstraints.WEST;
+		drawingElementSelectorConstraints.fill = GridBagConstraints.HORIZONTAL;
+		drawingElementPanel.add( new JLabel( ), drawingElementSelectorConstraints);		
+		
+		//2. sor - Rajzolando elem - Szimmetria felszin
+		row++;
+		drawingElementSelectorConstraints.gridx = 1;
+		drawingElementSelectorConstraints.gridy = row;
+		drawingElementSelectorConstraints.gridwidth = 1;
+		drawingElementSelectorConstraints.weightx = 0;
+		drawingElementSelectorConstraints.anchor = GridBagConstraints.CENTER;
+		drawingElementSelectorConstraints.fill = GridBagConstraints.HORIZONTAL;
+		drawingElementPanel.add( symmetricEdgeSelector, drawingElementSelectorConstraints);		
+		
+		//3. sor - Rajzolando elem - Szabad felszin
+		row++;
+		drawingElementSelectorConstraints.gridx = 1;
+		drawingElementSelectorConstraints.gridy = row;
+		drawingElementSelectorConstraints.gridwidth = 1;
+		drawingElementSelectorConstraints.weightx = 0;
+		drawingElementSelectorConstraints.anchor = GridBagConstraints.CENTER;
+		drawingElementSelectorConstraints.fill = GridBagConstraints.HORIZONTAL;
+		drawingElementPanel.add( openEdgeSelector, drawingElementSelectorConstraints);		
 
 		
 		//-----------------------------------
@@ -465,17 +690,6 @@ public class ElementSettingTab extends JPanel{
 
 		row = 0;
 
-		//
-		// Rajzolando elem
-		//
-		drawingElementSettingPanelConstraints.gridx = 0;
-		drawingElementSettingPanelConstraints.gridy = row;
-		drawingElementSettingPanelConstraints.anchor = GridBagConstraints.NORTH;
-		drawingElementSettingPanelConstraints.weighty = 0;
-		drawingElementSettingPanelConstraints.weightx = 1;
-		drawingElementSettingPanelConstraints.fill = GridBagConstraints.HORIZONTAL;
-		this.add(drawingElementPanel, drawingElementSettingPanelConstraints);
-		
 		//
 		// Epuletszerkezet
 		//
@@ -499,6 +713,30 @@ public class ElementSettingTab extends JPanel{
 		drawingElementSettingPanelConstraints.weightx = 1;
 		drawingElementSettingPanelConstraints.fill = GridBagConstraints.HORIZONTAL;
 		this.add( openEdgeElementPanel, drawingElementSettingPanelConstraints );
+
+		//
+		// Szimmetria el
+		//
+		row++;
+		drawingElementSettingPanelConstraints.gridx = 0;
+		drawingElementSettingPanelConstraints.gridy = row;
+		drawingElementSettingPanelConstraints.anchor = GridBagConstraints.NORTH;
+		drawingElementSettingPanelConstraints.weighty = 0;
+		drawingElementSettingPanelConstraints.weightx = 1;
+		drawingElementSettingPanelConstraints.fill = GridBagConstraints.HORIZONTAL;
+		this.add( symmetricEdgeElementPanel, drawingElementSettingPanelConstraints );
+
+		//
+		// Rajzolando elem
+		//
+		row++;
+		drawingElementSettingPanelConstraints.gridx = 0;
+		drawingElementSettingPanelConstraints.gridy = row;
+		drawingElementSettingPanelConstraints.anchor = GridBagConstraints.NORTH;
+		drawingElementSettingPanelConstraints.weighty = 0;
+		drawingElementSettingPanelConstraints.weightx = 1;
+		drawingElementSettingPanelConstraints.fill = GridBagConstraints.HORIZONTAL;
+		this.add(drawingElementPanel, drawingElementSettingPanelConstraints);
 		
 		//
 		// Felfele igazitas
@@ -529,7 +767,7 @@ public class ElementSettingTab extends JPanel{
 		public DrawnBlock getNewDrawnBlock(Status status, double x1, double y1) {
 			
 			//Ezeket szerzi parameterkent
-			Color color = Color.green;
+			Color color = ElementSettingTab.this.mainPanel.getSymmetricEdgeColor();
 			
 			bs = new SymmetricEdgeElement( status , x1, y1, null, null, null, 0.0, color );
 			return bs;
@@ -550,10 +788,10 @@ public class ElementSettingTab extends JPanel{
 		public DrawnBlock getNewDrawnBlock(Status status, double x1, double y1) {
 			
 			//Ezeket szerzi parameterkent
-			double alphaBegin = 8;
-			double alphaEnd = 8;
-			double temperature = 20;
-			Color color = Color.red;
+			double alphaBegin = ElementSettingTab.this.mainPanel.getOpenEdgeAlphaBegin();
+			double alphaEnd = ElementSettingTab.this.mainPanel.getOpenEdgeAlphaEnd();
+			double temperature = ElementSettingTab.this.mainPanel.getOpenEdgeTemperature();
+			Color color = ElementSettingTab.this.mainPanel.getOpenEdgeColor();
 			
 			bs = new OpenEdgeElement( status , x1, y1, null, null, null, 0.0, alphaBegin, alphaEnd, temperature, color );
 		
