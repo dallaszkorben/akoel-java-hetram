@@ -1,15 +1,15 @@
 package hu.akoel.hetram.gui;
 
-import hu.akoel.hetram.drawingelements.ColoredPatternBuildingSturcturalElement;
-import hu.akoel.hetram.drawingelements.DotFullPatternAdapter;
-import hu.akoel.hetram.drawingelements.FullPatternBuildingStructuralElement;
-import hu.akoel.hetram.drawingelements.FullPatternInterface;
-import hu.akoel.hetram.drawingelements.HatchFullPatternAdapter;
-import hu.akoel.hetram.drawingelements.OpenEdgeElement;
-import hu.akoel.hetram.drawingelements.RowPatternBuildingStructuralElement;
-import hu.akoel.hetram.drawingelements.RowPatternInterface;
-import hu.akoel.hetram.drawingelements.SymmetricEdgeElement;
-import hu.akoel.hetram.drawingelements.ZigZagRowPatternAdapter;
+import hu.akoel.hetram.gui.drawingelements.ColoredPatternBuildingSturcturalElement;
+import hu.akoel.hetram.gui.drawingelements.DotFullPatternAdapter;
+import hu.akoel.hetram.gui.drawingelements.FullPatternBuildingStructuralElement;
+import hu.akoel.hetram.gui.drawingelements.FullPatternInterface;
+import hu.akoel.hetram.gui.drawingelements.HatchFullPatternAdapter;
+import hu.akoel.hetram.gui.drawingelements.OpenEdgeElement;
+import hu.akoel.hetram.gui.drawingelements.RowPatternBuildingStructuralElement;
+import hu.akoel.hetram.gui.drawingelements.RowPatternInterface;
+import hu.akoel.hetram.gui.drawingelements.SymmetricEdgeElement;
+import hu.akoel.hetram.gui.drawingelements.ZigZagRowPatternAdapter;
 import hu.akoel.mgu.ColorSelector;
 import hu.akoel.mgu.drawnblock.DrawnBlock;
 import hu.akoel.mgu.drawnblock.DrawnBlockFactory;
