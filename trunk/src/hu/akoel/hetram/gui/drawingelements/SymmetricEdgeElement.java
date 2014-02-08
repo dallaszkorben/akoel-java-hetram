@@ -19,7 +19,7 @@ public class SymmetricEdgeElement extends HetramDrawnElement{
 	private static final Stroke INPROCESS_STROKE = new BasicStroke(5);
 
 	public SymmetricEdgeElement( Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth, Color color ){
-		super( status, x1, y1, minLength, maxLength, minWidth, maxWidth, TYPE.SYMMETRICEDGE );
+		super( status, x1, y1, minLength, maxLength, minWidth, maxWidth );
 		
 		setNormal( color, NORMAL_STROKE, color );
 		setSelected( SELECTED_COLOR, SELECTED_STROKE, color );
