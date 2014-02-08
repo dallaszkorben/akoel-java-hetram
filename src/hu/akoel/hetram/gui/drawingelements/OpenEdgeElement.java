@@ -23,15 +23,15 @@ public class OpenEdgeElement extends HetramDrawnElement{
 	private double temperature;
 
 	private OpenEdgeElement(Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth) {
-		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, TYPE.OPENEDGE);
+		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth );
 	}
 
 	private OpenEdgeElement( Status status, double x1, double y1 ){
-		super( status, x1, y1, TYPE.OPENEDGE );
+		super( status, x1, y1 );
 	}
 	
 	public OpenEdgeElement( Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth, double alphaBegin, double alphaEnd, double temperature, Color color ){
-		super( status, x1, y1, minLength, maxLength, minWidth, maxWidth, TYPE.OPENEDGE );
+		super( status, x1, y1, minLength, maxLength, minWidth, maxWidth );
 		
 		this.alphaBegin = alphaBegin;
 		this.alphaEnd = alphaEnd;

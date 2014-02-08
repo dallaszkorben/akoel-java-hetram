@@ -621,7 +621,7 @@ public class ElementSettingTab extends JPanel{
 		buildingElementSelector = new JToggleButton("Épületszerkezeti elem", false );
 		buildingElementSelector.addChangeListener(drawingElementSelectorChangeListener);
 		bg.add( buildingElementSelector );		
-		openEdgeSelector = new JToggleButton("Szabad felszín", false );
+		openEdgeSelector = new JToggleButton("Szabad felület", false );
 		openEdgeSelector.addChangeListener(drawingElementSelectorChangeListener);
 		bg.add( openEdgeSelector );
 		symmetricEdgeSelector = new JToggleButton("Szimmetria él", false );
@@ -665,17 +665,7 @@ public class ElementSettingTab extends JPanel{
 		drawingElementSelectorConstraints.fill = GridBagConstraints.HORIZONTAL;
 		drawingElementPanel.add( new JLabel( ), drawingElementSelectorConstraints);		
 		
-		//2. sor - Rajzolando elem - Szimmetria felszin
-		row++;
-		drawingElementSelectorConstraints.gridx = 1;
-		drawingElementSelectorConstraints.gridy = row;
-		drawingElementSelectorConstraints.gridwidth = 1;
-		drawingElementSelectorConstraints.weightx = 0;
-		drawingElementSelectorConstraints.anchor = GridBagConstraints.CENTER;
-		drawingElementSelectorConstraints.fill = GridBagConstraints.HORIZONTAL;
-		drawingElementPanel.add( symmetricEdgeSelector, drawingElementSelectorConstraints);		
-		
-		//3. sor - Rajzolando elem - Szabad felszin
+		//2. sor - Rajzolando elem - Szabad felszin
 		row++;
 		drawingElementSelectorConstraints.gridx = 1;
 		drawingElementSelectorConstraints.gridy = row;
@@ -685,7 +675,15 @@ public class ElementSettingTab extends JPanel{
 		drawingElementSelectorConstraints.fill = GridBagConstraints.HORIZONTAL;
 		drawingElementPanel.add( openEdgeSelector, drawingElementSelectorConstraints);		
 
-		
+		//3. sor - Rajzolando elem - Szimmetria felszin
+		row++;
+		drawingElementSelectorConstraints.gridx = 1;
+		drawingElementSelectorConstraints.gridy = row;
+		drawingElementSelectorConstraints.gridwidth = 1;
+		drawingElementSelectorConstraints.weightx = 0;
+		drawingElementSelectorConstraints.anchor = GridBagConstraints.CENTER;
+		drawingElementSelectorConstraints.fill = GridBagConstraints.HORIZONTAL;
+		drawingElementPanel.add( symmetricEdgeSelector, drawingElementSelectorConstraints);				
 		//-----------------------------------
 		//
 		// Rajzolo elemek TAB feltoltese

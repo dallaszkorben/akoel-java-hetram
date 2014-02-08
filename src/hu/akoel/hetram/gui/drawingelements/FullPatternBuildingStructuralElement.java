@@ -8,7 +8,7 @@ import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 
-public class FullPatternBuildingStructuralElement extends HetramDrawnElement{
+public class FullPatternBuildingStructuralElement extends HetramBuildingStructureElement{
 
 	private static final long serialVersionUID = -8868671968355924643L;
 
@@ -26,20 +26,12 @@ public class FullPatternBuildingStructuralElement extends HetramDrawnElement{
 	//private static final Color INFOCUS_BACKGROUND = Color.gray;
 	private final Stroke INFOCUS_STROKE = new BasicStroke(1);
 	
-	private double lambda;
-	
-	private FullPatternBuildingStructuralElement(Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength,	java.lang.Double minWidth, java.lang.Double maxWidth) {
-		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, TYPE.BUILDINGSTRUCTURE);
-	}
-
-	private FullPatternBuildingStructuralElement( Status status, double x1, double y1 ){
-		super( status, x1, y1, TYPE.BUILDINGSTRUCTURE );
+	private FullPatternBuildingStructuralElement(Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth, double lambda, Color lineColor, Color backgroundColor) {
+		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, lambda, lineColor, backgroundColor );
 	}
 	
-	public FullPatternBuildingStructuralElement(FullPatternInterface fullPatternInterface, Status status, double x1, double y1, double lambda, Color color, Color background ) {
-		super( status, x1, y1, TYPE.BUILDINGSTRUCTURE );
-		
-		this.lambda = lambda;	
+	public FullPatternBuildingStructuralElement(FullPatternInterface fullPatternInterface, Status status, double x1, double y1, double lambda, Color lineColor, Color backgroundColor ) {
+		super( status, x1, y1, lambda, lineColor, backgroundColor );
 		
 		int patternWidth = fullPatternInterface.getPatternWidth();
 		int patternHeight = fullPatternInterface.getPatternHeight();
@@ -56,9 +48,9 @@ public class FullPatternBuildingStructuralElement extends HetramDrawnElement{
 		//
 		BufferedImage bi1 = new BufferedImage( patternWidth, patternHeight, BufferedImage.TYPE_INT_RGB); 
 		Graphics2D big1 = bi1.createGraphics();
-		big1.setColor( background );
+		big1.setColor( getBackgroundColor() );
 		big1.fillRect( 0, 0, patternWidth, patternHeight );
-		big1.setColor( color ); 
+		big1.setColor( getLineColor() ); 
 		fullPatternInterface.drawPattern(big1, patternWidth, patternHeight);
 		normalTexturePaint = new TexturePaint( bi1,r ); 
 	
@@ -78,7 +70,7 @@ public class FullPatternBuildingStructuralElement extends HetramDrawnElement{
 		//
 		BufferedImage bi3 = new BufferedImage( patternWidth, patternHeight, BufferedImage.TYPE_INT_RGB); 
 		Graphics2D big3 = bi3.createGraphics();
-		big3.setColor( background );
+		big3.setColor( getBackgroundColor() );
 		big3.fillRect( 0, 0, patternWidth, patternHeight );
 		big3.setColor( INFOCUS_COLOR ); 
 		fullPatternInterface.drawPattern(big3, patternWidth, patternHeight);
@@ -89,25 +81,17 @@ public class FullPatternBuildingStructuralElement extends HetramDrawnElement{
 		//
 		BufferedImage bi4 = new BufferedImage( patternWidth, patternHeight, BufferedImage.TYPE_INT_RGB); 
 		Graphics2D big4 = bi4.createGraphics();
-		big4.setColor( background );
+		big4.setColor( getBackgroundColor() );
 		big4.fillRect( 0, 0, patternWidth, patternHeight );
-		big4.setColor( color ); 
+		big4.setColor( getLineColor() ); 
 		fullPatternInterface.drawPattern(big4, patternWidth, patternHeight);		 
 		inprocessTexturePaint = new TexturePaint( bi4,r ); 
 	
-		setNormal( color, NORMAL_STROKE, normalTexturePaint );
+		setNormal( getLineColor(), NORMAL_STROKE, normalTexturePaint );
 		setSelected( SELECTED_COLOR, SELECTED_STROKE, selectedTexturePaint );
 		setInfocus(INFOCUS_COLOR, INFOCUS_STROKE, infocusTexturePaint );
-		setInprocess( color, INPROCESS_STROKE, inprocessTexturePaint );
+		setInprocess( getLineColor(), INPROCESS_STROKE, inprocessTexturePaint );
 		
-	}
-
-	public double getLambda() {
-		return lambda;
-	}
-
-	public void setLambda(double lambda) {
-		this.lambda = lambda;
 	}
 	
 }

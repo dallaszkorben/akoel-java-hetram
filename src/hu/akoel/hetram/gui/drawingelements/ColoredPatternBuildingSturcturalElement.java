@@ -4,7 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Stroke;
 
-public class ColoredPatternBuildingSturcturalElement extends HetramDrawnElement{
+public class ColoredPatternBuildingSturcturalElement extends HetramBuildingStructureElement{
 
 	private final Stroke NORMAL_STROKE = new BasicStroke(1);
 	
@@ -22,35 +22,26 @@ public class ColoredPatternBuildingSturcturalElement extends HetramDrawnElement{
 	
 	private static final long serialVersionUID = -8868971968355924643L;
 
-	private double lambda;
-
-	private ColoredPatternBuildingSturcturalElement(Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength,	java.lang.Double minWidth, java.lang.Double maxWidth) {
-		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, TYPE.BUILDINGSTRUCTURE);
-	}
-
-	private ColoredPatternBuildingSturcturalElement( Status status, double x1, double y1 ){
-		super( status, x1, y1, TYPE.BUILDINGSTRUCTURE );
-	}
-	
-	public ColoredPatternBuildingSturcturalElement(Status status, double x1, double y1, double lambda, Color color, Color background ) {
-		super( status, x1, y1, TYPE.BUILDINGSTRUCTURE );
+	public ColoredPatternBuildingSturcturalElement(Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth, double lambda, Color lineColor, Color backgroundColor ) {
+		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, lambda, lineColor, backgroundColor );
 		
-		this.lambda = lambda;		
-		
-		setNormal( color, NORMAL_STROKE, background );
+		setNormal( lineColor, NORMAL_STROKE, backgroundColor );
 		setSelected( SELECTED_COLOR, SELECTED_STROKE, SELECTED_BACKGROUND );
-		setInfocus(INFOCUS_COLOR, INFOCUS_STROKE, background );
-		setInprocess( color, INPROCESS_STROKE, background );
+		setInfocus(INFOCUS_COLOR, INFOCUS_STROKE, backgroundColor );
+		setInprocess( lineColor, INPROCESS_STROKE, backgroundColor );
 		
 		refreshStatus();
 	}
-
-	public double getLambda() {
-		return lambda;
-	}
-
-	public void setLambda(double lambda) {
-		this.lambda = lambda;
+	
+	public ColoredPatternBuildingSturcturalElement(Status status, double x1, double y1, double lambda, Color lineColor, Color backgroundColor ) {
+		super( status, x1, y1, lambda, lineColor, backgroundColor );
+		
+		setNormal( lineColor, NORMAL_STROKE, backgroundColor );
+		setSelected( SELECTED_COLOR, SELECTED_STROKE, SELECTED_BACKGROUND );
+		setInfocus(INFOCUS_COLOR, INFOCUS_STROKE, backgroundColor );
+		setInprocess( lineColor, INPROCESS_STROKE, backgroundColor );
+		
+		refreshStatus();
 	}
 	
 }

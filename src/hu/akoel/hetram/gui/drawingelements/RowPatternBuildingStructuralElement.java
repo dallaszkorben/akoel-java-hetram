@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 import hu.akoel.hetram.gui.MainPanel;
 import hu.akoel.mgu.MGraphics;
 
-public class RowPatternBuildingStructuralElement extends HetramDrawnElement{
+public class RowPatternBuildingStructuralElement extends HetramBuildingStructureElement{
 
 	public static enum ORIENTATION{
 		HORIZONTAL,
@@ -36,37 +36,19 @@ public class RowPatternBuildingStructuralElement extends HetramDrawnElement{
 	
 	private RowPatternInterface rowPatternInterface;
 	private MainPanel mainPanel;
-	private double lambda;
-	private Color color;
-	private Color background; 
 	
-	private RowPatternBuildingStructuralElement(Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth) {
-		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, TYPE.BUILDINGSTRUCTURE );
+	public RowPatternBuildingStructuralElement(Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth, double lambda, Color lineColor, Color backgroundColor ) {
+		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, lambda, lineColor, backgroundColor );
 	}
 
-	private RowPatternBuildingStructuralElement( Status status, double x1, double y1 ){
-		super( status, x1, y1, TYPE.BUILDINGSTRUCTURE );
-	}
-	
-	public RowPatternBuildingStructuralElement( RowPatternInterface rowPatternInterface, MainPanel mainPanel, Status status, double x1, double y1, double lambda, Color color, Color background ) {
-		super( status, x1, y1, TYPE.BUILDINGSTRUCTURE );
+	public RowPatternBuildingStructuralElement( RowPatternInterface rowPatternInterface, MainPanel mainPanel, Status status, double x1, double y1, double lambda, Color lineColor, Color backgroundColor ) {
+		super( status, x1, y1, lambda, lineColor, backgroundColor );
 				
 		this.rowPatternInterface = rowPatternInterface;
 		this.mainPanel = mainPanel;
-		this.lambda = lambda;		
-		this.color = color;
-		this.background = background;
-		
+
 	}
 
-	public double getLambda() {
-		return lambda;
-	}
-
-	public void setLambda(double lambda) {
-		this.lambda = lambda;
-	}
-	
 	public void draw( MGraphics g2 ){
 
 		ORIENTATION orientation; 
@@ -100,9 +82,9 @@ public class RowPatternBuildingStructuralElement extends HetramDrawnElement{
 			//Normal
 			BufferedImage bi1 = new BufferedImage( patternWidth, patternHeight, BufferedImage.TYPE_INT_RGB); 
 			Graphics2D big1 = bi1.createGraphics();
-			big1.setColor( background );
+			big1.setColor( getBackgroundColor() );
 			big1.fillRect( 0, 0, patternWidth, patternHeight );
-			big1.setColor( color ); 
+			big1.setColor( getLineColor() ); 
 		
 			// Selected
 			BufferedImage bi2 = new BufferedImage( patternWidth, patternHeight, BufferedImage.TYPE_INT_RGB); 
@@ -114,16 +96,16 @@ public class RowPatternBuildingStructuralElement extends HetramDrawnElement{
 			// Infocus
 			BufferedImage bi3 = new BufferedImage( patternWidth, patternHeight, BufferedImage.TYPE_INT_RGB); 
 			Graphics2D big3 = bi3.createGraphics();
-			big3.setColor( background );
+			big3.setColor( getBackgroundColor() );
 			big3.fillRect( 0, 0, patternWidth, patternHeight );
 			big3.setColor( INFOCUS_COLOR ); 
 		
 			// Inprocess
 			BufferedImage bi4 = new BufferedImage( patternWidth, patternHeight, BufferedImage.TYPE_INT_RGB); 
 			Graphics2D big4 = bi4.createGraphics();
-			big4.setColor( background );
+			big4.setColor( getBackgroundColor() );
 			big4.fillRect( 0, 0, patternWidth, patternHeight );
-			big4.setColor( color ); 
+			big4.setColor( getLineColor() ); 
 		
 			int shift;
 			
@@ -180,10 +162,10 @@ public class RowPatternBuildingStructuralElement extends HetramDrawnElement{
 			inprocessTexturePaint = new TexturePaint( bi4,r );
 		}
 		
-		setNormal( color, NORMAL_STROKE, normalTexturePaint );
+		setNormal( getLineColor(), NORMAL_STROKE, normalTexturePaint );
 		setSelected( SELECTED_COLOR, SELECTED_STROKE, selectedTexturePaint );
 		setInfocus(INFOCUS_COLOR, INFOCUS_STROKE, infocusTexturePaint );
-		setInprocess( color, INPROCESS_STROKE, inprocessTexturePaint );
+		setInprocess( getLineColor(), INPROCESS_STROKE, inprocessTexturePaint );
 		
 		super.draw(g2);
 
