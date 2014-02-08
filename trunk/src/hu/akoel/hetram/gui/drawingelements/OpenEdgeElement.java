@@ -4,9 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Stroke;
 
-import hu.akoel.mgu.drawnblock.DrawnBlock;
-
-public class OpenEdgeElement extends DrawnBlock{
+public class OpenEdgeElement extends HetramDrawnElement{
 
 	private static final long serialVersionUID = -1063105162303471067L;
 	
@@ -24,18 +22,16 @@ public class OpenEdgeElement extends DrawnBlock{
 	private double alphaEnd;
 	private double temperature;
 
-	private OpenEdgeElement(Status status, double x1, double y1,
-			java.lang.Double minLength, java.lang.Double maxLength,
-			java.lang.Double minWidth, java.lang.Double maxWidth) {
-		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth);
+	private OpenEdgeElement(Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth) {
+		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, TYPE.OPENEDGE);
 	}
 
 	private OpenEdgeElement( Status status, double x1, double y1 ){
-		super( status, x1, y1 );
+		super( status, x1, y1, TYPE.OPENEDGE );
 	}
 	
 	public OpenEdgeElement( Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth, double alphaBegin, double alphaEnd, double temperature, Color color ){
-		super( status, x1, y1, minLength, maxLength, minWidth, maxWidth );
+		super( status, x1, y1, minLength, maxLength, minWidth, maxWidth, TYPE.OPENEDGE );
 		
 		this.alphaBegin = alphaBegin;
 		this.alphaEnd = alphaEnd;

@@ -1,10 +1,12 @@
 package hu.akoel.hetram.gui;
 
+import hu.akoel.hetram.HetramDrawnElementFactory;
 import hu.akoel.hetram.gui.drawingelements.ColoredPatternBuildingSturcturalElement;
 import hu.akoel.hetram.gui.drawingelements.DotFullPatternAdapter;
 import hu.akoel.hetram.gui.drawingelements.FullPatternBuildingStructuralElement;
 import hu.akoel.hetram.gui.drawingelements.FullPatternInterface;
 import hu.akoel.hetram.gui.drawingelements.HatchFullPatternAdapter;
+import hu.akoel.hetram.gui.drawingelements.HetramDrawnElement;
 import hu.akoel.hetram.gui.drawingelements.OpenEdgeElement;
 import hu.akoel.hetram.gui.drawingelements.RowPatternBuildingStructuralElement;
 import hu.akoel.hetram.gui.drawingelements.RowPatternInterface;
@@ -588,24 +590,26 @@ public class ElementSettingTab extends JPanel{
 				AbstractButton aButton = (AbstractButton)e.getSource();
 				ButtonModel aModel = aButton.getModel();
 				boolean selected = aModel.isSelected();
+				HetramDrawnElementFactory dbf;
+				
 		        if( selected ){
 				
 		        	if ( aButton.equals( buildingElementSelector ) ) {		        
 		        		ElementSettingTab.this.mainPanel.setDrawingElement( DRAWING_ELEMENT.BUILDINGELEMENT );
 						
-						DrawnBlockFactory dbf = new BuildingStructureFactory();
+						dbf = new BuildingStructureFactory();
 						ElementSettingTab.this.mainPanel.setDrawnBlockFactory( dbf );
 		        	
 		        	} else if ( e.getSource().equals( symmetricEdgeSelector ) ) {
 						ElementSettingTab.this.mainPanel.setDrawingElement( DRAWING_ELEMENT.SYMMETRICEDGE );
 						
-						DrawnBlockFactory dbf = new SymmetricEdgeFactory();
+						dbf = new SymmetricEdgeFactory();
 						ElementSettingTab.this.mainPanel.setDrawnBlockFactory( dbf );
 						
 					} else if ( e.getSource().equals( openEdgeSelector ) ){
 						ElementSettingTab.this.mainPanel.setDrawingElement( DRAWING_ELEMENT.OPENEDGE );
 						
-						DrawnBlockFactory dbf = new OpenEdgeFactory();
+						dbf = new OpenEdgeFactory();
 						ElementSettingTab.this.mainPanel.setDrawnBlockFactory( dbf );
 					}
 		        }
@@ -759,12 +763,12 @@ public class ElementSettingTab extends JPanel{
 	 * @author akoel
 	 *
 	 */
-	class SymmetricEdgeFactory implements DrawnBlockFactory{
+	class SymmetricEdgeFactory implements HetramDrawnElementFactory{
 
-		private DrawnBlock bs;
+		private HetramDrawnElement bs;
 		
 		@Override
-		public DrawnBlock getNewDrawnBlock(Status status, double x1, double y1) {
+		public HetramDrawnElement getNewDrawnBlock(Status status, double x1, double y1) {
 			
 			//Ezeket szerzi parameterkent
 			Color color = ElementSettingTab.this.mainPanel.getSymmetricEdgeColor();
@@ -780,12 +784,12 @@ public class ElementSettingTab extends JPanel{
 	 * @author akoel
 	 *
 	 */
-	class OpenEdgeFactory implements DrawnBlockFactory{
+	class OpenEdgeFactory implements HetramDrawnElementFactory{
 
-		private DrawnBlock bs;
+		private HetramDrawnElement bs;
 		
 		@Override
-		public DrawnBlock getNewDrawnBlock(Status status, double x1, double y1) {
+		public HetramDrawnElement getNewDrawnBlock(Status status, double x1, double y1) {
 			
 			//Ezeket szerzi parameterkent
 			double alphaBegin = ElementSettingTab.this.mainPanel.getOpenEdgeAlphaBegin();
@@ -805,12 +809,12 @@ public class ElementSettingTab extends JPanel{
 	 * @author akoel
 	 *
 	 */
-	class BuildingStructureFactory implements DrawnBlockFactory{
+	class BuildingStructureFactory implements HetramDrawnElementFactory{
 
-		private DrawnBlock bs;
+		private HetramDrawnElement bs;
 		
 		@Override
-		public DrawnBlock getNewDrawnBlock( Status status, double x1, double y1 ) {
+		public HetramDrawnElement getNewDrawnBlock( Status status, double x1, double y1 ) {
 
 			//TODO lehet hogy at kellene pakolni a BuildingSturctureElement osztalyba			
 			

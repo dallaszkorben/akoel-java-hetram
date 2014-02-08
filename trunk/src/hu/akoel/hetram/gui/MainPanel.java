@@ -1,6 +1,8 @@
 package hu.akoel.hetram.gui;
 
-import hu.akoel.hetram.Test;
+import hu.akoel.hetram.HetramCanvas;
+import hu.akoel.hetram.HetramDrawnElementFactory;
+import hu.akoel.hetram.Hetram;
 import hu.akoel.hetram.accessories.Length;
 import hu.akoel.hetram.accessories.Orientation;
 import hu.akoel.hetram.accessories.Position;
@@ -60,7 +62,7 @@ public class MainPanel extends JFrame{
 	private SettingTabbedPanel controlPanel;
 
 	// Canvas parameterei
-	private DrawnBlockCanvas myCanvas;
+	private HetramCanvas myCanvas;
 	private Color background = Color.black;
 	private PossiblePixelPerUnits possiblePixelPerUnits = new PossiblePixelPerUnits( new PixelPerUnitValue(1, 1));
 	private TranslateValue positionToMiddle = new TranslateValue(0.3, 0.6);
@@ -159,7 +161,7 @@ public class MainPanel extends JFrame{
 		
 	public static void main(String[] args) {
 		Locale.setDefault(new Locale("en", "US"));
-		new Test();
+		new Hetram();
 	}
 
 	public DrawnBlockCanvas getCanvas(){
@@ -193,7 +195,7 @@ elementSet = temporarelyGenerateElementSet();
 		this.setSize( DEFAULT_WIDTH, DEFAULT_HEIGHT );
 		this.createBufferStrategy(1);
 
-		myCanvas = new DrawnBlockCanvas(BorderFactory.createLoweredBevelBorder(), background, possiblePixelPerUnits, positionToMiddle);
+		myCanvas = new HetramCanvas(BorderFactory.createLoweredBevelBorder(), background, possiblePixelPerUnits, positionToMiddle);
 		
 		//
 		// Szamitott eredmenyek grafikus megjelenitese a legfelsobb layer-en
@@ -584,7 +586,7 @@ elementSet = temporarelyGenerateElementSet();
 		this.symmetricEdgeColor = symmetricEdgeColor;
 	}
 
-	public void setDrawnBlockFactory( DrawnBlockFactory dbf ){
+	public void setDrawnBlockFactory( HetramDrawnElementFactory dbf ){
 		this.myCanvas.setDrawnBlockFactory( dbf );
 	}
 	

@@ -4,9 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Stroke;
 
-import hu.akoel.mgu.drawnblock.DrawnBlock;
-
-public class ColoredPatternBuildingSturcturalElement extends DrawnBlock{
+public class ColoredPatternBuildingSturcturalElement extends HetramDrawnElement{
 
 	private final Stroke NORMAL_STROKE = new BasicStroke(1);
 	
@@ -26,18 +24,16 @@ public class ColoredPatternBuildingSturcturalElement extends DrawnBlock{
 
 	private double lambda;
 
-	private ColoredPatternBuildingSturcturalElement(Status status, double x1, double y1,
-			java.lang.Double minLength, java.lang.Double maxLength,
-			java.lang.Double minWidth, java.lang.Double maxWidth) {
-		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth);
+	private ColoredPatternBuildingSturcturalElement(Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength,	java.lang.Double minWidth, java.lang.Double maxWidth) {
+		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, TYPE.BUILDINGSTRUCTURE);
 	}
 
 	private ColoredPatternBuildingSturcturalElement( Status status, double x1, double y1 ){
-		super( status, x1, y1 );
+		super( status, x1, y1, TYPE.BUILDINGSTRUCTURE );
 	}
 	
 	public ColoredPatternBuildingSturcturalElement(Status status, double x1, double y1, double lambda, Color color, Color background ) {
-		super(status, x1, y1);
+		super( status, x1, y1, TYPE.BUILDINGSTRUCTURE );
 		
 		this.lambda = lambda;		
 		
