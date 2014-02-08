@@ -4,9 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Stroke;
 
-import hu.akoel.mgu.drawnblock.DrawnBlock;
-
-public class SymmetricEdgeElement extends DrawnBlock{
+public class SymmetricEdgeElement extends HetramDrawnElement{
 
 	private static final long serialVersionUID = -1063105162303271067L;
 	
@@ -20,18 +18,8 @@ public class SymmetricEdgeElement extends DrawnBlock{
 	
 	private static final Stroke INPROCESS_STROKE = new BasicStroke(5);
 
-	private SymmetricEdgeElement(Status status, double x1, double y1,
-			java.lang.Double minLength, java.lang.Double maxLength,
-			java.lang.Double minWidth, java.lang.Double maxWidth) {
-		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth);
-	}
-
-	private SymmetricEdgeElement( Status status, double x1, double y1 ){
-		super( status, x1, y1 );
-	}
-	
 	public SymmetricEdgeElement( Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth, Color color ){
-		super( status, x1, y1, minLength, maxLength, minWidth, maxWidth );
+		super( status, x1, y1, minLength, maxLength, minWidth, maxWidth, TYPE.SYMMETRICEDGE );
 		
 		setNormal( color, NORMAL_STROKE, color );
 		setSelected( SELECTED_COLOR, SELECTED_STROKE, color );

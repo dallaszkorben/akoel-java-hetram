@@ -10,9 +10,8 @@ import java.awt.image.BufferedImage;
 
 import hu.akoel.hetram.gui.MainPanel;
 import hu.akoel.mgu.MGraphics;
-import hu.akoel.mgu.drawnblock.DrawnBlock;
 
-public class RowPatternBuildingStructuralElement extends DrawnBlock{
+public class RowPatternBuildingStructuralElement extends HetramDrawnElement{
 
 	public static enum ORIENTATION{
 		HORIZONTAL,
@@ -41,18 +40,16 @@ public class RowPatternBuildingStructuralElement extends DrawnBlock{
 	private Color color;
 	private Color background; 
 	
-	private RowPatternBuildingStructuralElement(Status status, double x1, double y1,
-			java.lang.Double minLength, java.lang.Double maxLength,
-			java.lang.Double minWidth, java.lang.Double maxWidth) {
-		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth);
+	private RowPatternBuildingStructuralElement(Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth) {
+		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, TYPE.BUILDINGSTRUCTURE );
 	}
 
 	private RowPatternBuildingStructuralElement( Status status, double x1, double y1 ){
-		super( status, x1, y1 );
+		super( status, x1, y1, TYPE.BUILDINGSTRUCTURE );
 	}
 	
 	public RowPatternBuildingStructuralElement( RowPatternInterface rowPatternInterface, MainPanel mainPanel, Status status, double x1, double y1, double lambda, Color color, Color background ) {
-		super(status, x1, y1);
+		super( status, x1, y1, TYPE.BUILDINGSTRUCTURE );
 				
 		this.rowPatternInterface = rowPatternInterface;
 		this.mainPanel = mainPanel;

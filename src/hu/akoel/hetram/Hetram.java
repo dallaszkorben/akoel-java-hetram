@@ -6,7 +6,7 @@ import java.util.Locale;
 
 import javax.swing.SwingUtilities;
 
-public class Test{
+public class Hetram{
 
 	public static void main(String[] args) {
 		Locale.setDefault(new Locale("en", "US"));
