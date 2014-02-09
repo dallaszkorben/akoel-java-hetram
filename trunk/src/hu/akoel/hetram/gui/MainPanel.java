@@ -94,7 +94,17 @@ public class MainPanel extends JFrame{
 	//
 	//Vezerles - ControlSettings
 	//
-	double calculationPrecision = 0.001;
+	
+	private double verticalMaximumDifference = -1;
+	private double horizontalMaximumDifference = -1;
+	
+	private double verticalAppliedDifference;
+	private double horizontalAppliedDifference;
+	
+	private int verticalDifferenceDivider = 1;
+	private int horizontalDifferenceDivider = 1;
+	
+	private double calculationPrecision = 0.001;
 	
 	//
 	//Megjelenites - VisibilitySettings
@@ -187,7 +197,7 @@ public class MainPanel extends JFrame{
 	public MainPanel( ){
 
 //Feltoltom csak. nincs szamitas		
-elementSet = temporarelyGenerateElementSet();
+//elementSet = temporarelyGenerateElementSet();
 			
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("Hetram " + version );
@@ -195,7 +205,7 @@ elementSet = temporarelyGenerateElementSet();
 		this.setSize( DEFAULT_WIDTH, DEFAULT_HEIGHT );
 		this.createBufferStrategy(1);
 
-		myCanvas = new HetramCanvas(BorderFactory.createLoweredBevelBorder(), background, possiblePixelPerUnits, positionToMiddle);
+		myCanvas = new HetramCanvas(BorderFactory.createLoweredBevelBorder(), background, possiblePixelPerUnits, positionToMiddle, this );
 		
 		//
 		// Szamitott eredmenyek grafikus megjelenitese a legfelsobb layer-en
@@ -335,10 +345,62 @@ elementSet = temporarelyGenerateElementSet();
 //			}
 	}
 	
+	//-----------------------------------
+	//
+	// Vezerlo felulet - ContolSetting
+	//
+	//-----------------------------------
+	
+	public Double getHorizontalMaximumDifference(){
+		return horizontalMaximumDifference;
+	}
+	
+	public void setHorizontalMaximumDifference( double horizontalMaximumDifference ){
+		this.horizontalMaximumDifference = horizontalMaximumDifference;
+		controlPanel.controlSettingTab.setHorizontalMaximumDifference( horizontalMaximumDifference );
+	}
+
+	public Double getVerticalMaximumDifference(){
+		return verticalMaximumDifference;
+	}
+
+	public void setVerticalMaximumDifference( double verticalMaximumDifference ){
+		this.verticalMaximumDifference = verticalMaximumDifference;
+		controlPanel.controlSettingTab.setVerticalMaximumDifference(verticalMaximumDifference);
+	}
+	
+	public Double getHorizontalAppliedDifference(){
+		return horizontalAppliedDifference;
+	}
+
+	public Double getVerticalAppliedDifference(){
+		return verticalAppliedDifference;
+	}
+
+	public int getHorizontalDifferenceDivider(){
+		return horizontalDifferenceDivider;
+	}
+	
+	public int getVerticalDifferenceDivider(){
+		return verticalDifferenceDivider;
+	}
+	
+	public void setVerticalDifferenceDivider( int verticalDifferenceDivider ){
+		this.verticalDifferenceDivider = verticalDifferenceDivider;
+	}
+
+	public void setHorizontalDifferenceDivider( int horizontalDifferenceDivider ){
+		this.horizontalDifferenceDivider = horizontalDifferenceDivider;
+	}
+	
+	public void doGenerateMaximumDifference(){
+		myCanvas.doGenerateMaximumDifference();
+System.err.println(getHorizontalMaximumDifference() + ", " + getVerticalMaximumDifference());		
+	}
 	
 	//-----------------------------------
 	//
-	// Megjelenites - Visibility setting
+	// Megjelenites - VisibilitySetting
 	//
 	//-----------------------------------
 	public void setThermicPointList( ThermicPointList thermicPointList ){
@@ -424,38 +486,6 @@ elementSet = temporarelyGenerateElementSet();
 		return this.needDrawCrossline;
 	}
 	
-	public Double getHorizontalMaximumDifference(){
-		return elementSet.getHorizontalMaximumDifference();
-	}
-
-	public Double getVerticalMaximumDifference(){
-		return elementSet.getVerticalMaximumDifference();
-	}
-
-	public Double getHorizontalAppliedDifference(){
-		return elementSet.getHorizontalAppliedDifference();
-	}
-
-	public Double getVerticalAppliedDifference(){
-		return elementSet.getVerticalAppliedDifference();
-	}
-
-	public int getHorizontalDifferenceDivider(){
-		return elementSet.getHorizontalDifferenceDivider();
-	}
-	
-	public int getVerticalDifferenceDivider(){
-		return elementSet.getVerticalDifferenceDivider();
-	}
-	
-	public void setVerticalDifferenceDivider( int verticalDifferenceDivider ){
-		elementSet.setVerticalDifferenceDivider(verticalDifferenceDivider);
-	}
-
-	public void setHorizontalDifferenceDivider( int horizontalDifferenceDivider ){
-		elementSet.setHorizontalDifferenceDivider(horizontalDifferenceDivider);
-	}
-
 	public double getThermicPointRadius(){
 		return thermicPointRadius;
 	}
@@ -599,7 +629,8 @@ elementSet = temporarelyGenerateElementSet();
 	public void doCalculate( double precision ){
 		
 		//Termikus pontok legyartasa, kozottuk levo kapcsolatok megteremtese (nics szamolas meg) 
-		thermicPointList = elementSet.generateThermicPoints();
+		thermicPointList = myCanvas.generateThermicPoints();
+		//thermicPointList = elementSet.generateThermicPoints();
 		
 		//Figyelo osztaly a szamitas nyomonkovetesere
 		if( null != calculationListener ){

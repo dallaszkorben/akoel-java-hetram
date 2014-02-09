@@ -427,7 +427,7 @@ public class StructureSet{
 			}
 		}*/
 		
-		return new ThermicPointList( thermicPointMap.values(), this );
+		return new ThermicPointList( thermicPointMap.values() );
 		
 	}
 	
