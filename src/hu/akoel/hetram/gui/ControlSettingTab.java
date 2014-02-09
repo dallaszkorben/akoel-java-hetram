@@ -3,7 +3,6 @@ package hu.akoel.hetram.gui;
 import hu.akoel.hetram.accessories.CommonOperations;
 import hu.akoel.hetram.listeners.CalculationListener;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -19,7 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.border.TitledBorder;
 
 public class ControlSettingTab extends JPanel {
 
@@ -31,7 +29,10 @@ public class ControlSettingTab extends JPanel {
 	private JTextField appliedYDeltaField;
 	private JButton calculateButton;
 	private JProgressBar progressBar;	
-
+	
+	private JTextField maximumXDeltaField;
+	private JTextField maximumYDeltaField;
+	
 	public ControlSettingTab(MainPanel mainPanel) {
 		super();
 
@@ -48,29 +49,31 @@ public class ControlSettingTab extends JPanel {
 		// Control TAB elemek letrehozasa
 		//
 		// ----------------------------------------------
-		JPanel resolutionPanel = new JPanel();
+/*		JPanel resolutionPanel = new JPanel();
 		resolutionPanel.setLayout(new GridBagLayout());
 		resolutionPanel.setBorder(BorderFactory.createTitledBorder(	BorderFactory.createLineBorder(Color.black), "Felbontas",TitledBorder.LEFT, TitledBorder.TOP));
 		GridBagConstraints resolutionPanelConstraints = new GridBagConstraints();
-
+*/
+		
+		
 		//
 		// Maximum horizontal deltaX
 		//
 		JLabel maximumXDeltaLabel = new JLabel("Maximum Δx: ");
-		JTextField maximumXDeltaField = new JTextField();
+		maximumXDeltaField = new JTextField();
 		maximumXDeltaField.setEditable(false);
 		maximumXDeltaField.setColumns(8);
-		maximumXDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(mainPanel.getHorizontalMaximumDifference())));
+//		maximumXDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(mainPanel.getHorizontalMaximumDifference())));
 		JLabel maximumXDeltaUnit = new JLabel("m");
 
 		//
 		// Maximum vertical deltaY
 		//
 		JLabel maximumYDeltaLabel = new JLabel("Maximum Δy: ");
-		JTextField maximumYDeltaField = new JTextField();
+		maximumYDeltaField = new JTextField();
 		maximumYDeltaField.setEditable(false);
 		maximumYDeltaField.setColumns(8);
-		maximumYDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(mainPanel.getVerticalMaximumDifference())));
+//		maximumYDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(mainPanel.getVerticalMaximumDifference())));
 		JLabel maximumYDeltaUnit = new JLabel("m");
 
 		//
@@ -162,7 +165,9 @@ public class ControlSettingTab extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+
 				
+			
 				//A szal elinditasa elott elinditja a progressBart -indeterminate modban
 				progressBar.setIndeterminate(true);
 				
@@ -235,7 +240,9 @@ public class ControlSettingTab extends JPanel {
 				
 				//Elinditom a szalat
 				thread.start();
+
 			}
+			
 		});
 		
 		//
@@ -480,4 +487,29 @@ public class ControlSettingTab extends JPanel {
 		this.add(new JLabel(), controlConstraints);
 
 	}
+	
+//	public JTextField getMaximumXDeltaField() {
+//		return maximumXDeltaField;
+//	}
+	
+	public void setHorizontalMaximumDifference( double horizontalMaximumDifference) {
+		if( horizontalMaximumDifference > 0 ){
+			this.maximumXDeltaField.setText( String.valueOf( horizontalMaximumDifference ) );
+		}else{
+			this.maximumXDeltaField.setText( "" );
+		}
+	}
+	
+//	public JTextField getMaximumYDeltaField() {
+//		return maximumYDeltaField;
+//	}
+
+	public void setVerticalMaximumDifference( double verticalMaximumDifference) {
+		if( verticalMaximumDifference > 0 ){
+			this.maximumYDeltaField.setText( String.valueOf( verticalMaximumDifference ) );
+		}else{
+			this.maximumYDeltaField.setText("");
+		}
+	}
+
 }
