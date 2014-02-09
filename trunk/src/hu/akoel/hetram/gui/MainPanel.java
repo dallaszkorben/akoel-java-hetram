@@ -3,17 +3,11 @@ package hu.akoel.hetram.gui;
 import hu.akoel.hetram.HetramCanvas;
 import hu.akoel.hetram.HetramDrawnElementFactory;
 import hu.akoel.hetram.Hetram;
-import hu.akoel.hetram.accessories.Length;
-import hu.akoel.hetram.accessories.Orientation;
-import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.gui.ElementSettingTab.DRAWING_ELEMENT;
 import hu.akoel.hetram.gui.ElementSettingTab.HOMOGEN_PATTERN;
 import hu.akoel.hetram.gui.ElementSettingTab.PATTERN_TYPE;
 import hu.akoel.hetram.gui.ElementSettingTab.ROW_PATTERN;
 import hu.akoel.hetram.listeners.CalculationListener;
-import hu.akoel.hetram.structures.StructureSet;
-import hu.akoel.hetram.structures.Structure;
-import hu.akoel.hetram.structures.SurfaceSealing;
 import hu.akoel.hetram.thermicpoint.ThermicPoint;
 import hu.akoel.hetram.thermicpoint.ThermicPointList;
 import hu.akoel.hetram.thermicpoint.ThermicPointList.CURRENT_TYPE;
@@ -25,7 +19,6 @@ import hu.akoel.mgu.PossiblePixelPerUnits;
 import hu.akoel.mgu.axis.Axis;
 import hu.akoel.mgu.crossline.CrossLine;
 import hu.akoel.mgu.drawnblock.DrawnBlockCanvas;
-import hu.akoel.mgu.drawnblock.DrawnBlockFactory;
 import hu.akoel.mgu.grid.Grid;
 import hu.akoel.mgu.scale.Scale;
 import hu.akoel.mgu.scale.ScaleChangeListener;
@@ -56,7 +49,6 @@ public class MainPanel extends JFrame{
 	private static final int DEFAULT_SETTINGTABBEDPANEL = 310;
 		
 	private ThermicPointList thermicPointList = null;
-	private StructureSet elementSet = null;
 		
 	private StatusLine statusLine;
 	private SettingTabbedPanel controlPanel;
@@ -155,20 +147,6 @@ public class MainPanel extends JFrame{
 	private double startScale = 10;
 	private double rate = 1.2;	
 	
-	
-	
-	
-	//
-	//Temporary data
-	//
-	private double lambda1 = 0.67;
-	private double lambda2 = 0.20;
-	private double lambda3 = 1.0;
-	private double alfaE = 8;
-	private double alfaI = 24;
-	private double temperatureE = -15;
-	private double temperatureI = 20;
-		
 	public static void main(String[] args) {
 		Locale.setDefault(new Locale("en", "US"));
 		new Hetram();
@@ -195,9 +173,6 @@ public class MainPanel extends JFrame{
 	}
 	
 	public MainPanel( ){
-
-//Feltoltom csak. nincs szamitas		
-//elementSet = temporarelyGenerateElementSet();
 			
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("Hetram " + version );
@@ -644,47 +619,6 @@ System.err.println(getHorizontalMaximumDifference() + ", " + getVerticalMaximumD
 	public void revalidateAndRepaint(){
 		myCanvas.revalidateAndRepaintCoreCanvas();
 	}
-	
-	private StructureSet temporarelyGenerateElementSet() {
-		
-		//
-		// Falsarok
-		//
 
-		Structure hWall = new Structure( lambda1, new Position(0, 0.7), new Position(1.0, 1.0));
-		hWall.setCloseElement(new SurfaceSealing( Orientation.SOUTH, new Length( 0.3, 1.0), alfaI, temperatureI ) );
-		
-		Structure vWall = new Structure( lambda1, new Position(0,0), new Position(0.3, 0.7 ) );
-		vWall.setCloseElement(new SurfaceSealing( Orientation.EAST, new Length( 0.0, 0.7 ), alfaI, temperatureI ) );
-		
-		Structure hInsul = new Structure( lambda2, new Position( 0, 1.0), new Position(1.0, 1.1 ) );
-		hInsul.setCloseElement(new SurfaceSealing( Orientation.NORTH, new Length( 0.0, 1.0 ), alfaE, temperatureE ) );
-				
-		Structure vInsul = new Structure( lambda2, new Position(-0.1, 0), new Position(0, 1.1) );
-		vInsul.setCloseElement(new SurfaceSealing( Orientation.WEST, new Length( 0, 1.1), alfaE, temperatureE ) );
-		vInsul.setCloseElement(new SurfaceSealing( Orientation.NORTH, new Length( -0.1, 0.0 ), alfaE, temperatureE ) );
 
-		
-/*		//
-		// Egyenes fal
-		//
-		Element hWall = new Element( lambda1, new Position(0.0, 0.0), new Position(0.38, 0.38));
-		//hWall.setCloseElement(new SurfaceClose( SideOrientation.SOUTH, new Length( 0.0, 0.38), alfaI, temperatureI ) );
-		//hWall.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 0.38), alfaE, temperatureE ) );
-		hWall.setCloseElement(new SurfaceClose( SideOrientation.NORTH, new Length( 0.0, 0.38), alfaI, temperatureI ) );
-		hWall.setCloseElement(new SurfaceClose( SideOrientation.SOUTH, new Length( 0.0, 0.38), alfaE, temperatureE ) );
-		//hWall.setCloseElement(new SymmetricClose( SideOrientation.WEST, new Length( 0.0, 0.38) ) );
-		//hWall.setCloseElement(new SymmetricClose( SideOrientation.EAST, new Length( 0.0, 0.38) ) );
-*/
-		
-		StructureSet es;
-		
-		es = new StructureSet();
-		es.add( vWall );
-		es.add( hWall );
-		es.add( hInsul );
-		es.add( vInsul );
-
-		return es;
-	}
 }
