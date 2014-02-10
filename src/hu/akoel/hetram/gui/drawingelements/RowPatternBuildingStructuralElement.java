@@ -7,18 +7,13 @@ import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
+import java.math.BigDecimal;
 
+import hu.akoel.hetram.accessories.Displacement;
 import hu.akoel.hetram.gui.MainPanel;
 import hu.akoel.mgu.MGraphics;
 
 public class RowPatternBuildingStructuralElement extends HetramBuildingStructureElement{
-
-	public static enum ORIENTATION{
-		HORIZONTAL,
-		VERTICAL
-	}
-	
-	private static final long serialVersionUID = -8868671968355924643L;
 	
 	private final Stroke NORMAL_STROKE = new BasicStroke(1);
 	
@@ -37,11 +32,11 @@ public class RowPatternBuildingStructuralElement extends HetramBuildingStructure
 	private RowPatternInterface rowPatternInterface;
 	private MainPanel mainPanel;
 	
-	public RowPatternBuildingStructuralElement(Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth, double lambda, Color lineColor, Color backgroundColor ) {
+	public RowPatternBuildingStructuralElement(Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth, double lambda, Color lineColor, Color backgroundColor ) {
 		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, lambda, lineColor, backgroundColor );
 	}
 
-	public RowPatternBuildingStructuralElement( RowPatternInterface rowPatternInterface, MainPanel mainPanel, Status status, double x1, double y1, double lambda, Color lineColor, Color backgroundColor ) {
+	public RowPatternBuildingStructuralElement( RowPatternInterface rowPatternInterface, MainPanel mainPanel, Status status, BigDecimal x1, BigDecimal y1, double lambda, Color lineColor, Color backgroundColor ) {
 		super( status, x1, y1, lambda, lineColor, backgroundColor );
 				
 		this.rowPatternInterface = rowPatternInterface;
@@ -51,7 +46,7 @@ public class RowPatternBuildingStructuralElement extends HetramBuildingStructure
 
 	public void draw( MGraphics g2 ){
 
-		ORIENTATION orientation; 
+		Displacement displacement; 
 		
 		int patternWidth;
 		int patternHeight;
@@ -62,15 +57,18 @@ public class RowPatternBuildingStructuralElement extends HetramBuildingStructure
 		TexturePaint inprocessTexturePaint = null;
 
 		//Szelesebb mint magas
-		if( getWidth() > getHeight() ){
-			orientation = ORIENTATION.HORIZONTAL;
-			patternHeight = mainPanel.getCanvas().getPixelYLengthByWorld(getHeight() ) ;
+		if( getWidth().compareTo(getHeight() ) > 0 ){
+//		if( getWidth() > getHeight() ){
+			displacement = Displacement.HORIZONTAL;
+//TODO figyelem BigDecimal to double			
+			patternHeight = mainPanel.getCanvas().getPixelYLengthByWorld( getHeight().doubleValue() ) ;
 			patternWidth = (int)(patternHeight / rowPatternInterface.getHeightPerWidth());
 			
 		//Magasabb mint szeles
 		}else{
-			orientation = ORIENTATION.VERTICAL;
-			patternWidth = mainPanel.getCanvas().getPixelXLengthByWorld(getWidth() );
+			displacement = Displacement.VERTICAL;
+//TODO figyelem BigDecimal to double				
+			patternWidth = mainPanel.getCanvas().getPixelXLengthByWorld( getWidth().doubleValue() );
 			patternHeight = (int)(patternWidth / rowPatternInterface.getHeightPerWidth() );
 			
 		}
@@ -110,9 +108,9 @@ public class RowPatternBuildingStructuralElement extends HetramBuildingStructure
 			int shift;
 			
 			//Szelesebb mint magas
-			if( orientation.equals( ORIENTATION.HORIZONTAL ) ){
-
-				int pos = mainPanel.getCanvas().getPixelYPositionByWorldBeforeTranslate( getY1() );
+			if( displacement.equals( Displacement.HORIZONTAL ) ){
+//TODO figyelem BigDecimal to double	
+				int pos = mainPanel.getCanvas().getPixelYPositionByWorldBeforeTranslate( getY1().doubleValue() );
 				shift = pos - ( (int)(pos / patternHeight ) ) * patternHeight;
 			
 				if( pos < 0 ){
@@ -125,8 +123,8 @@ public class RowPatternBuildingStructuralElement extends HetramBuildingStructure
 			
 			//Magasabb mint szeles
 			}else{
-			
-				int pos = mainPanel.getCanvas().getPixelXPositionByWorldBeforeTranslate( getX1() );
+//TODO figyelem BigDecimal to double				
+				int pos = mainPanel.getCanvas().getPixelXPositionByWorldBeforeTranslate( getX1().doubleValue() );
 				shift = pos - ( (int)(pos / patternWidth ) ) * patternWidth;
 			
 				if( pos < 0 ){
@@ -141,19 +139,19 @@ public class RowPatternBuildingStructuralElement extends HetramBuildingStructure
 
 			//Normal
 			big1.setStroke(NORMAL_STROKE);
-			rowPatternInterface.drawPattern(big1, orientation, shift, patternWidth, patternHeight);
+			rowPatternInterface.drawPattern(big1, displacement, shift, patternWidth, patternHeight);
 		
 			//Selected
 			big2.setStroke(SELECTED_STROKE);
-			rowPatternInterface.drawPattern(big2, orientation, shift, patternWidth, patternHeight);
+			rowPatternInterface.drawPattern(big2, displacement, shift, patternWidth, patternHeight);
 	
 			//Infocus
 			big3.setStroke(INFOCUS_STROKE);
-			rowPatternInterface.drawPattern(big3, orientation, shift, patternWidth, patternHeight);
+			rowPatternInterface.drawPattern(big3, displacement, shift, patternWidth, patternHeight);
 		
 			//Inprocess
 			big4.setStroke(INPROCESS_STROKE);
-			rowPatternInterface.drawPattern(big4, orientation, shift, patternWidth, patternHeight);
+			rowPatternInterface.drawPattern(big4, displacement, shift, patternWidth, patternHeight);
 			
 			Rectangle r = new Rectangle( 0, 0, patternWidth, patternHeight );
 			normalTexturePaint = new TexturePaint( bi1,r );

@@ -19,6 +19,7 @@ import hu.akoel.mgu.PossiblePixelPerUnits;
 import hu.akoel.mgu.axis.Axis;
 import hu.akoel.mgu.crossline.CrossLine;
 import hu.akoel.mgu.drawnblock.DrawnBlockCanvas;
+import hu.akoel.mgu.drawnblock.DrawnBlockCanvas.Precision;
 import hu.akoel.mgu.grid.Grid;
 import hu.akoel.mgu.scale.Scale;
 import hu.akoel.mgu.scale.ScaleChangeListener;
@@ -47,6 +48,8 @@ public class MainPanel extends JFrame{
 	private static final int DEFAULT_WIDTH = 700;
 	private static final int DEFAULT_HEIGHT = 700;
 	private static final int DEFAULT_SETTINGTABBEDPANEL = 310;
+	
+	private static final Precision precision = Precision.ONE_100;
 		
 	private ThermicPointList thermicPointList = null;
 		
@@ -180,7 +183,7 @@ public class MainPanel extends JFrame{
 		this.setSize( DEFAULT_WIDTH, DEFAULT_HEIGHT );
 		this.createBufferStrategy(1);
 
-		myCanvas = new HetramCanvas(BorderFactory.createLoweredBevelBorder(), background, possiblePixelPerUnits, positionToMiddle, this );
+		myCanvas = new HetramCanvas(BorderFactory.createLoweredBevelBorder(), background, possiblePixelPerUnits, positionToMiddle, this, precision );
 		
 		//
 		// Szamitott eredmenyek grafikus megjelenitese a legfelsobb layer-en

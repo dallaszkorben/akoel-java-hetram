@@ -13,17 +13,15 @@ import hu.akoel.hetram.gui.drawingelements.RowPatternInterface;
 import hu.akoel.hetram.gui.drawingelements.SymmetricEdgeElement;
 import hu.akoel.hetram.gui.drawingelements.ZigZagRowPatternAdapter;
 import hu.akoel.mgu.ColorSelector;
-import hu.akoel.mgu.drawnblock.DrawnBlock;
-import hu.akoel.mgu.drawnblock.DrawnBlockFactory;
 import hu.akoel.mgu.drawnblock.DrawnBlock.Status;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
@@ -766,12 +764,12 @@ public class ElementSettingTab extends JPanel{
 		private HetramDrawnElement bs;
 		
 		@Override
-		public HetramDrawnElement getNewDrawnBlock(Status status, double x1, double y1) {
+		public HetramDrawnElement getNewDrawnBlock(Status status, BigDecimal x1, BigDecimal y1) {
 			
 			//Ezeket szerzi parameterkent
 			Color color = ElementSettingTab.this.mainPanel.getSymmetricEdgeColor();
 			
-			bs = new SymmetricEdgeElement( status , x1, y1, null, null, null, 0.0, color );
+			bs = new SymmetricEdgeElement( status , x1, y1, null, null, null, new BigDecimal(0.0), color );
 			return bs;
 		}		
 	}
@@ -787,7 +785,7 @@ public class ElementSettingTab extends JPanel{
 		private HetramDrawnElement bs;
 		
 		@Override
-		public HetramDrawnElement getNewDrawnBlock(Status status, double x1, double y1) {
+		public HetramDrawnElement getNewDrawnBlock(Status status, BigDecimal x1, BigDecimal y1) {
 			
 			//Ezeket szerzi parameterkent
 			double alphaBegin = ElementSettingTab.this.mainPanel.getOpenEdgeAlphaBegin();
@@ -795,7 +793,7 @@ public class ElementSettingTab extends JPanel{
 			double temperature = ElementSettingTab.this.mainPanel.getOpenEdgeTemperature();
 			Color color = ElementSettingTab.this.mainPanel.getOpenEdgeColor();
 			
-			bs = new OpenEdgeElement( status , x1, y1, null, null, null, 0.0, alphaBegin, alphaEnd, temperature, color );
+			bs = new OpenEdgeElement( status , x1, y1, null, null, null, new BigDecimal(0.0), alphaBegin, alphaEnd, temperature, color );
 		
 			return bs;
 		}
@@ -812,7 +810,7 @@ public class ElementSettingTab extends JPanel{
 		private HetramDrawnElement bs;
 		
 		@Override
-		public HetramDrawnElement getNewDrawnBlock( Status status, double x1, double y1 ) {
+		public HetramDrawnElement getNewDrawnBlock( Status status, BigDecimal x1, BigDecimal y1 ) {
 
 			//TODO lehet hogy at kellene pakolni a BuildingSturctureElement osztalyba			
 			

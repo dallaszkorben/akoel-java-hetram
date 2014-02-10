@@ -3,10 +3,9 @@ package hu.akoel.hetram.gui.drawingelements;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Stroke;
+import java.math.BigDecimal;
 
 public class SymmetricEdgeElement extends HetramDrawnElement{
-
-	private static final long serialVersionUID = -1063105162303271067L;
 	
 	private static final Stroke NORMAL_STROKE = new BasicStroke(3);
 	
@@ -18,7 +17,7 @@ public class SymmetricEdgeElement extends HetramDrawnElement{
 	
 	private static final Stroke INPROCESS_STROKE = new BasicStroke(5);
 
-	public SymmetricEdgeElement( Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth, Color color ){
+	public SymmetricEdgeElement( Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth, Color color ){
 		super( status, x1, y1, minLength, maxLength, minWidth, maxWidth );
 		
 		setNormal( color, NORMAL_STROKE, color );

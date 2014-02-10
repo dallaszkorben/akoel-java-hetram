@@ -7,10 +7,9 @@ import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
+import java.math.BigDecimal;
 
 public class FullPatternBuildingStructuralElement extends HetramBuildingStructureElement{
-
-	private static final long serialVersionUID = -8868671968355924643L;
 
 	private final Stroke NORMAL_STROKE = new BasicStroke(1);
 	
@@ -26,11 +25,11 @@ public class FullPatternBuildingStructuralElement extends HetramBuildingStructur
 	//private static final Color INFOCUS_BACKGROUND = Color.gray;
 	private final Stroke INFOCUS_STROKE = new BasicStroke(1);
 	
-	private FullPatternBuildingStructuralElement(Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth, double lambda, Color lineColor, Color backgroundColor) {
+	private FullPatternBuildingStructuralElement(Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth, double lambda, Color lineColor, Color backgroundColor) {
 		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, lambda, lineColor, backgroundColor );
 	}
 	
-	public FullPatternBuildingStructuralElement(FullPatternInterface fullPatternInterface, Status status, double x1, double y1, double lambda, Color lineColor, Color backgroundColor ) {
+	public FullPatternBuildingStructuralElement(FullPatternInterface fullPatternInterface, Status status, BigDecimal x1, BigDecimal y1, double lambda, Color lineColor, Color backgroundColor ) {
 		super( status, x1, y1, lambda, lineColor, backgroundColor );
 		
 		int patternWidth = fullPatternInterface.getPatternWidth();
