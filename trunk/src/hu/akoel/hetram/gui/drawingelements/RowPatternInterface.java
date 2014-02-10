@@ -1,6 +1,6 @@
 package hu.akoel.hetram.gui.drawingelements;
 
-import hu.akoel.hetram.gui.drawingelements.RowPatternBuildingStructuralElement.ORIENTATION;
+import hu.akoel.hetram.accessories.Displacement;
 
 import java.awt.Graphics2D;
 
@@ -50,5 +50,5 @@ public interface RowPatternInterface {
 	 * @param patternWidth a minta szelessege pixelben
 	 * @param PatternHeight a minta magassaga pixelben
 	 */
-	public void drawPattern( Graphics2D g2, ORIENTATION orientation, int shift, int patternWidth, int patternHeight );
+	public void drawPattern( Graphics2D g2, Displacement orientation, int shift, int patternWidth, int patternHeight );
 }

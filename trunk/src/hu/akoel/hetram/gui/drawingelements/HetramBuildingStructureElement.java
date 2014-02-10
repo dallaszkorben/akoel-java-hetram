@@ -1,21 +1,19 @@
 package hu.akoel.hetram.gui.drawingelements;
 
 import java.awt.Color;
-
+import java.math.BigDecimal;
 
 public abstract class HetramBuildingStructureElement extends HetramDrawnElement{
-
-	private static final long serialVersionUID = 4924553926760978507L;
 	
 	private Color lineColor;
 	private Color backgroundColor;
 	private double lambda;
 
-	private HetramBuildingStructureElement( Status status, double x1, double y1 ){
+	private HetramBuildingStructureElement( Status status, BigDecimal x1, BigDecimal y1 ){
 		super( status, x1, y1 );
 	}	
 	
-	public HetramBuildingStructureElement(Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth, double lambda, Color lineColor, Color backgroundColor ) {
+	public HetramBuildingStructureElement(Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth, double lambda, Color lineColor, Color backgroundColor ) {
 		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth );
 		
 		this.lambda = lambda;
@@ -24,7 +22,7 @@ public abstract class HetramBuildingStructureElement extends HetramDrawnElement{
 
 	}
 
-	public HetramBuildingStructureElement( Status status, double x1, double y1, double lambda, Color lineColor, Color backgroundColor ){
+	public HetramBuildingStructureElement( Status status, BigDecimal x1, BigDecimal y1, double lambda, Color lineColor, Color backgroundColor ){
 		super( status, x1, y1 );
 		
 		this.lambda = lambda;

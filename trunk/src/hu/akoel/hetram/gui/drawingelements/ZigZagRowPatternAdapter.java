@@ -1,6 +1,6 @@
 package hu.akoel.hetram.gui.drawingelements;
 
-import hu.akoel.hetram.gui.drawingelements.RowPatternBuildingStructuralElement.ORIENTATION;
+import hu.akoel.hetram.accessories.Displacement;
 
 import java.awt.Graphics2D;
 
@@ -12,9 +12,9 @@ public class ZigZagRowPatternAdapter implements RowPatternInterface{
 	}
 
 	@Override
-	public void drawPattern(Graphics2D g2, ORIENTATION orientation, int shift, int patternWidth, int patternHeight) {
+	public void drawPattern(Graphics2D g2, Displacement orientation, int shift, int patternWidth, int patternHeight) {
 
-		if( orientation.equals( ORIENTATION.HORIZONTAL ) ){
+		if( orientation.equals( Displacement.HORIZONTAL ) ){
 			
 			g2.drawLine( 0, shift, patternWidth / 2, patternHeight + shift );
 			g2.drawLine( patternWidth, shift, patternWidth / 2, patternHeight + shift );	
@@ -22,7 +22,7 @@ public class ZigZagRowPatternAdapter implements RowPatternInterface{
 			g2.drawLine( 0, shift-patternHeight, patternWidth / 2, shift );
 			g2.drawLine( patternWidth, shift-patternHeight, patternWidth / 2, shift );
 			
-		}else if( orientation.equals( ORIENTATION.VERTICAL ) ){
+		}else if( orientation.equals( Displacement.VERTICAL ) ){
 			
 			g2.drawLine( shift, 0, patternWidth + shift, patternHeight / 2 );
 			g2.drawLine( shift, patternHeight, patternWidth + shift, patternHeight / 2 );

@@ -3,6 +3,7 @@ package hu.akoel.hetram.gui.drawingelements;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Stroke;
+import java.math.BigDecimal;
 
 public class ColoredPatternBuildingSturcturalElement extends HetramBuildingStructureElement{
 
@@ -19,10 +20,8 @@ public class ColoredPatternBuildingSturcturalElement extends HetramBuildingStruc
 	private final Color INFOCUS_COLOR = Color.yellow;
 	//private static final Color INFOCUS_BACKGROUND = Color.gray;
 	private final Stroke INFOCUS_STROKE = new BasicStroke(1);
-	
-	private static final long serialVersionUID = -8868971968355924643L;
 
-	public ColoredPatternBuildingSturcturalElement(Status status, double x1, double y1, java.lang.Double minLength, java.lang.Double maxLength, java.lang.Double minWidth, java.lang.Double maxWidth, double lambda, Color lineColor, Color backgroundColor ) {
+	public ColoredPatternBuildingSturcturalElement(Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth, double lambda, Color lineColor, Color backgroundColor ) {
 		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, lambda, lineColor, backgroundColor );
 		
 		setNormal( lineColor, NORMAL_STROKE, backgroundColor );
@@ -33,7 +32,7 @@ public class ColoredPatternBuildingSturcturalElement extends HetramBuildingStruc
 		refreshStatus();
 	}
 	
-	public ColoredPatternBuildingSturcturalElement(Status status, double x1, double y1, double lambda, Color lineColor, Color backgroundColor ) {
+	public ColoredPatternBuildingSturcturalElement(Status status, BigDecimal x1, BigDecimal y1, double lambda, Color lineColor, Color backgroundColor ) {
 		super( status, x1, y1, lambda, lineColor, backgroundColor );
 		
 		setNormal( lineColor, NORMAL_STROKE, backgroundColor );

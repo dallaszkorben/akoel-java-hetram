@@ -1,6 +1,7 @@
 package hu.akoel.hetram;
 
 import java.awt.Color;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -42,8 +43,8 @@ public class HetramCanvas extends DrawnBlockCanvas{
 	private int verticalDifferenceDivider = 1;
 	private int horizontalDifferenceDivider = 1;
 */	
-	public HetramCanvas(Border borderType, Color background, PossiblePixelPerUnits possiblePixelPerUnits, TranslateValue positionToMiddle, MainPanel mainPanel ) {
-		super(borderType, background, possiblePixelPerUnits, positionToMiddle);
+	public HetramCanvas(Border borderType, Color background, PossiblePixelPerUnits possiblePixelPerUnits, TranslateValue positionToMiddle, MainPanel mainPanel, Precision precision ) {
+		super(borderType, background, possiblePixelPerUnits, positionToMiddle, precision );
 		this.mainPanel = mainPanel;
 	}
 
@@ -160,36 +161,64 @@ public class HetramCanvas extends DrawnBlockCanvas{
 				OpenEdgeElement openEdgeElement = (OpenEdgeElement)e;
 				
 				//HORTH
-				if( openEdgeElement.getWidth() != 0 && buildingStructureElement.getY2() == openEdgeElement.getY() ){
-					double dx1 = Math.max(openEdgeElement.getX1(), buildingStructureElement.getX1() );
-					double dx2 = Math.min(openEdgeElement.getX2(), buildingStructureElement.getX2() );
-					if( dx2 - dx1 > 0 ){
+				if( openEdgeElement.getWidth().compareTo( new BigDecimal("0") ) != 0 && buildingStructureElement.getY2().compareTo( openEdgeElement.getY1() ) == 0 ){
+					BigDecimal dx1 = openEdgeElement.getX1().max( buildingStructureElement.getX1() );
+					BigDecimal dx2 = openEdgeElement.getX2().min( buildingStructureElement.getX2() );
+					if( dx2.subtract( dx1 ).compareTo(new BigDecimal("0")) > 0 ){
 						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.NORTH ) );
 					}
 					
+//				if( openEdgeElement.getWidth() != 0 && buildingStructureElement.getY2() == openEdgeElement.getY() ){
+//					double dx1 = Math.max(openEdgeElement.getX1(), buildingStructureElement.getX1() );
+//					double dx2 = Math.min(openEdgeElement.getX2(), buildingStructureElement.getX2() );
+//					if( dx2 - dx1 > 0 ){
+//						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.NORTH ) );
+//					}
+					
 				//SOUTH
-				}else if( openEdgeElement.getWidth() != 0 && buildingStructureElement.getY1() == openEdgeElement.getY() ){
-					double dx1 = Math.max(openEdgeElement.getX1(), buildingStructureElement.getX1() );
-					double dx2 = Math.min(openEdgeElement.getX2(), buildingStructureElement.getX2() );
-					if( dx2 - dx1 > 0 ){
+				}else if( openEdgeElement.getWidth().compareTo( new BigDecimal("0") ) != 0 && buildingStructureElement.getY1().compareTo( openEdgeElement.getY1() ) == 0 ){
+					BigDecimal dx1 = openEdgeElement.getX1().max( buildingStructureElement.getX1() );
+					BigDecimal dx2 = openEdgeElement.getX2().min( buildingStructureElement.getX2() );
+					if( dx2.subtract( dx1 ).compareTo( new BigDecimal( "0" ) ) > 0 ){
 						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.SOUTH ) );
 					}				
 
+//				}else if( openEdgeElement.getWidth() != 0 && buildingStructureElement.getY1() == openEdgeElement.getY() ){
+//					double dx1 = Math.max(openEdgeElement.getX1(), buildingStructureElement.getX1() );
+//					double dx2 = Math.min(openEdgeElement.getX2(), buildingStructureElement.getX2() );
+//					if( dx2 - dx1 > 0 ){
+//						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.SOUTH ) );
+//					}			
+					
 				//EAST
-				}else if( openEdgeElement.getHeight() != 0 && buildingStructureElement.getX2() == openEdgeElement.getX() ){
-					double dy1 = Math.max(openEdgeElement.getY1(), buildingStructureElement.getY1() );
-					double dy2 = Math.min(openEdgeElement.getY2(), buildingStructureElement.getY2() );
-					if( dy2 - dy1 > 0 ){
+				}else if( openEdgeElement.getHeight().compareTo( new BigDecimal( "0" ) ) != 0 && buildingStructureElement.getX2().compareTo( openEdgeElement.getX1() ) == 0 ){
+					BigDecimal dy1 = openEdgeElement.getY1().max( buildingStructureElement.getY1() );
+					BigDecimal dy2 = openEdgeElement.getY2().min( buildingStructureElement.getY2() );
+					if( dy2.subtract( dy1 ).compareTo( new BigDecimal("0") ) > 0 ){
 						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.EAST ) );
 					}
 					
+//				}else if( openEdgeElement.getHeight() != 0 && buildingStructureElement.getX2() == openEdgeElement.getX() ){
+//					double dy1 = Math.max(openEdgeElement.getY1(), buildingStructureElement.getY1() );
+//					double dy2 = Math.min(openEdgeElement.getY2(), buildingStructureElement.getY2() );
+//					if( dy2 - dy1 > 0 ){
+//						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.EAST ) );
+//					}
+					
 				//WEST
-				}else if( openEdgeElement.getHeight() != 0 && buildingStructureElement.getX1() == openEdgeElement.getX() ){
-					double dy1 = Math.max(openEdgeElement.getY1(), buildingStructureElement.getY1() );
-					double dy2 = Math.min(openEdgeElement.getY2(), buildingStructureElement.getY2() );
-					if( dy2 - dy1 > 0 ){
+				}else if( openEdgeElement.getHeight().compareTo( new BigDecimal("0")) != 0 && buildingStructureElement.getX1().compareTo( openEdgeElement.getX1() ) == 0 ){
+					BigDecimal dy1 = openEdgeElement.getY1().max( buildingStructureElement.getY1() );
+					BigDecimal dy2 = openEdgeElement.getY2().min( buildingStructureElement.getY2() );
+					if( dy2.subtract( dy1 ).compareTo( new BigDecimal("0") ) > 0 ){
 						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.WEST ) );
-					}					
+					}	
+					
+//				}else if( openEdgeElement.getHeight() != 0 && buildingStructureElement.getX1() == openEdgeElement.getX() ){
+//					double dy1 = Math.max(openEdgeElement.getY1(), buildingStructureElement.getY1() );
+//					double dy2 = Math.min(openEdgeElement.getY2(), buildingStructureElement.getY2() );
+//					if( dy2 - dy1 > 0 ){
+//						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.WEST ) );
+//					}	
 				}
 			}
 		}
@@ -216,36 +245,63 @@ public class HetramCanvas extends DrawnBlockCanvas{
 				SymmetricEdgeElement symmetricEdgeElement = (SymmetricEdgeElement)e;
 				
 				//HORTH
-				if( symmetricEdgeElement.getWidth() != 0 && buildingStructureElement.getY2() == symmetricEdgeElement.getY() ){
-					double dx1 = Math.max(symmetricEdgeElement.getX1(), buildingStructureElement.getX1() );
-					double dx2 = Math.min(symmetricEdgeElement.getX2(), buildingStructureElement.getX2() );
-					if( dx2 - dx1 > 0 ){
+				if( symmetricEdgeElement.getWidth().compareTo( new BigDecimal("0") ) != 0 && buildingStructureElement.getY2().compareTo( symmetricEdgeElement.getY1() ) == 0 ){
+					BigDecimal dx1 = symmetricEdgeElement.getX1().max( buildingStructureElement.getX1() );
+					BigDecimal dx2 = symmetricEdgeElement.getX2().min( buildingStructureElement.getX2() );
+					if( dx2.subtract( dx1 ).compareTo(new BigDecimal("0")) > 0 ){
 						symmetricEdgeElementList.add( new SymmetricEdgeElementWithPosition( symmetricEdgeElement, Orientation.NORTH ) );
-					}
+					}			
+			
+//				if( symmetricEdgeElement.getWidth() != 0 && buildingStructureElement.getY2() == symmetricEdgeElement.getY() ){
+//					double dx1 = Math.max(symmetricEdgeElement.getX1(), buildingStructureElement.getX1() );
+//					double dx2 = Math.min(symmetricEdgeElement.getX2(), buildingStructureElement.getX2() );
+//					if( dx2 - dx1 > 0 ){
+//						symmetricEdgeElementList.add( new SymmetricEdgeElementWithPosition( symmetricEdgeElement, Orientation.NORTH ) );
+//					}
 					
 				//SOUTH
-				}else if( symmetricEdgeElement.getWidth() != 0 && buildingStructureElement.getY1() == symmetricEdgeElement.getY() ){
-					double dx1 = Math.max(symmetricEdgeElement.getX1(), buildingStructureElement.getX1() );
-					double dx2 = Math.min(symmetricEdgeElement.getX2(), buildingStructureElement.getX2() );
-					if( dx2 - dx1 > 0 ){
+				}else if( symmetricEdgeElement.getWidth().compareTo( new BigDecimal("0") ) != 0 && buildingStructureElement.getY1().compareTo( symmetricEdgeElement.getY1() ) == 0 ){
+					BigDecimal dx1 = symmetricEdgeElement.getX1().max( buildingStructureElement.getX1() );
+					BigDecimal dx2 = symmetricEdgeElement.getX2().min( buildingStructureElement.getX2() );
+					if( dx2.subtract( dx1 ).compareTo( new BigDecimal( "0" ) ) > 0 ){
 						symmetricEdgeElementList.add( new SymmetricEdgeElementWithPosition( symmetricEdgeElement, Orientation.SOUTH ) );
-					}				
+					}						
+//				}else if( symmetricEdgeElement.getWidth() != 0 && buildingStructureElement.getY1() == symmetricEdgeElement.getY() ){
+//					double dx1 = Math.max(symmetricEdgeElement.getX1(), buildingStructureElement.getX1() );
+//					double dx2 = Math.min(symmetricEdgeElement.getX2(), buildingStructureElement.getX2() );
+//					if( dx2 - dx1 > 0 ){
+//						symmetricEdgeElementList.add( new SymmetricEdgeElementWithPosition( symmetricEdgeElement, Orientation.SOUTH ) );
+//					}				
 
 				//EAST
-				}else if( symmetricEdgeElement.getHeight() != 0 && buildingStructureElement.getX2() == symmetricEdgeElement.getX() ){
-					double dy1 = Math.max(symmetricEdgeElement.getY1(), buildingStructureElement.getY1() );
-					double dy2 = Math.min(symmetricEdgeElement.getY2(), buildingStructureElement.getY2() );
-					if( dy2 - dy1 > 0 ){
+				}else if( symmetricEdgeElement.getHeight().compareTo( new BigDecimal( "0" ) ) != 0 && buildingStructureElement.getX2().compareTo( symmetricEdgeElement.getX1() ) == 0 ){
+					BigDecimal dy1 = symmetricEdgeElement.getY1().max( buildingStructureElement.getY1() );
+					BigDecimal dy2 = symmetricEdgeElement.getY2().min( buildingStructureElement.getY2() );
+					if( dy2.subtract( dy1 ).compareTo( new BigDecimal("0") ) > 0 ){
 						symmetricEdgeElementList.add( new SymmetricEdgeElementWithPosition( symmetricEdgeElement, Orientation.EAST ) );
 					}
 					
+//				}else if( symmetricEdgeElement.getHeight() != 0 && buildingStructureElement.getX2() == symmetricEdgeElement.getX() ){
+//					double dy1 = Math.max(symmetricEdgeElement.getY1(), buildingStructureElement.getY1() );
+//					double dy2 = Math.min(symmetricEdgeElement.getY2(), buildingStructureElement.getY2() );
+//					if( dy2 - dy1 > 0 ){
+//						symmetricEdgeElementList.add( new SymmetricEdgeElementWithPosition( symmetricEdgeElement, Orientation.EAST ) );
+//					}
+					
 				//WEST
-				}else if( symmetricEdgeElement.getHeight() != 0 && buildingStructureElement.getX1() == symmetricEdgeElement.getX() ){
-					double dy1 = Math.max(symmetricEdgeElement.getY1(), buildingStructureElement.getY1() );
-					double dy2 = Math.min(symmetricEdgeElement.getY2(), buildingStructureElement.getY2() );
-					if( dy2 - dy1 > 0 ){
+				}else if( symmetricEdgeElement.getHeight().compareTo( new BigDecimal("0")) != 0 && buildingStructureElement.getX1().compareTo( symmetricEdgeElement.getX1() ) == 0 ){
+					BigDecimal dy1 = symmetricEdgeElement.getY1().max( buildingStructureElement.getY1() );
+					BigDecimal dy2 = symmetricEdgeElement.getY2().min( buildingStructureElement.getY2() );
+					if( dy2.subtract( dy1 ).compareTo( new BigDecimal("0") ) > 0 ){
 						symmetricEdgeElementList.add( new SymmetricEdgeElementWithPosition( symmetricEdgeElement, Orientation.WEST ) );
-					}					
+					}	
+					
+//				}else if( symmetricEdgeElement.getHeight() != 0 && buildingStructureElement.getX1() == symmetricEdgeElement.getX() ){
+//					double dy1 = Math.max(symmetricEdgeElement.getY1(), buildingStructureElement.getY1() );
+//					double dy2 = Math.min(symmetricEdgeElement.getY2(), buildingStructureElement.getY2() );
+//					if( dy2 - dy1 > 0 ){
+//						symmetricEdgeElementList.add( new SymmetricEdgeElementWithPosition( symmetricEdgeElement, Orientation.WEST ) );
+//					}					
 				}
 			}
 		}
@@ -288,18 +344,19 @@ public class HetramCanvas extends DrawnBlockCanvas{
 				element = (HetramBuildingStructureElement)e;
 				
 				//Veszem az elem kezdo es veg pozicioit
-				double startXPoint = CommonOperations.get10Decimals( element.getX1() );
-				double startYPoint = CommonOperations.get10Decimals( element.getY1() );
-				double endXPoint = CommonOperations.get10Decimals( element.getX2() );
-				double endYPoint = CommonOperations.get10Decimals( element.getY2() );
+				BigDecimal startXPoint = element.getX1();
+				BigDecimal startYPoint = element.getY1();
+				BigDecimal endXPoint = element.getX2();
+				BigDecimal endYPoint = element.getY2();
 			
 				double lambda;// = element.getLambda();		
 
 				//Mindig a kezdo vertikalis pontbol indulok
-				double y = startYPoint;
+				BigDecimal y = startYPoint;
 			
 				//Vertikalis felbontas
 				int iSteps = (int)Math.round((endYPoint - y) / verticalAppliedDifference );
+				//int iSteps = (int)Math.round((endYPoint - y) / verticalAppliedDifference );
 			
 				//Vegig a vertikalis pontokon
 				for( int i = 0; i <= iSteps; i++){
@@ -308,7 +365,7 @@ public class HetramCanvas extends DrawnBlockCanvas{
 					y = CommonOperations.get10Decimals( startYPoint + i * verticalAppliedDifference );
 				
 					//Elindul a kezdo horizontalis pontbol
-					double x = startXPoint;			
+					BigDecimal x = startXPoint;			
 				
 					//Horizontalis felbontas
 					int jSteps = (int)Math.round((endXPoint - x) / horizontalAppliedDifference);
@@ -405,13 +462,13 @@ public class HetramCanvas extends DrawnBlockCanvas{
 				HashSet<SymmetricEdgeElementWithPosition> symmetricEdgeElementList = getSymmetricEdgeElements( element );
 			
 				//Veszem az elem kezdo es veg pozicioit
-				double startXPoint = CommonOperations.get10Decimals( element.getX1() );
-				double startYPoint = CommonOperations.get10Decimals( element.getY1() );
-				double endXPoint = CommonOperations.get10Decimals( element.getX2() );
-				double endYPoint = CommonOperations.get10Decimals( element.getY2() );
+				BigDecimal startXPoint = element.getX1();
+				BigDecimal startYPoint = element.getY1();
+				BigDecimal endXPoint = element.getX2();
+				BigDecimal endYPoint = element.getY2();
 			
 				//Kezdo vertikalis pontbol indulok
-				double y = startYPoint;
+				BigDecimal y = startYPoint;
 			
 				//Vertikalis felbontas
 				int iSteps = (int)Math.round((endYPoint - y) / verticalAppliedDifference );
@@ -423,7 +480,7 @@ public class HetramCanvas extends DrawnBlockCanvas{
 					y = CommonOperations.get10Decimals( startYPoint + i * verticalAppliedDifference );				
 				
 					//Kezdo horizontalis pontbol indulok
-					double x = startXPoint;		
+					BigDecimal x = startXPoint;		
 				
 					//Horizontalis felbontas
 					int jSteps = (int)Math.round((endXPoint - x) / horizontalAppliedDifference);
