@@ -298,7 +298,7 @@ public class ThermicPointList{
 				yLengthPercentage = 0;
 				Double current;
 				double arrowLength;
-						
+				 		
 				//----------
 				//
 				//NORTH
