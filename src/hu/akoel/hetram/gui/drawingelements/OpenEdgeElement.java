@@ -1,7 +1,5 @@
 package hu.akoel.hetram.gui.drawingelements;
 
-import hu.akoel.hetram.accessories.Orientation;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Stroke;

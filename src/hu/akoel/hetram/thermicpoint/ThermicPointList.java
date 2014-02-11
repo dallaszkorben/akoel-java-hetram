@@ -1,5 +1,6 @@
 package hu.akoel.hetram.thermicpoint;
 
+import hu.akoel.hetram.accessories.BigDecimalPosition;
 import hu.akoel.hetram.accessories.ColorTransient;
 import hu.akoel.hetram.accessories.CommonOperations;
 import hu.akoel.hetram.accessories.Position;
@@ -20,6 +21,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
+import java.math.BigDecimal;
 import java.util.Collection;
 
 import javax.swing.SwingUtilities;
@@ -84,42 +86,55 @@ public class ThermicPointList{
 	 * @return
 	 */
 	public ThermicPoint getThermicPointByPosition( double x, double y ){
+//	public ThermicPoint getThermicPointByPosition( BigDecimal x, BigDecimal y ){
 		
 		if ( this.getSize() > 0 ) {
 			
 			IThermicConnector c;
 			double dy1, dy2, dx1, dx2;
+			//BigDecimal dy1, dy2, dx1, dx2;
 			
 			// Vegig a Termikus Pontokon
 			for (int j = 0; j < this.getSize(); j++) {
 				
-				Position position = this.get(j).getPosition();
+				BigDecimalPosition ps = this.get(j).getPosition();
+				Position position = new Position( ps.getX().doubleValue(), ps.getY().doubleValue() ); 
+				//dy1 = new BigDecimal("0");
+				//dy2 = new BigDecimal("0");
+				//dx1 = new BigDecimal("0");
+				//dx2 = new BigDecimal("0");
+
 				dy1 = 0;
 				dy2 = 0;
 				dx1 = 0;
 				dx2 = 0;
-				
+
 				c = this.get(j).getNorthThermicConnector();
 				if (c instanceof YThermicPointThermicConnector) {
-					dy2 = ((YThermicPointThermicConnector)c).getDelta() / 2;
+					//dy2 = ((YThermicPointThermicConnector)c).getDelta().divide( new BigDecimal(2) );
+					dy2 = ((YThermicPointThermicConnector)c).getDelta().doubleValue() / 2;
 				}
 
 				c = this.get(j).getEastThermicConnector();
 				if (c instanceof XThermicPointThermicConnector) {
-					dx2 = ((XThermicPointThermicConnector)c).getDelta() / 2;
+					//dx2 = ((XThermicPointThermicConnector)c).getDelta().divide( new BigDecimal(2) );
+					dx2 = ((XThermicPointThermicConnector)c).getDelta().doubleValue() / 2;
 				}
 
 				c = this.get(j).getSouthThermicConnector();
 				if (c instanceof YThermicPointThermicConnector) {
-					dy1 = ((YThermicPointThermicConnector)c).getDelta() / 2;
+					//dy1 = ((YThermicPointThermicConnector)c).getDelta().divide( new BigDecimal(2) );
+					dy1 = ((YThermicPointThermicConnector)c).getDelta().doubleValue() / 2;
 				}
 
 				c = this.get(j).getWestThermicConnector();
 				if (c instanceof XThermicPointThermicConnector) {
-					dx1 = ((XThermicPointThermicConnector)c).getDelta() / 2;
+					//dx1 = ((XThermicPointThermicConnector)c).getDelta().divide( new BigDecimal(2) );
+					dx1 = ((XThermicPointThermicConnector)c).getDelta().doubleValue() / 2;
 				}	
 				
-				if( y <= position.getY() + dy2 && y >= position.getY() - dy1 && x <= position.getX() + dx2 && x >= position.getX() - dx1 ){
+				//if( y.compareTo( position.getY().add( dy2 ) ) <= 0 && y.compareTo( position.getY().subtract( dy1 ) ) >= 0 && x.compareTo( position.getX().add( dx2 ) ) <= 0 && x.compareTo( position.getX().subtract( dx1 ) ) >= 0 ){
+				if( y <= position.getY() + dy2 && y >= position.getY() - dy1 && x <= position.getX() + dx2 && x >= position.getX() - dx1 ){					
 					return this.get( j );
 				}
 			}
@@ -154,10 +169,10 @@ public class ThermicPointList{
 		for (int j = 0; j < this.getSize(); j++) {
 
 			// A pont geometriai elhelyezkedese
-			Position position = this.get(j).getPosition();
+			BigDecimalPosition position = this.get(j).getPosition();
 			
 			g2.setColor( thermicPointColor );
-			g2.fillOval( position.getX(), position.getY(), thermicPointRadius );
+			g2.fillOval( position.getX().doubleValue(), position.getY().doubleValue(), thermicPointRadius );
 
 		}		
 	}
@@ -178,7 +193,7 @@ public class ThermicPointList{
 			// Vegig a Termikus Pontokon
 			for (int j = 0; j < this.getSize(); j++) {
 
-				double delta = 10;
+				BigDecimal delta = new BigDecimal(10);
 				
 				c = this.get(j).getEastThermicConnector();
 				if (c instanceof XThermicPointThermicConnector) {
@@ -191,15 +206,15 @@ public class ThermicPointList{
 				}	
 				
 				// A pont geometriai elhelyezkedese
-				Position position = this.get(j).getPosition();
+				BigDecimalPosition position = this.get(j).getPosition();
 		
-				int fontSize = canvas.getPixelXLengthByWorld( delta )/4;
+				int fontSize = canvas.getPixelXLengthByWorld( delta.doubleValue() )/4;
 				Font font = new Font("Default", Font.PLAIN, fontSize);
 				FontRenderContext frc = g2.getFontRenderContext();
 
 				g2.setColor(Color.white);
 				TextLayout textLayout = new	TextLayout(String.valueOf( CommonOperations.get2Decimals( this.get( j ).getActualTemperature() ) ), font, frc );
-				g2.drawFont( textLayout, position.getX(), position.getY());
+				g2.drawFont( textLayout, position.getX().doubleValue(), position.getY().doubleValue() );
 			}
 		}
 	}
@@ -228,22 +243,26 @@ public class ThermicPointList{
 
 				c = this.get(j).getNorthThermicConnector();
 				if (c instanceof YThermicPointThermicConnector) {
-					maxDeltaY = Math.max( maxDeltaY, Math.abs( ((YThermicPointThermicConnector)c).getDelta() ));
+					maxDeltaY = Math.max( maxDeltaY, Math.abs( ((YThermicPointThermicConnector)c).getDelta().doubleValue() ));
+					//maxDeltaY = Math.max( maxDeltaY, Math.abs( ((YThermicPointThermicConnector)c).getDelta() ));
 				}
 
 				c = this.get(j).getEastThermicConnector();
 				if (c instanceof XThermicPointThermicConnector) {
-					maxDeltaX = Math.max( maxDeltaX, Math.abs( ((XThermicPointThermicConnector)c).getDelta() ));
+					maxDeltaY = Math.max( maxDeltaY, Math.abs( ((YThermicPointThermicConnector)c).getDelta().doubleValue() ));
+					//maxDeltaY = Math.max( maxDeltaY, Math.abs( ((YThermicPointThermicConnector)c).getDelta() ));
 				}
 
 				c = this.get(j).getSouthThermicConnector();
 				if (c instanceof YThermicPointThermicConnector) {
-					maxDeltaY = Math.max( maxDeltaY, Math.abs( ((YThermicPointThermicConnector)c).getDelta() ));
+					maxDeltaY = Math.max( maxDeltaY, Math.abs( ((YThermicPointThermicConnector)c).getDelta().doubleValue() ));
+					//maxDeltaY = Math.max( maxDeltaY, Math.abs( ((YThermicPointThermicConnector)c).getDelta() ));
 				}
 
 				c = this.get(j).getWestThermicConnector();
 				if (c instanceof XThermicPointThermicConnector) {
-					maxDeltaX = Math.max( maxDeltaX, Math.abs( ((XThermicPointThermicConnector)c).getDelta() ));
+					maxDeltaX = Math.max( maxDeltaX, Math.abs( ((XThermicPointThermicConnector)c).getDelta().doubleValue() ));
+					//maxDeltaX = Math.max( maxDeltaX, Math.abs( ((XThermicPointThermicConnector)c).getDelta() ));
 				}
 				
 				if( null != this.get(j).getEastCurrent() )
@@ -269,7 +288,11 @@ public class ThermicPointList{
 			for (int j = 0; j < this.getSize(); j++) {
 
 				// A pont geometriai elhelyezkedese
-				Position position = this.get(j).getPosition();
+				//BigDecimalPosition position = this.get(j).getPosition();
+				BigDecimalPosition ps = this.get(j).getPosition();
+				Position position = new Position( ps.getX().doubleValue(), ps.getY().doubleValue() ); 
+				
+				
 				vX = position.getX();
 				vY = position.getY();
 				yLengthPercentage = 0;
@@ -291,7 +314,7 @@ public class ThermicPointList{
 					
 					if (c instanceof YThermicPointThermicConnector) {
 					
-						vY = position.getY() + yLengthPercentage * ((YThermicPointThermicConnector) c).getDelta();
+						vY = position.getY() + yLengthPercentage * ((YThermicPointThermicConnector) c).getDelta().doubleValue();
 
 					//Szabad feluletu pont					
 					}else if( c instanceof OpenEdgeThermicConnector ){
@@ -316,7 +339,7 @@ public class ThermicPointList{
 					
 					if (c instanceof YThermicPointThermicConnector) {
 					
-						vY = position.getY() - yLengthPercentage * ((YThermicPointThermicConnector) c).getDelta();												
+						vY = position.getY() - yLengthPercentage * ((YThermicPointThermicConnector) c).getDelta().doubleValue();												
 
 					//Szabad feluletu pont
 					}else if( c instanceof OpenEdgeThermicConnector ){
@@ -343,7 +366,7 @@ public class ThermicPointList{
 					//Normal termikus pont
 					if (c instanceof XThermicPointThermicConnector) {
 
-						vX = position.getX() + xLengthPercentage * ((XThermicPointThermicConnector) c).getDelta();
+						vX = position.getX() + xLengthPercentage * ((XThermicPointThermicConnector) c).getDelta().doubleValue();
 										
 					//Szabad feluletu pont
 					}else if( c instanceof OpenEdgeThermicConnector ){
@@ -370,7 +393,7 @@ public class ThermicPointList{
 					//Normal termikus pont
 					if (c instanceof XThermicPointThermicConnector) {
 				
-						vX = position.getX() - xLengthPercentage * ((XThermicPointThermicConnector) c).getDelta();
+						vX = position.getX() - xLengthPercentage * ((XThermicPointThermicConnector) c).getDelta().doubleValue();
 						
 					//Szabad feluletu pont
 					}else if( c instanceof OpenEdgeThermicConnector ){
@@ -497,12 +520,12 @@ public class ThermicPointList{
 
 				cNorth = this.get(j).getNorthThermicConnector();
 				if (cNorth instanceof AThermicPointThermicConnector) {
-					delta = Math.max(delta,	((AThermicPointThermicConnector) cNorth).getDelta());
+					delta = Math.max(delta,	((AThermicPointThermicConnector) cNorth).getDelta().doubleValue());
 				}
 
 				cEast = this.get(j).getEastThermicConnector();
 				if (cEast instanceof AThermicPointThermicConnector) {
-					delta = Math.max(delta,	((AThermicPointThermicConnector) cEast).getDelta());
+					delta = Math.max(delta,	((AThermicPointThermicConnector) cEast).getDelta().doubleValue());
 				}
 			}
 
@@ -510,7 +533,8 @@ public class ThermicPointList{
 			for (int j = 0; j < this.getSize(); j++) {
 
 				// A pont geometriai elhelyezkedese
-				Position position = this.get(j).getPosition();
+				BigDecimalPosition ps = this.get(j).getPosition();
+				Position position = new Position( ps.getX().doubleValue(), ps.getY().doubleValue() );
 
 				double dNorth = 0;
 				double dEast = 0;
@@ -519,22 +543,22 @@ public class ThermicPointList{
 				
 				cNorth = this.get(j).getNorthThermicConnector();
 				if (cNorth instanceof AThermicPointThermicConnector) {
-					dNorth = ((AThermicPointThermicConnector) cNorth).getDelta() / 2;							
+					dNorth = ((AThermicPointThermicConnector) cNorth).getDelta().doubleValue() / 2;							
 				}
 
 				cEast = this.get(j).getEastThermicConnector();
 				if (cEast instanceof AThermicPointThermicConnector) {
-					dEast = ((AThermicPointThermicConnector) cEast).getDelta() / 2;
+					dEast = ((AThermicPointThermicConnector) cEast).getDelta().doubleValue() / 2;
 				}
 
 				cSouth = this.get(j).getSouthThermicConnector();
 				if (cSouth instanceof AThermicPointThermicConnector) {
-					dSouth = ((AThermicPointThermicConnector) cSouth).getDelta() / 2;
+					dSouth = ((AThermicPointThermicConnector) cSouth).getDelta().doubleValue() / 2;
 				}
 
 				cWest = this.get(j).getWestThermicConnector();
 				if (cWest instanceof AThermicPointThermicConnector) {
-					dWest = ((AThermicPointThermicConnector) cWest).getDelta() / 2;
+					dWest = ((AThermicPointThermicConnector) cWest).getDelta().doubleValue() / 2;
 				}
 
 				//double xStart = position.getX() - dWest;
@@ -750,35 +774,35 @@ public class ThermicPointList{
 			
 			//Van WEST es EAST iranyba is Normal termikus pont kapcsolat
 			if( cW instanceof XThermicPointThermicConnector && cE instanceof XThermicPointThermicConnector ){
-				dXNormal = ((XThermicPointThermicConnector)cW).getDelta() / 2;
-				dXNormal += ((XThermicPointThermicConnector)cE).getDelta() / 2;
+				dXNormal = ((XThermicPointThermicConnector)cW).getDelta().doubleValue() / 2;
+				dXNormal += ((XThermicPointThermicConnector)cE).getDelta().doubleValue() / 2;
 				dXPerpendicular = dXNormal;
 			
 			//Csak WEST iranyba van Normal termikus kapcsolata
 			}else if( cW instanceof XThermicPointThermicConnector ){
-				dXNormal = ((XThermicPointThermicConnector)cW).getDelta();
+				dXNormal = ((XThermicPointThermicConnector)cW).getDelta().doubleValue();
 				dXPerpendicular = dXNormal / 2;
 				
 			//Csak EAST iranyba van Normal termikus kapcsoalt	
 			}else if( cE instanceof XThermicPointThermicConnector ){
-				dXNormal = ((XThermicPointThermicConnector)cE).getDelta();
+				dXNormal = ((XThermicPointThermicConnector)cE).getDelta().doubleValue();
 				dXPerpendicular = dXNormal / 2;
 			}
 			
 			//Van NORTH es SOUTH iranyba is Normal termikus pon kapcsolat
 			if( cN instanceof YThermicPointThermicConnector && cS instanceof YThermicPointThermicConnector ){
-				dYNormal = ((YThermicPointThermicConnector)cN).getDelta() / 2;
-				dYNormal += ((YThermicPointThermicConnector)cS).getDelta() / 2;
+				dYNormal = ((YThermicPointThermicConnector)cN).getDelta().doubleValue() / 2;
+				dYNormal += ((YThermicPointThermicConnector)cS).getDelta().doubleValue() / 2;
 				dYPerpendicular = dYNormal;
 			
 			//Csak NORTH iranyba van Normal termikus kapcsolata
 			}else if( cN instanceof YThermicPointThermicConnector ){
-				dYNormal = ((YThermicPointThermicConnector)cN).getDelta();
+				dYNormal = ((YThermicPointThermicConnector)cN).getDelta().doubleValue();
 				dYPerpendicular = dYNormal / 2;
 				
 			//Csak SOUTH iranyba van Normal termikus kapcsoalt	
 			}else if( cS instanceof YThermicPointThermicConnector ){
-				dYNormal = ((YThermicPointThermicConnector)cS).getDelta();
+				dYNormal = ((YThermicPointThermicConnector)cS).getDelta().doubleValue();
 				dYPerpendicular = dYNormal / 2;
 			}
 			
@@ -998,35 +1022,35 @@ public class ThermicPointList{
 			
 			//Van WEST es EAST iranyba is Normal termikus pont kapcsolat
 			if( cW instanceof XThermicPointThermicConnector && cE instanceof XThermicPointThermicConnector ){
-				dXNormal = ((XThermicPointThermicConnector)cW).getDelta() / 2;
-				dXNormal += ((XThermicPointThermicConnector)cE).getDelta() / 2;
+				dXNormal = ((XThermicPointThermicConnector)cW).getDelta().doubleValue() / 2;
+				dXNormal += ((XThermicPointThermicConnector)cE).getDelta().doubleValue() / 2;
 				dXPerpendicular = dXNormal;
 			
 			//Csak WEST iranyba van Normal termikus kapcsolata
 			}else if( cW instanceof XThermicPointThermicConnector ){
-				dXNormal = ((XThermicPointThermicConnector)cW).getDelta();
+				dXNormal = ((XThermicPointThermicConnector)cW).getDelta().doubleValue();
 				dXPerpendicular = dXNormal / 2;
 				
 			//Csak EAST iranyba van Normal termikus kapcsoalt	
 			}else if( cE instanceof XThermicPointThermicConnector ){
-				dXNormal = ((XThermicPointThermicConnector)cE).getDelta();
+				dXNormal = ((XThermicPointThermicConnector)cE).getDelta().doubleValue();
 				dXPerpendicular = dXNormal / 2;
 			}
 			
 			//Van NORTH es SOUTH iranyba is Normal termikus pon kapcsolat
 			if( cN instanceof YThermicPointThermicConnector && cS instanceof YThermicPointThermicConnector ){
-				dYNormal = ((YThermicPointThermicConnector)cN).getDelta() / 2;
-				dYNormal += ((YThermicPointThermicConnector)cS).getDelta() / 2;
+				dYNormal = ((YThermicPointThermicConnector)cN).getDelta().doubleValue() / 2;
+				dYNormal += ((YThermicPointThermicConnector)cS).getDelta().doubleValue() / 2;
 				dYPerpendicular = dYNormal;
 			
 			//Csak NORTH iranyba van Normal termikus kapcsolata
 			}else if( cN instanceof YThermicPointThermicConnector ){
-				dYNormal = ((YThermicPointThermicConnector)cN).getDelta();
+				dYNormal = ((YThermicPointThermicConnector)cN).getDelta().doubleValue();
 				dYPerpendicular = dYNormal / 2;
 				
 			//Csak SOUTH iranyba van Normal termikus kapcsoalt	
 			}else if( cS instanceof YThermicPointThermicConnector ){
-				dYNormal = ((YThermicPointThermicConnector)cS).getDelta();
+				dYNormal = ((YThermicPointThermicConnector)cS).getDelta().doubleValue();
 				dYPerpendicular = dYNormal / 2;
 			}
 
@@ -1056,8 +1080,8 @@ public class ThermicPointList{
 			
 				//Veszi a Pont felett levo Pontot osszekoto konnektort
 				YThermicPointThermicConnector cp = (YThermicPointThermicConnector)list[i].getSouthThermicConnector();
-				szamlalo += dx * ( cp.getLambda()/cp.getDelta() / dy ) * cp.getSouthThermicPoint().getActualTemperature();
-				nevezo += dx * cp.getLambda()/cp.getDelta() / dy;
+				szamlalo += dx * ( cp.getLambda()/cp.getDelta().doubleValue() / dy ) * cp.getSouthThermicPoint().getActualTemperature();
+				nevezo += dx * cp.getLambda()/cp.getDelta().doubleValue() / dy;
 				
 			//Termikus Pont - Szabad felszin
 			}else if( cN instanceof OpenEdgeThermicConnector ){
@@ -1211,6 +1235,15 @@ public class ThermicPointList{
 	public ThermicPoint get( int position ){
 		return list[position];
 	}
+	
+	public String toString(){
+		String out = new String();
+		
+		for (int j = 0; j < this.getSize(); j++) {
+			out += this.get(j) + "\n";
+		}
+		return out;
+	}
 }
 
 class Vector2D{
@@ -1238,4 +1271,6 @@ class Vector2D{
 			length * Math.sin( theta )
 		);
 	}
+	
+	
 }
