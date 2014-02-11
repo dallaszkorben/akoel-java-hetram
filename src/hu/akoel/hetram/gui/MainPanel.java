@@ -50,7 +50,7 @@ public class MainPanel extends JFrame{
 	private static final int DEFAULT_HEIGHT = 700;
 	private static final int DEFAULT_SETTINGTABBEDPANEL = 310;
 	
-	private static final Precision precision = Precision.ONE_100;
+	private static final Precision precision = Precision.ONE_100000;
 		
 	private ThermicPointList thermicPointList = null;
 		

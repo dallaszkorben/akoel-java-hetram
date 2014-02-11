@@ -15,9 +15,7 @@ import java.util.List;
 import javax.swing.border.Border;
 
 import hu.akoel.hetram.accessories.BigDecimalPosition;
-import hu.akoel.hetram.accessories.CommonOperations;
 import hu.akoel.hetram.accessories.Orientation;
-import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.connectors.AThermicPointThermicConnector;
 import hu.akoel.hetram.gui.MainPanel;
 import hu.akoel.hetram.gui.drawingelements.HetramBuildingStructureElement;
@@ -326,8 +324,8 @@ public class HetramCanvas extends DrawnBlockCanvas{
 		
 		HetramBuildingStructureElement element;
 		
-		BigDecimal verticalAppliedDifference = mainPanel.getVerticalMaximumDifference().divide( new BigDecimal( String.valueOf( mainPanel.getVerticalDifferenceDivider() ) )  );
-		BigDecimal horizontalAppliedDifference = mainPanel.getHorizontalMaximumDifference().divide( new BigDecimal( String.valueOf( mainPanel.getHorizontalDifferenceDivider() ) )  );
+		BigDecimal verticalAppliedDifference = mainPanel.getVerticalMaximumDifference().divide( new BigDecimal( String.valueOf( mainPanel.getVerticalDifferenceDivider() ) ), 10, RoundingMode.HALF_UP  );
+		BigDecimal horizontalAppliedDifference = mainPanel.getHorizontalMaximumDifference().divide( new BigDecimal( String.valueOf( mainPanel.getHorizontalDifferenceDivider() ) ), 10, RoundingMode.HALF_UP  );
 		
 		mainPanel.setHorizontalAppliedDifference( horizontalAppliedDifference );
 		mainPanel.setVerticalAppliedDifference( verticalAppliedDifference );
@@ -361,7 +359,7 @@ public class HetramCanvas extends DrawnBlockCanvas{
 				BigDecimal y = startYPoint;
 			
 				//Vertikalis felbontas
-				int iSteps = endYPoint.subtract( y ).divide( verticalAppliedDifference , RoundingMode.HALF_UP  ).intValue();
+				int iSteps = endYPoint.subtract( y ).divide( verticalAppliedDifference, scale, RoundingMode.HALF_UP  ).intValue();
 				//int iSteps = (int)Math.round((endYPoint - y) / verticalAppliedDifference );
 			
 				//Vegig a vertikalis pontokon
@@ -375,7 +373,7 @@ public class HetramCanvas extends DrawnBlockCanvas{
 					BigDecimal x = startXPoint;			
 				
 					//Horizontalis felbontas
-					int jSteps = endXPoint.subtract( x ).divide(horizontalAppliedDifference, RoundingMode.HALF_UP ).intValue();
+					int jSteps = endXPoint.subtract( x ).divide(horizontalAppliedDifference, scale, RoundingMode.HALF_UP ).intValue();
 					//int jSteps = (int)Math.round((endXPoint - x) / horizontalAppliedDifference);
 				
 					//Vegig a horizontalis pontokon
@@ -486,7 +484,7 @@ public class HetramCanvas extends DrawnBlockCanvas{
 				BigDecimal y = startYPoint;
 			
 				//Vertikalis felbontas
-				int iSteps = endYPoint.subtract( y ).divide( verticalAppliedDifference , RoundingMode.HALF_UP  ).intValue();
+				int iSteps = endYPoint.subtract( y ).divide( verticalAppliedDifference , scale, RoundingMode.HALF_UP  ).intValue();
 				//int iSteps = (int)Math.round((endYPoint - y) / verticalAppliedDifference );
 			
 				//Vegig a vertikalis pontokon
@@ -500,7 +498,7 @@ public class HetramCanvas extends DrawnBlockCanvas{
 					BigDecimal x = startXPoint;		
 				
 					//Horizontalis felbontas
-					int jSteps = endXPoint.subtract( x ).divide(horizontalAppliedDifference, RoundingMode.HALF_UP ).intValue();
+					int jSteps = endXPoint.subtract( x ).divide(horizontalAppliedDifference, scale, RoundingMode.HALF_UP ).intValue();
 					//int jSteps = (int)Math.round((endXPoint - x) / horizontalAppliedDifference);
 				
 					//Vegig a horizontalis pontokon
@@ -825,20 +823,20 @@ public class HetramCanvas extends DrawnBlockCanvas{
 	 */
 	private BigDecimal getMaximumDifference( List<BigDecimal> sourceList ){
 		int scale = getPrecision().getScale();
-		double prec = Math.pow(10, scale );
+		double powered = getPrecision().getPowered();
 				
-		int a = sourceList.get(0).setScale( scale, RoundingMode.HALF_UP ).multiply( new BigDecimal(prec)).intValue();
+		int a = sourceList.get(0).setScale( scale, RoundingMode.HALF_UP ).multiply( new BigDecimal(powered)).intValue();
 		int b;
 		
 		//vegig az osztaskoz-tavolsagokon
 		for( BigDecimal s: sourceList ){
 
-			b = s.setScale( scale, RoundingMode.HALF_UP ).multiply( new BigDecimal(prec)).intValue();
+			b = s.setScale( scale, RoundingMode.HALF_UP ).multiply( new BigDecimal(powered)).intValue();
 			a = LNKO(a, b);
 			
 		}
 		
-		return this.getRoundedBigDecimalWithPrecision( (double)a / prec );
+		return this.getRoundedBigDecimalWithPrecision( (double)a / powered );
 	
 /*		int prec = 1000;
 		

@@ -249,7 +249,7 @@ public class ThermicPointList{
 
 				c = this.get(j).getEastThermicConnector();
 				if (c instanceof XThermicPointThermicConnector) {
-					maxDeltaY = Math.max( maxDeltaY, Math.abs( ((YThermicPointThermicConnector)c).getDelta().doubleValue() ));
+					maxDeltaY = Math.max( maxDeltaY, Math.abs( ((XThermicPointThermicConnector)c).getDelta().doubleValue() ));
 					//maxDeltaY = Math.max( maxDeltaY, Math.abs( ((YThermicPointThermicConnector)c).getDelta() ));
 				}
 
