@@ -2,6 +2,7 @@ package hu.akoel.hetram;
 
 import java.awt.Color;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import javax.swing.border.Border;
 
+import hu.akoel.hetram.accessories.BigDecimalPosition;
 import hu.akoel.hetram.accessories.CommonOperations;
 import hu.akoel.hetram.accessories.Orientation;
 import hu.akoel.hetram.accessories.Position;
@@ -320,13 +322,17 @@ public class HetramCanvas extends DrawnBlockCanvas{
 	 */
 
 	public ThermicPointList generateThermicPoints( ){
+		int scale = getPrecision().getScale();
 		
 		HetramBuildingStructureElement element;
 		
-		double verticalAppliedDifference = mainPanel.getVerticalMaximumDifference() / mainPanel.getVerticalDifferenceDivider();
-		double horizontalAppliedDifference = mainPanel.getHorizontalMaximumDifference() / mainPanel.getHorizontalDifferenceDivider();
+		BigDecimal verticalAppliedDifference = mainPanel.getVerticalMaximumDifference().divide( new BigDecimal( String.valueOf( mainPanel.getVerticalDifferenceDivider() ) )  );
+		BigDecimal horizontalAppliedDifference = mainPanel.getHorizontalMaximumDifference().divide( new BigDecimal( String.valueOf( mainPanel.getHorizontalDifferenceDivider() ) )  );
 		
-		HashMap<Position, ThermicPoint> thermicPointMap = new HashMap<>();
+		mainPanel.setHorizontalAppliedDifference( horizontalAppliedDifference );
+		mainPanel.setVerticalAppliedDifference( verticalAppliedDifference );
+		
+		HashMap<BigDecimalPosition, ThermicPoint> thermicPointMap = new HashMap<>();
 		
 		//----------------------------------------------
 		//
@@ -349,35 +355,38 @@ public class HetramCanvas extends DrawnBlockCanvas{
 				BigDecimal endXPoint = element.getX2();
 				BigDecimal endYPoint = element.getY2();
 			
-				double lambda;// = element.getLambda();		
+				double lambda;	
 
 				//Mindig a kezdo vertikalis pontbol indulok
 				BigDecimal y = startYPoint;
 			
 				//Vertikalis felbontas
-				int iSteps = (int)Math.round((endYPoint - y) / verticalAppliedDifference );
+				int iSteps = endYPoint.subtract( y ).divide( verticalAppliedDifference , RoundingMode.HALF_UP  ).intValue();
 				//int iSteps = (int)Math.round((endYPoint - y) / verticalAppliedDifference );
 			
 				//Vegig a vertikalis pontokon
 				for( int i = 0; i <= iSteps; i++){
 				
 					//Az aktualis vertikalis point
-					y = CommonOperations.get10Decimals( startYPoint + i * verticalAppliedDifference );
+					y = (new BigDecimal(String.valueOf(i)).multiply(verticalAppliedDifference )).add( startYPoint ).setScale( scale, RoundingMode.HALF_UP );					
+					//y = CommonOperations.get10Decimals( startYPoint + i * verticalAppliedDifference );
 				
 					//Elindul a kezdo horizontalis pontbol
 					BigDecimal x = startXPoint;			
 				
 					//Horizontalis felbontas
-					int jSteps = (int)Math.round((endXPoint - x) / horizontalAppliedDifference);
+					int jSteps = endXPoint.subtract( x ).divide(horizontalAppliedDifference, RoundingMode.HALF_UP ).intValue();
+					//int jSteps = (int)Math.round((endXPoint - x) / horizontalAppliedDifference);
 				
 					//Vegig a horizontalis pontokon
 					for( int j = 0; j <= jSteps; j++ ){
 				
 						//Az aktualis horizontalis pont
-						x = CommonOperations.get10Decimals( startXPoint + j * horizontalAppliedDifference );
+						x = (new BigDecimal(String.valueOf(j)).multiply(horizontalAppliedDifference )).add( startXPoint ).setScale( scale, RoundingMode.HALF_UP );		
+						//x = CommonOperations.get10Decimals( startXPoint + j * horizontalAppliedDifference );
 
 						//Az aktualis pont pozicioja
-						Position position = new Position(x, y);
+						BigDecimalPosition position = new BigDecimalPosition(x, y);
 
 						//Rakeresek a taroloban, hatha letezett mar ez elott is
 						ThermicPoint tp = thermicPointMap.get( position );
@@ -409,10 +418,11 @@ public class HetramCanvas extends DrawnBlockCanvas{
 							}
 
 							//Veszem a baloldali kozvetlen kapcsolatat, ami bizonyosan letezik, mivel belso pont						
-							double previousX = CommonOperations.get10Decimals( startXPoint + (j - 1) * horizontalAppliedDifference );
+							BigDecimal previousX = new BigDecimal( String.valueOf( j - 1 ) ).multiply( horizontalAppliedDifference ).add( startXPoint ).setScale( scale, RoundingMode.HALF_UP);						
+							//double previousX = CommonOperations.get10Decimals( startXPoint + (j - 1) * horizontalAppliedDifference );
 
 							//Es osszekottetest letesitek vele
-							tp.connectToThermicPoint(thermicPointMap.get(new Position(previousX, y)), Orientation.WEST, lambda );
+							tp.connectToThermicPoint(thermicPointMap.get(new BigDecimalPosition( previousX, y ) ), Orientation.WEST, lambda );
 					
 						}
 					
@@ -432,8 +442,13 @@ public class HetramCanvas extends DrawnBlockCanvas{
 							}
 
 							//Veszem az alatta levo kozvetlen kapcsolatat, ami bizonyosan letezik, mivel belso pont
-							double previousY = CommonOperations.get10Decimals( startYPoint + (i - 1) * verticalAppliedDifference );						
-							tp.connectToThermicPoint(thermicPointMap.get(new Position(x, previousY)), Orientation.SOUTH, lambda );
+							BigDecimal previousY = new BigDecimal( String.valueOf( i - 1 ) ).multiply( verticalAppliedDifference ).add( startYPoint ).setScale( scale, RoundingMode.HALF_UP);		
+							
+							//Es osszekottetest letesitek vele
+							tp.connectToThermicPoint(thermicPointMap.get(new BigDecimalPosition( x, previousY ) ), Orientation.SOUTH, lambda );
+							
+							//double previousY = CommonOperations.get10Decimals( startYPoint + (i - 1) * verticalAppliedDifference );						
+							//tp.connectToThermicPoint(thermicPointMap.get(new Position(x, previousY)), Orientation.SOUTH, lambda );
 						}					
 					}
 				}
@@ -471,28 +486,32 @@ public class HetramCanvas extends DrawnBlockCanvas{
 				BigDecimal y = startYPoint;
 			
 				//Vertikalis felbontas
-				int iSteps = (int)Math.round((endYPoint - y) / verticalAppliedDifference );
+				int iSteps = endYPoint.subtract( y ).divide( verticalAppliedDifference , RoundingMode.HALF_UP  ).intValue();
+				//int iSteps = (int)Math.round((endYPoint - y) / verticalAppliedDifference );
 			
 				//Vegig a vertikalis pontokon
 				for( int i = 0; i <= iSteps; i++){
 
 					//Az aktualis vertikalis pont
-					y = CommonOperations.get10Decimals( startYPoint + i * verticalAppliedDifference );				
+					y = (new BigDecimal(String.valueOf(i)).multiply(verticalAppliedDifference )).add( startYPoint ).setScale( scale, RoundingMode.HALF_UP );	
+					//y = CommonOperations.get10Decimals( startYPoint + i * verticalAppliedDifference );				
 				
 					//Kezdo horizontalis pontbol indulok
 					BigDecimal x = startXPoint;		
 				
 					//Horizontalis felbontas
-					int jSteps = (int)Math.round((endXPoint - x) / horizontalAppliedDifference);
+					int jSteps = endXPoint.subtract( x ).divide(horizontalAppliedDifference, RoundingMode.HALF_UP ).intValue();
+					//int jSteps = (int)Math.round((endXPoint - x) / horizontalAppliedDifference);
 				
 					//Vegig a horizontalis pontokon
 					for( int j = 0; j <= jSteps; j++ ){
 					
 						//Az aktualis horizontalis pont
-						x = CommonOperations.get10Decimals( startXPoint + j * horizontalAppliedDifference );
+						x = (new BigDecimal(String.valueOf(j)).multiply(horizontalAppliedDifference )).add( startXPoint ).setScale( scale, RoundingMode.HALF_UP );		
+						//x = CommonOperations.get10Decimals( startXPoint + j * horizontalAppliedDifference );
 					
 						//Az aktualis pont pozicioja
-						Position position = new Position(x, y);
+						BigDecimalPosition position = new BigDecimalPosition(x, y);
 
 						//Az aktualis pontban elhelyezkedo Termikus pont
 						ThermicPoint actualThermicPoint = thermicPointMap.get( position );
@@ -515,10 +534,11 @@ public class HetramCanvas extends DrawnBlockCanvas{
 							for( OpenEdgeElementWithPosition openEdgeElementWithPosition: openEdgeElementList ){
 
 								//Megfelelo pozicio
-								if( openEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y >= openEdgeElementWithPosition.element.getY1() && y <= openEdgeElementWithPosition.element.getY2() ){
+								if( openEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y.compareTo( openEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( openEdgeElementWithPosition.element.getY2() ) <= 0 ){
+								//if( openEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y >= openEdgeElementWithPosition.element.getY1() && y <= openEdgeElementWithPosition.element.getY2() ){
 
 									//Alfa es homerseklet kapcsolasa
-									actualThermicPoint.connectToOpenEdge( Orientation.WEST, openEdgeElementWithPosition.element.getAlphaByPosition( y ), openEdgeElementWithPosition.element.getTemperature() );		
+									actualThermicPoint.connectToOpenEdge( Orientation.WEST, openEdgeElementWithPosition.element.getAlphaByPosition( y.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );		
 									break;
 								
 								}
@@ -533,7 +553,8 @@ public class HetramCanvas extends DrawnBlockCanvas{
 							for( SymmetricEdgeElementWithPosition symmetricEdgeElementWithPosition: symmetricEdgeElementList ){
 
 								//Megfelelo pozicio
-								if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y >= symmetricEdgeElementWithPosition.element.getY1() && y <= symmetricEdgeElementWithPosition.element.getY2() ){
+								if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y.compareTo( symmetricEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( symmetricEdgeElementWithPosition.element.getY2() ) <= 0 ){
+								//if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y >= symmetricEdgeElementWithPosition.element.getY1() && y <= symmetricEdgeElementWithPosition.element.getY2() ){
 
 									actualThermicPoint.connectToSymmetricEdge( Orientation.WEST );
 									break;		
@@ -564,10 +585,11 @@ public class HetramCanvas extends DrawnBlockCanvas{
 							for( OpenEdgeElementWithPosition openEdgeElementWithPosition: openEdgeElementList ){
 						
 								//Megfelelo pozicio
-								if( openEdgeElementWithPosition.orientation.equals( Orientation.EAST ) && y >= openEdgeElementWithPosition.element.getY1() && y <= openEdgeElementWithPosition.element.getY2() ){
+								if( openEdgeElementWithPosition.orientation.equals( Orientation.EAST ) && y.compareTo( openEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( openEdgeElementWithPosition.element.getY2() ) <= 0 ){
+								//if( openEdgeElementWithPosition.orientation.equals( Orientation.EAST ) && y >= openEdgeElementWithPosition.element.getY1() && y <= openEdgeElementWithPosition.element.getY2() ){									
 							
 									//Alfa es homerseklet kapcsolasa
-									actualThermicPoint.connectToOpenEdge( Orientation.EAST, openEdgeElementWithPosition.element.getAlphaByPosition( y ), openEdgeElementWithPosition.element.getTemperature() );		
+									actualThermicPoint.connectToOpenEdge( Orientation.EAST, openEdgeElementWithPosition.element.getAlphaByPosition( y.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );		
 									
 								}
 							}
@@ -581,7 +603,8 @@ public class HetramCanvas extends DrawnBlockCanvas{
 							for( SymmetricEdgeElementWithPosition symmetricEdgeElementWithPosition: symmetricEdgeElementList ){
 
 								//Megfelelo pozicio
-								if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.EAST ) && y >= symmetricEdgeElementWithPosition.element.getY1() && y <= symmetricEdgeElementWithPosition.element.getY2() ){
+								if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.EAST ) && y.compareTo( symmetricEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( symmetricEdgeElementWithPosition.element.getY2() ) <= 0 ){
+								//if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.EAST ) && y >= symmetricEdgeElementWithPosition.element.getY1() && y <= symmetricEdgeElementWithPosition.element.getY2() ){
 
 									actualThermicPoint.connectToSymmetricEdge( Orientation.EAST );
 									break;																	
@@ -611,10 +634,11 @@ public class HetramCanvas extends DrawnBlockCanvas{
 							for( OpenEdgeElementWithPosition openEdgeElementWithPosition: openEdgeElementList ){
 						
 								//Megfelelo pozicio
-								if( openEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x >= openEdgeElementWithPosition.element.getX1() && x <= openEdgeElementWithPosition.element.getX2() ){
+								if( openEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x.compareTo( openEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( openEdgeElementWithPosition.element.getX2() ) <= 0 ){
+								//if( openEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x >= openEdgeElementWithPosition.element.getX1() && x <= openEdgeElementWithPosition.element.getX2() ){
 							
 									//Alfa es homerseklet kapcsolasa
-									actualThermicPoint.connectToOpenEdge( Orientation.SOUTH, openEdgeElementWithPosition.element.getAlphaByPosition( x ), openEdgeElementWithPosition.element.getTemperature() );		
+									actualThermicPoint.connectToOpenEdge( Orientation.SOUTH, openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );		
 									
 								}
 							}
@@ -628,7 +652,8 @@ public class HetramCanvas extends DrawnBlockCanvas{
 							for( SymmetricEdgeElementWithPosition symmetricEdgeElementWithPosition: symmetricEdgeElementList ){
 
 								//Megfelelo pozicio
-								if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x >= symmetricEdgeElementWithPosition.element.getX1() && x <= symmetricEdgeElementWithPosition.element.getX2() ){
+								if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x.compareTo( symmetricEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( symmetricEdgeElementWithPosition.element.getX2() ) <= 0 ){
+								//if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x >= symmetricEdgeElementWithPosition.element.getX1() && x <= symmetricEdgeElementWithPosition.element.getX2() ){									
 
 									actualThermicPoint.connectToSymmetricEdge( Orientation.SOUTH );
 									break;																	
@@ -658,10 +683,11 @@ public class HetramCanvas extends DrawnBlockCanvas{
 							for( OpenEdgeElementWithPosition openEdgeElementWithPosition: openEdgeElementList ){
 						
 								//Megfelelo pozicio
-								if( openEdgeElementWithPosition.orientation.equals( Orientation.NORTH) && x >= openEdgeElementWithPosition.element.getX1() && x <= openEdgeElementWithPosition.element.getX2() ){
-							
+								if( openEdgeElementWithPosition.orientation.equals( Orientation.NORTH) && x.compareTo( openEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( openEdgeElementWithPosition.element.getX2() ) <= 0 ){
+								//if( openEdgeElementWithPosition.orientation.equals( Orientation.NORTH) && x >= openEdgeElementWithPosition.element.getX1() && x <= openEdgeElementWithPosition.element.getX2() ){
+									
 									//Alfa es homerseklet kapcsolasa
-									actualThermicPoint.connectToOpenEdge( Orientation.NORTH, openEdgeElementWithPosition.element.getAlphaByPosition( x ), openEdgeElementWithPosition.element.getTemperature() );		
+									actualThermicPoint.connectToOpenEdge( Orientation.NORTH, openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );		
 									
 								}
 							}
@@ -675,7 +701,8 @@ public class HetramCanvas extends DrawnBlockCanvas{
 							for( SymmetricEdgeElementWithPosition symmetricEdgeElementWithPosition: symmetricEdgeElementList ){
 
 								//Megfelelo pozicio
-								if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.NORTH ) && x >= symmetricEdgeElementWithPosition.element.getX1() && x <= symmetricEdgeElementWithPosition.element.getX2() ){
+								if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.NORTH ) && x.compareTo( symmetricEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( symmetricEdgeElementWithPosition.element.getX2() ) <= 0 ){
+								//if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.NORTH ) && x >= symmetricEdgeElementWithPosition.element.getX1() && x <= symmetricEdgeElementWithPosition.element.getX2() ){									
 
 									actualThermicPoint.connectToSymmetricEdge( Orientation.NORTH );
 									break;																	
@@ -706,8 +733,8 @@ public class HetramCanvas extends DrawnBlockCanvas{
 		
 		ElementDoubleComparator elementDoubleComparator = new ElementDoubleComparator();
 		
-		LinkedHashSet<Double> verticalSpacingSet = new LinkedHashSet<>();
-		LinkedHashSet<Double> horizontalSpacingSet = new LinkedHashSet<>();
+		LinkedHashSet<BigDecimal> verticalSpacingSet = new LinkedHashSet<>();
+		LinkedHashSet<BigDecimal> horizontalSpacingSet = new LinkedHashSet<>();
 		
 		//Osztaspontok kigyujtese
 		for( HetramDrawnElement e: getDrawnBlockList() ){
@@ -726,31 +753,31 @@ public class HetramCanvas extends DrawnBlockCanvas{
 		}
 
 		//Osztaspontok sorbarendezese
-		ArrayList<Double> verticalSpacingList = new ArrayList<Double>(verticalSpacingSet); 
-		ArrayList<Double> horizontalSpacingList = new ArrayList<Double>(horizontalSpacingSet); 
+		ArrayList<BigDecimal> verticalSpacingList = new ArrayList<>(verticalSpacingSet); 
+		ArrayList<BigDecimal> horizontalSpacingList = new ArrayList<>(horizontalSpacingSet); 
 
 		Collections.sort(verticalSpacingList, elementDoubleComparator );
 		Collections.sort(horizontalSpacingList, elementDoubleComparator );	
 		
 		//Osztaskoz-tavolsagok kiszamitasa		
-		ArrayList<Double> verticalDifferencesList = new ArrayList<Double>();
-		ArrayList<Double> horizontalDifferencesList = new ArrayList<Double>();
+		ArrayList<BigDecimal> verticalDifferencesList = new ArrayList<>();
+		ArrayList<BigDecimal> horizontalDifferencesList = new ArrayList<>();
 		
 		if( verticalSpacingList.size() != 0 && horizontalSpacingList.size() != 0 ){
 		
-			double startVertical = verticalSpacingList.get(0);		
-			for( Double value : verticalSpacingList ){
-				double difference = Math.abs( value - startVertical );
-				if( difference != 0 ){
+			BigDecimal startVertical = verticalSpacingList.get(0);		
+			for( BigDecimal value : verticalSpacingList ){
+				BigDecimal difference = value.subtract( startVertical ).abs();
+				if( difference.compareTo( new BigDecimal("0")) != 0 ){
 					verticalDifferencesList.add(difference);				
 				}
 				startVertical = value;
 			}
 		
-			double startHorizontal = horizontalSpacingList.get(0);
-			for( Double value : horizontalSpacingList ){
-				double difference = Math.abs( value - startHorizontal);
-				if( difference != 0 ){
+			BigDecimal startHorizontal = horizontalSpacingList.get(0);
+			for( BigDecimal value : horizontalSpacingList ){
+				BigDecimal difference = value.subtract( startHorizontal ).abs();
+				if( difference.compareTo( new BigDecimal("0")) != 0 ){
 					horizontalDifferencesList.add(difference);				
 				}
 				startHorizontal = value;
@@ -763,8 +790,8 @@ public class HetramCanvas extends DrawnBlockCanvas{
 			mainPanel.setVerticalMaximumDifference( getMaximumDifference( verticalDifferencesList ) );
 			mainPanel.setHorizontalMaximumDifference( getMaximumDifference( horizontalDifferencesList ) );
 		}else{
-			mainPanel.setVerticalMaximumDifference( 0 );
-			mainPanel.setHorizontalMaximumDifference( 0 );
+			mainPanel.setVerticalMaximumDifference( null );
+			mainPanel.setHorizontalMaximumDifference( null );
 		}
 		
 	}
@@ -796,9 +823,25 @@ public class HetramCanvas extends DrawnBlockCanvas{
 	 * @param sourceList
 	 * @return
 	 */
-	private double getMaximumDifference( List<Double> sourceList ){
-		int prec = 1000;
+	private BigDecimal getMaximumDifference( List<BigDecimal> sourceList ){
+		int scale = getPrecision().getScale();
+		double prec = Math.pow(10, scale );
 				
+		int a = sourceList.get(0).setScale( scale, RoundingMode.HALF_UP ).multiply( new BigDecimal(prec)).intValue();
+		int b;
+		
+		//vegig az osztaskoz-tavolsagokon
+		for( BigDecimal s: sourceList ){
+
+			b = s.setScale( scale, RoundingMode.HALF_UP ).multiply( new BigDecimal(prec)).intValue();
+			a = LNKO(a, b);
+			
+		}
+		
+		return this.getRoundedBigDecimalWithPrecision( (double)a / prec );
+	
+/*		int prec = 1000;
+		
 		int a = (int)( prec * CommonOperations.get10Decimals( sourceList.get(0) ) );
 		int b;
 		
@@ -811,22 +854,24 @@ public class HetramCanvas extends DrawnBlockCanvas{
 			
 		}
 		return CommonOperations.get10Decimals( (double)a / (double)prec );
+*/
 		
 	}
 	
-	private static class ElementDoubleComparator implements Comparator<Double>{
+	private static class ElementDoubleComparator implements Comparator<BigDecimal>{
 
 		@Override
-		public int compare(Double o1, Double o2) {
-			
-			if( o1 > o2 ){
+		public int compare(BigDecimal o1, BigDecimal o2) {
+	
+			return o1.compareTo(o2);
+/*			if( o1 > o2 ){
 				return 1;
 			}else if( o1 < o2 ){
 				return -1;
 			}else{
 				return 0;
 			}
-			
+*/			
 		}		
 	}
 }

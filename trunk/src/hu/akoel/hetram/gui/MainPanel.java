@@ -33,6 +33,7 @@ import hu.akoel.mgu.values.Value;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.math.BigDecimal;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
@@ -90,11 +91,11 @@ public class MainPanel extends JFrame{
 	//Vezerles - ControlSettings
 	//
 	
-	private double verticalMaximumDifference = -1;
-	private double horizontalMaximumDifference = -1;
+	private BigDecimal verticalMaximumDifference = null;
+	private BigDecimal horizontalMaximumDifference = null;
 	
-	private double verticalAppliedDifference;
-	private double horizontalAppliedDifference;
+	private BigDecimal verticalAppliedDifference;
+	private BigDecimal horizontalAppliedDifference;
 	
 	private int verticalDifferenceDivider = 1;
 	private int horizontalDifferenceDivider = 1;
@@ -245,7 +246,7 @@ public class MainPanel extends JFrame{
 		//Pozicio kijelzese
 		myCanvas.addCursorPositionChangeListener(new CursorPositionChangeListener() {			
 			@Override
-			public void getWorldPosition(double xPosition, double yPosition) {
+			public void getWorldPosition( double xPosition, double yPosition) {
 				statusLine.setXPosition( xPosition );
 				statusLine.setYPosition( yPosition );
 			}
@@ -254,11 +255,11 @@ public class MainPanel extends JFrame{
 		//Homerseklet es Hoaram kijelzese
 		myCanvas.addCursorPositionChangeListener(new CursorPositionChangeListener() {			
 			@Override
-			public void getWorldPosition(double xPosition, double yPosition) {				
+			public void getWorldPosition( double xPosition, double yPosition) {				
 					
 				if( null != thermicPointList ){
 					
-					ThermicPoint tp = thermicPointList.getThermicPointByPosition(xPosition, yPosition);
+					ThermicPoint tp = thermicPointList.getThermicPointByPosition( xPosition, yPosition );
 					
 					if( null == tp ){
 						statusLine.setTemperature( null );
@@ -282,7 +283,7 @@ public class MainPanel extends JFrame{
 		//
 		// Status Line letrehozasa
 		//
-		this.statusLine = new StatusLine();
+		this.statusLine = new StatusLine( this );
 		
 		//
 		// Vezerlo egyseg letrehozasa
@@ -329,29 +330,39 @@ public class MainPanel extends JFrame{
 	//
 	//-----------------------------------
 	
-	public Double getHorizontalMaximumDifference(){
+	public BigDecimal getHorizontalMaximumDifference(){
 		return horizontalMaximumDifference;
 	}
 	
-	public void setHorizontalMaximumDifference( double horizontalMaximumDifference ){
+	public void setHorizontalMaximumDifference( BigDecimal horizontalMaximumDifference ){
 		this.horizontalMaximumDifference = horizontalMaximumDifference;
 		controlPanel.controlSettingTab.setHorizontalMaximumDifference( horizontalMaximumDifference );
 	}
 
-	public Double getVerticalMaximumDifference(){
+	public BigDecimal getVerticalMaximumDifference(){
 		return verticalMaximumDifference;
 	}
 
-	public void setVerticalMaximumDifference( double verticalMaximumDifference ){
+	public void setVerticalMaximumDifference( BigDecimal verticalMaximumDifference ){
 		this.verticalMaximumDifference = verticalMaximumDifference;
 		controlPanel.controlSettingTab.setVerticalMaximumDifference(verticalMaximumDifference);
 	}
 	
-	public Double getHorizontalAppliedDifference(){
+	public void setHorizontalAppliedDifference( BigDecimal difference ){
+		this.horizontalAppliedDifference = difference;
+		controlPanel.controlSettingTab.setHorizontalAppliedDifference(difference);
+	}
+	
+	public BigDecimal getHorizontalAppliedDifference(){
 		return horizontalAppliedDifference;
 	}
 
-	public Double getVerticalAppliedDifference(){
+	public void setVerticalAppliedDifference( BigDecimal difference ){
+		this.verticalAppliedDifference = difference;
+		controlPanel.controlSettingTab.setVerticalAppliedDifference(difference);
+	}
+
+	public BigDecimal getVerticalAppliedDifference(){
 		return verticalAppliedDifference;
 	}
 
@@ -373,7 +384,7 @@ public class MainPanel extends JFrame{
 	
 	public void doGenerateMaximumDifference(){
 		myCanvas.doGenerateMaximumDifference();
-System.err.println(getHorizontalMaximumDifference() + ", " + getVerticalMaximumDifference());		
+//System.err.println(getHorizontalMaximumDifference() + ", " + getVerticalMaximumDifference());		
 	}
 	
 	//-----------------------------------
@@ -608,6 +619,7 @@ System.err.println(getHorizontalMaximumDifference() + ", " + getVerticalMaximumD
 		
 		//Termikus pontok legyartasa, kozottuk levo kapcsolatok megteremtese (nics szamolas meg) 
 		thermicPointList = myCanvas.generateThermicPoints();
+//System.err.println(thermicPointList);		
 		//thermicPointList = elementSet.generateThermicPoints();
 		
 		//Figyelo osztaly a szamitas nyomonkovetesere

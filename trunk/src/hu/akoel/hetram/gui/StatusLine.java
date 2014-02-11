@@ -4,6 +4,8 @@ import hu.akoel.hetram.accessories.CommonOperations;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 import javax.swing.BorderFactory;
@@ -14,6 +16,8 @@ public class StatusLine extends JPanel{
 
 	private static final long serialVersionUID = 530941861804065426L;
 	
+	private MainPanel mainPanel;
+	
 	private JTextField scaleField = new JTextField();
 	private JTextField xPositionField = new JTextField();
 	private JTextField yPositionField = new JTextField();
@@ -23,8 +27,10 @@ public class StatusLine extends JPanel{
 	private JTextField qSouthField = new JTextField();
 	private JTextField qWestField = new JTextField();
 
-	public StatusLine(){
+	public StatusLine( MainPanel mainPanel ) {
 		super();
+		
+		this.mainPanel = mainPanel;
 		
 		this.setLayout( new FlowLayout( FlowLayout.LEFT ) );
 		
@@ -80,12 +86,14 @@ public class StatusLine extends JPanel{
 		}
 	}
 	
-	public void setXPosition( Double xPosition ){
+	public void setXPosition( double xPosition ){
 		xPositionField.setText( "x:" + CommonOperations.get3Decimals(xPosition) + " m");
+		//xPositionField.setText( "y:" + xPosition.setScale( mainPanel.getCanvas().getPrecision().getScale(), RoundingMode.HALF_UP ).toPlainString() + " m");
 	}
 	
-	public void setYPosition( Double yPosition ){
+	public void setYPosition( double yPosition ){
 		yPositionField.setText( "y:" + CommonOperations.get3Decimals(yPosition) + " m");
+		//yPositionField.setText( "y:" + yPosition.setScale( mainPanel.getCanvas().getPrecision().getScale(), RoundingMode.HALF_UP ).toPlainString() + " m");
 	}
 	
 	public void setTemperature( Double temperature ){

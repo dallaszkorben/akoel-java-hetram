@@ -1,5 +1,7 @@
 package hu.akoel.hetram.connectors;
 
+import java.math.BigDecimal;
+
 /**
  * Egy masik Termikus Pont-hoz valo csatlakozast biztosito konnektor
  * Minden Termikus Pont-hoz 4 konnektor csatlakoztathato. Egy nem el-kent 
@@ -13,9 +15,9 @@ package hu.akoel.hetram.connectors;
 public abstract class AThermicPointThermicConnector implements IThermicConnector{
 
 	private double lambda;
-	private double delta;
+	private BigDecimal delta;
 	
-	public AThermicPointThermicConnector( double delta, double lambda ){
+	public AThermicPointThermicConnector( BigDecimal delta, double lambda ){
 		this.delta = delta;
 		this.lambda = lambda;
 	}
@@ -24,7 +26,7 @@ public abstract class AThermicPointThermicConnector implements IThermicConnector
 		return lambda;
 	}
 	
-	public double getDelta() {
+	public BigDecimal getDelta() {
 		return delta;
 	}
 

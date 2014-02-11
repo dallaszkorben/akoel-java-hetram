@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 
 import javax.swing.BorderFactory;
 import javax.swing.InputVerifier;
@@ -212,8 +213,10 @@ public class ControlSettingTab extends JPanel {
 						ControlSettingTab.this.mainPanel.doCalculate( ControlSettingTab.this.mainPanel.getCalculationPrecision() );
 						
 						//Ha befejezodott a kalkulacio, akkor az alkalmazott delta ertekeket megjeleniti
-						ControlSettingTab.this.appliedXDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getHorizontalAppliedDifference())));
-						ControlSettingTab.this.appliedYDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getVerticalAppliedDifference())));
+//						ControlSettingTab.this.appliedXDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getHorizontalAppliedDifference())));
+//						ControlSettingTab.this.appliedYDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getVerticalAppliedDifference())));
+//						ControlSettingTab.this.appliedXDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getHorizontalAppliedDifference())));
+//						ControlSettingTab.this.appliedYDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getVerticalAppliedDifference())));
 
 						//Ha nem igy rajzoltatom ujra az eredmenyt, akkor nem jelenik meg
 						SwingUtilities.invokeLater( new Runnable(){
@@ -492,9 +495,15 @@ public class ControlSettingTab extends JPanel {
 //		return maximumXDeltaField;
 //	}
 	
-	public void setHorizontalMaximumDifference( double horizontalMaximumDifference) {
-		if( horizontalMaximumDifference > 0 ){
+	public void setHorizontalMaximumDifference( BigDecimal horizontalMaximumDifference) {
+/*		if( horizontalMaximumDifference > 0 ){
 			this.maximumXDeltaField.setText( String.valueOf( horizontalMaximumDifference ) );
+		}else{
+			this.maximumXDeltaField.setText( "" );
+		}
+*/		
+		if( null != horizontalMaximumDifference ){
+			this.maximumXDeltaField.setText( horizontalMaximumDifference.toPlainString() );
 		}else{
 			this.maximumXDeltaField.setText( "" );
 		}
@@ -504,11 +513,34 @@ public class ControlSettingTab extends JPanel {
 //		return maximumYDeltaField;
 //	}
 
-	public void setVerticalMaximumDifference( double verticalMaximumDifference) {
-		if( verticalMaximumDifference > 0 ){
-			this.maximumYDeltaField.setText( String.valueOf( verticalMaximumDifference ) );
+	public void setVerticalMaximumDifference( BigDecimal verticalMaximumDifference) {
+		if( null != verticalMaximumDifference ){
+			this.maximumYDeltaField.setText( verticalMaximumDifference.toPlainString() );
 		}else{
 			this.maximumYDeltaField.setText("");
+		}
+		
+//		if( verticalMaximumDifference > 0 ){
+//			this.maximumYDeltaField.setText( String.valueOf( verticalMaximumDifference ) );
+//		}else{
+//			this.maximumYDeltaField.setText("");
+//		}
+
+	}
+	
+	public void setHorizontalAppliedDifference( BigDecimal difference ){
+		if( null != difference ){
+			this.appliedXDeltaField.setText( difference.toPlainString() );
+		}else{
+			this.appliedXDeltaField.setText("");
+		}
+	}
+	
+	public void setVerticalAppliedDifference( BigDecimal difference ){
+		if( null != difference ){
+			this.appliedYDeltaField.setText( difference.toPlainString() );
+		}else{
+			this.appliedYDeltaField.setText("");
 		}
 	}
 

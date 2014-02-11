@@ -1,5 +1,6 @@
 package hu.akoel.hetram.thermicpoint;
 
+import hu.akoel.hetram.accessories.BigDecimalPosition;
 import hu.akoel.hetram.accessories.Orientation;
 import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.connectors.OpenEdgeThermicConnector;
@@ -16,7 +17,7 @@ public class ThermicPoint {
 	private double tempDifference;
 	private int positionInTheList;
 	private double actualTemperature;
-	private Position position;
+	private BigDecimalPosition position;
 	private IThermicConnector northThermicConnector;
 	private IThermicConnector eastThermicConnector;
 	private IThermicConnector southThermicConnector;
@@ -31,8 +32,8 @@ public class ThermicPoint {
 	 * 
 	 * @param position
 	 */
-	public ThermicPoint( Position position ){
-		this.position = new Position(position);	
+	public ThermicPoint( BigDecimalPosition position ){
+		this.position = new BigDecimalPosition(position);	
 	}
 	
 	/**
@@ -171,7 +172,7 @@ public class ThermicPoint {
 		return westThermicConnector;
 	}
 	
-	public Position getPosition(){
+	public BigDecimalPosition getPosition(){
 		return this.position;
 	}
 	
