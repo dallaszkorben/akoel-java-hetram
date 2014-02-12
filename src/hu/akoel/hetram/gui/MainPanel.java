@@ -33,12 +33,20 @@ import hu.akoel.mgu.values.Value;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JSplitPane;
+import javax.swing.KeyStroke;
 
 public class MainPanel extends JFrame{
 
@@ -176,6 +184,12 @@ public class MainPanel extends JFrame{
 		return myAxis;
 	}
 	
+	JMenuBar menuBar;
+	JMenu fileMainMenu;
+	JMenuItem fileSaveMenuItem;
+	JMenuItem fileLoadMenuItem;
+	JMenu helpMainMenu;
+	
 	public MainPanel( ){
 			
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -184,6 +198,53 @@ public class MainPanel extends JFrame{
 		this.setSize( DEFAULT_WIDTH, DEFAULT_HEIGHT );
 		this.createBufferStrategy(1);
 
+		//
+		//Menu keszites
+		//
+		
+		//Create the menu bar.
+		menuBar = new JMenuBar();
+
+		//File
+		fileMainMenu = new JMenu("File");
+		fileMainMenu.setMnemonic(KeyEvent.VK_F);
+		fileMainMenu.getAccessibleContext().setAccessibleDescription("The only menu in this program that has menu items");
+		menuBar.add(fileMainMenu);
+		
+		//File-Save
+		fileSaveMenuItem = new JMenuItem( "Save", KeyEvent.VK_S ); //Mnemonic Akkor ervenyes ha lathato a menu elem
+		fileSaveMenuItem.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_1, ActionEvent.ALT_MASK ) ); //Mindegy hogy lathato-e a menu vagy sem
+		fileSaveMenuItem.getAccessibleContext().setAccessibleDescription( "This doesn't really do anything");
+		fileSaveMenuItem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JMenuItem source = (JMenuItem)(e.getSource());
+		        String s = source.getText();
+		        System.err.println(s);
+				
+			}
+		});
+		fileMainMenu.add(fileSaveMenuItem);
+		
+		//File-Load
+		fileLoadMenuItem = new JMenuItem( "Load", KeyEvent.VK_L );
+		fileLoadMenuItem.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_2, ActionEvent.ALT_MASK ) );
+		fileLoadMenuItem.getAccessibleContext().setAccessibleDescription( "This doesn't really do anything");
+		fileMainMenu.add(fileLoadMenuItem);
+		
+		//Elvalasztas
+		fileMainMenu.addSeparator();
+		
+		//Help
+		menuBar.add(Box.createHorizontalGlue());
+		helpMainMenu = new JMenu("Help");
+		helpMainMenu.setMnemonic(KeyEvent.VK_H);
+		menuBar.add(helpMainMenu);
+		
+		
+		this.setJMenuBar(menuBar);
+		
 		myCanvas = new HetramCanvas(BorderFactory.createLoweredBevelBorder(), background, possiblePixelPerUnits, positionToMiddle, this, precision );
 		
 		//
