@@ -7,6 +7,7 @@ import hu.akoel.hetram.gui.ElementSettingTab.DRAWING_ELEMENT;
 import hu.akoel.hetram.gui.ElementSettingTab.HOMOGEN_PATTERN;
 import hu.akoel.hetram.gui.ElementSettingTab.PATTERN_TYPE;
 import hu.akoel.hetram.gui.ElementSettingTab.ROW_PATTERN;
+import hu.akoel.hetram.gui.drawingelements.HetramDrawnElement;
 import hu.akoel.hetram.listeners.CalculationListener;
 import hu.akoel.hetram.thermicpoint.ThermicPoint;
 import hu.akoel.hetram.thermicpoint.ThermicPointList;
@@ -36,17 +37,35 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class MainPanel extends JFrame{
 
@@ -219,9 +238,51 @@ public class MainPanel extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JMenuItem source = (JMenuItem)(e.getSource());
-		        String s = source.getText();
-		        System.err.println(s);
+				//JMenuItem source = (JMenuItem)(e.getSource());
+
+				@SuppressWarnings("unchecked")
+				ArrayList<HetramDrawnElement> list =  (ArrayList<HetramDrawnElement>) MainPanel.this.getCanvas().getDrawnBlockList();
+
+				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+
+				try {
+					DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+					Document doc = docBuilder.newDocument();
+					
+					//Root element
+					Element rootElement = doc.createElement("hetram");
+					doc.appendChild(rootElement);
+					
+					for( HetramDrawnElement el: list){
+						Element element = el.getXMLElement(doc);
+						rootElement.appendChild(element);
+					}
+					
+					DOMSource source = new DOMSource(doc);
+					
+					TransformerFactory transformerFactory = TransformerFactory.newInstance();
+					Transformer transformer = transformerFactory.newTransformer();
+
+					//To file
+					StreamResult result = new StreamResult(new File("c:\\Users\\afoldvarszky\\Desktop\\file.xml"));
+
+					// Output to console for testing
+					//StreamResult result = new StreamResult(System.out);
+
+					transformer.transform(source, result);
+					
+					
+				} catch (ParserConfigurationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (TransformerConfigurationException e3) {
+					// TODO Auto-generated catch block
+					e3.printStackTrace();
+				} catch (TransformerException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+
 				
 			}
 		});
@@ -231,7 +292,29 @@ public class MainPanel extends JFrame{
 		fileLoadMenuItem = new JMenuItem( "Load", KeyEvent.VK_L );
 		fileLoadMenuItem.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_2, ActionEvent.ALT_MASK ) );
 		fileLoadMenuItem.getAccessibleContext().setAccessibleDescription( "This doesn't really do anything");
-		fileMainMenu.add(fileLoadMenuItem);
+		fileLoadMenuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				final JFileChooser fc = new JFileChooser( "c:\\Users\\afoldvarszky\\Desktop" );
+
+				fc.setDialogTitle("Load a plan");
+				
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("xml", "xml");
+				fc.setFileFilter(filter);
+				
+				//Nem engedi meg az "All" filter hasznalatat
+				fc.setAcceptAllFileFilterUsed(false);
+				
+				
+				
+				int returnVal = fc.showOpenDialog( MainPanel.this );
+				
+			}
+			
+		});
+		fileMainMenu.add(fileLoadMenuItem);		
 		
 		//Elvalasztas
 		fileMainMenu.addSeparator();

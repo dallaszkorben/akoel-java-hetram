@@ -34,15 +34,7 @@ public class HetramCanvas extends DrawnBlockCanvas{
 	private static final long serialVersionUID = -6015123637668801411L;
 	
 	private MainPanel mainPanel;
-/*	private double verticalMaximumDifference = -1;
-	private double horizontalMaximumDifference = -1;
 	
-	private double verticalAppliedDifference;
-	private double horizontalAppliedDifference;
-	
-	private int verticalDifferenceDivider = 1;
-	private int horizontalDifferenceDivider = 1;
-*/	
 	public HetramCanvas(Border borderType, Color background, PossiblePixelPerUnits possiblePixelPerUnits, TranslateValue positionToMiddle, MainPanel mainPanel, Precision precision ) {
 		super(borderType, background, possiblePixelPerUnits, positionToMiddle, precision );
 		this.mainPanel = mainPanel;

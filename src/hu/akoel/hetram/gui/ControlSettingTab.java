@@ -180,54 +180,8 @@ public class ControlSettingTab extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-ArrayList<HetramDrawnElement> list =  (ArrayList<HetramDrawnElement>) ControlSettingTab.this.mainPanel.getCanvas().getDrawnBlockList();
 
-DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-
-try {
-	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-	Document doc = docBuilder.newDocument();
-	
-	//Root element
-	Element rootElement = doc.createElement("hetram");
-	doc.appendChild(rootElement);
-	
-	for( HetramDrawnElement el: list){
-		Element element = el.getXMLElement(doc);
-		rootElement.appendChild(element);
-	}
-	
-	DOMSource source = new DOMSource(doc);
-	
-	TransformerFactory transformerFactory = TransformerFactory.newInstance();
-	Transformer transformer = transformerFactory.newTransformer();
-
-	//To file
-	//StreamResult result = new StreamResult(new File("/home/akoel/tmp/file.xml"));
-
-	// Output to console for testing
-	StreamResult result = new StreamResult(System.out);
-
-	transformer.transform(source, result);
-	
-	
-	
-	
-} catch (ParserConfigurationException e1) {
-	// TODO Auto-generated catch block
-	e1.printStackTrace();
-} catch (TransformerConfigurationException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-} catch (TransformerException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-}
-
-
-
-				
-/*			
+		
 				//A szal elinditasa elott elinditja a progressBart -indeterminate modban
 				progressBar.setIndeterminate(true);
 				
@@ -302,7 +256,7 @@ try {
 				
 				//Elinditom a szalat
 				thread.start();
-*/
+
 			}
 			
 		});
