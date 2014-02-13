@@ -2,16 +2,22 @@ package hu.akoel.hetram.gui.drawingelements;
 
 import java.math.BigDecimal;
 
+import org.w3c.dom.Element;
+
 import hu.akoel.mgu.drawnblock.DrawnBlock;
 
 public abstract class HetramDrawnElement extends DrawnBlock{
 	
 	public static enum TYPE{
-		SYMMETRIC_EDGE,
-		OPEN_EDGE,
-		BUILDINSTRUCTURE_COLORED,
+		EDGE_SYMMETRIC,
+		EDGE_OPEN,
+		BUILDINGSTRUCTURE_COLORED,
 		BUILDINGSTRUCTURE_HOMOGENEOUSPATTERN,
 		BUILDINGSTRUCTURE_ROWPATTERN
+	}
+
+	public HetramDrawnElement( Element xmlElement ){
+		super( xmlElement );
 	}
 	
 	public HetramDrawnElement(Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth) {

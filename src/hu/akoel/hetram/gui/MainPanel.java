@@ -8,6 +8,8 @@ import hu.akoel.hetram.gui.ElementSettingTab.HOMOGEN_PATTERNEOUS;
 import hu.akoel.hetram.gui.ElementSettingTab.PATTERN_TYPE;
 import hu.akoel.hetram.gui.ElementSettingTab.ROW_PATTERN;
 import hu.akoel.hetram.gui.drawingelements.HetramDrawnElement;
+import hu.akoel.hetram.gui.drawingelements.HetramDrawnElement.TYPE;
+import hu.akoel.hetram.gui.drawingelements.SymmetricEdgeElement;
 import hu.akoel.hetram.listeners.CalculationListener;
 import hu.akoel.hetram.thermicpoint.ThermicPoint;
 import hu.akoel.hetram.thermicpoint.ThermicPointList;
@@ -41,7 +43,6 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
@@ -54,13 +55,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -70,9 +69,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 public class MainPanel extends JFrame{
 
@@ -802,6 +799,7 @@ public class MainPanel extends JFrame{
 	
 	/**
 	 * File betoltes menupont betolto objektuma
+	 * 
 	 * @author akoel
 	 *
 	 */
@@ -822,6 +820,12 @@ public class MainPanel extends JFrame{
 			
 			int returnVal = fc.showOpenDialog( MainPanel.this );
 			
+			//HetramDrawnElement hetramDrawnElement;
+			
+			//Az eredeti rajzolatot torlom
+			ArrayList<HetramDrawnElement> hetramDrawnElementList = MainPanel.this.myCanvas.getDrawnBlockList();
+			hetramDrawnElementList.clear();
+			
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 	            File file = fc.getSelectedFile();
 	            
@@ -841,13 +845,33 @@ public class MainPanel extends JFrame{
 
 					NodeList nList = doc.getElementsByTagName("drawnblock");
 					for (int i = 0; i < nList.getLength(); i++) {
+						
 						Node nNode = nList.item( i );
 						
 						if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-							 
+							
 							Element eElement = (Element) nNode;
-				 
-String drawnBlockType = eElement.getAttribute("type");
+				 							
+							String drawnBlockType = eElement.getAttribute("type");
+
+							//BUILDING STRUCTURE - HOMOGENEOUS
+							if( drawnBlockType.equals( TYPE.BUILDINGSTRUCTURE_HOMOGENEOUSPATTERN.name() ) ){
+								
+							//BUILDING STRUCTURE - ROWPATTERN
+							}else if( drawnBlockType.equals( TYPE.BUILDINGSTRUCTURE_ROWPATTERN.name() ) ){
+
+							//BUILDING STRUCTURE - COLORED
+							}else if( drawnBlockType.equals( TYPE.BUILDINGSTRUCTURE_COLORED.name() ) ){
+
+							//EDGE - OPEN
+							}else if( drawnBlockType.equals( TYPE.EDGE_OPEN.name() ) ){
+
+							//EDGE - SYMMETRIC
+							}else if( drawnBlockType.equals( TYPE.EDGE_SYMMETRIC.name() ) ){
+								
+								hetramDrawnElementList.add( new SymmetricEdgeElement( eElement ) );
+								
+							}
 
 						}
 						
@@ -868,9 +892,10 @@ String drawnBlockType = eElement.getAttribute("type");
 					if (a3 == JOptionPane.NO_OPTION) {
 					}*/
 
-				}
-	        	
-	           
+				}	 
+				
+				//Kirajzoltatom a beolvasott abrat
+				MainPanel.this.myCanvas.revalidateAndRepaintCoreCanvas();
 			}
 		}
 		

@@ -27,7 +27,7 @@ public class OpenEdgeElement extends HetramDrawnElement{
 
 	@Override
 	public TYPE getType() {
-		return TYPE.OPEN_EDGE;
+		return TYPE.EDGE_OPEN;
 	}
 	
 	private OpenEdgeElement(Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth) {

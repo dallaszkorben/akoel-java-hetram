@@ -580,7 +580,6 @@ public class ElementSettingTab extends JPanel{
 		drawingElementPanel.setLayout( new GridBagLayout() );
 		//drawingElementPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Rajzolandó elem", TitledBorder.LEFT, TitledBorder.TOP ) );		
 		GridBagConstraints drawingElementSelectorConstraints = new GridBagConstraints();
-
 		
 		ChangeListener drawingElementSelectorChangeListener = new ChangeListener(){
 			@Override
