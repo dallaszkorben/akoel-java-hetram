@@ -1,6 +1,7 @@
 package hu.akoel.hetram.gui.drawingelements;
 
 import hu.akoel.hetram.accessories.Displacement;
+import hu.akoel.hetram.gui.ElementSettingTab.ROW_PATTERN;
 
 import java.awt.Graphics2D;
 
@@ -32,6 +33,11 @@ public class ZigZagRowPatternAdapter implements RowPatternInterface{
 			
 		}
 		
+	}
+
+	@Override
+	public ROW_PATTERN getType() {		
+		return ROW_PATTERN.ZIGZAG;
 	}
 
 }

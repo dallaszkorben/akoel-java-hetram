@@ -5,6 +5,10 @@ import java.awt.Color;
 import java.awt.Stroke;
 import java.math.BigDecimal;
 
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 public class SymmetricEdgeElement extends HetramDrawnElement{
 	
 	private static final Stroke NORMAL_STROKE = new BasicStroke(3);
@@ -17,6 +21,11 @@ public class SymmetricEdgeElement extends HetramDrawnElement{
 	
 	private static final Stroke INPROCESS_STROKE = new BasicStroke(5);
 
+	@Override
+	public TYPE getType() {
+		return TYPE.SYMMETRIC_EDGE;
+	}
+	
 	public SymmetricEdgeElement( Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth, Color color ){
 		super( status, x1, y1, minLength, maxLength, minWidth, maxWidth );
 		
@@ -28,4 +37,16 @@ public class SymmetricEdgeElement extends HetramDrawnElement{
 		refreshStatus();
 		
 	}
+
+	public Element getXMLElement( Document document ){
+		Element element = super.getXMLElement(document);
+		Attr attr;
+		
+		attr = document.createAttribute("type");
+		attr.setValue( getType().name() ) ;
+		element.setAttributeNode( attr );
+
+		return element;		
+	}
+
 }

@@ -5,6 +5,10 @@ import java.awt.Color;
 import java.awt.Stroke;
 import java.math.BigDecimal;
 
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 public class OpenEdgeElement extends HetramDrawnElement{
 	
 	private static final Stroke NORMAL_STROKE = new BasicStroke(3);
@@ -21,6 +25,11 @@ public class OpenEdgeElement extends HetramDrawnElement{
 	private double alphaStop;
 	private double temperature;
 
+	@Override
+	public TYPE getType() {
+		return TYPE.OPEN_EDGE;
+	}
+	
 	private OpenEdgeElement(Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth) {
 		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth );
 	}
@@ -80,4 +89,37 @@ public class OpenEdgeElement extends HetramDrawnElement{
 			throw new Error("Gaz van, ez nem lehet. Egy OpenEdgeElement objektum-nak nincs kiterjedese");
 		}
 	}
+	
+	public Element getXMLElement( Document document ){
+		Element element = super.getXMLElement(document);
+		Attr attr;
+		
+		//TYPE
+		attr = document.createAttribute("type");
+		attr.setValue( getType().name() ) ;
+		element.setAttributeNode( attr );
+
+		//EXTRAINFO
+		Element extraInfoElement = document.createElement( "extrainfo" );
+		element.appendChild( extraInfoElement );
+
+		//EXTRAINFO - alphastart
+		Element alphaStartElement = document.createElement( "alphastart" );		
+		alphaStartElement.appendChild(document.createTextNode( Double.toString( this.alphaStart ) ) );
+		extraInfoElement.appendChild( alphaStartElement );
+		
+		//EXTRAINFO - alphastop
+		Element alphaStopElement = document.createElement( "alphastop" );		
+		alphaStopElement.appendChild(document.createTextNode( Double.toString( this.alphaStop ) ) );
+		extraInfoElement.appendChild( alphaStopElement );
+		
+		//EXTRAINFO - temperature
+		Element temperatureElement = document.createElement( "temperature" );		
+		temperatureElement.appendChild(document.createTextNode( Double.toString( this.temperature ) ) );
+		extraInfoElement.appendChild( temperatureElement );
+
+		return element;		
+	}
+
+
 }

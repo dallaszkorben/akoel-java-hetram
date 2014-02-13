@@ -1,8 +1,10 @@
 package hu.akoel.hetram.gui.drawingelements;
 
+import hu.akoel.hetram.gui.ElementSettingTab.HOMOGEN_PATTERNEOUS;
+
 import java.awt.Graphics2D;
 
-public class HatchFullPatternAdapter implements FullPatternInterface{
+public class HatchFullPatternAdapter implements HomogeneousPatternInterface{
 
 	@Override
 	public void drawPattern(Graphics2D g2, int patternWidth, int patternHeight) {
@@ -19,6 +21,11 @@ public class HatchFullPatternAdapter implements FullPatternInterface{
 	@Override
 	public int getPatternHeight() {
 		return 15;
+	}
+
+	@Override
+	public HOMOGEN_PATTERNEOUS getType() {		
+		return HOMOGEN_PATTERNEOUS.HATCH;
 	}
 
 }

@@ -4,7 +4,7 @@ import hu.akoel.hetram.HetramCanvas;
 import hu.akoel.hetram.HetramDrawnElementFactory;
 import hu.akoel.hetram.Hetram;
 import hu.akoel.hetram.gui.ElementSettingTab.DRAWING_ELEMENT;
-import hu.akoel.hetram.gui.ElementSettingTab.HOMOGEN_PATTERN;
+import hu.akoel.hetram.gui.ElementSettingTab.HOMOGEN_PATTERNEOUS;
 import hu.akoel.hetram.gui.ElementSettingTab.PATTERN_TYPE;
 import hu.akoel.hetram.gui.ElementSettingTab.ROW_PATTERN;
 import hu.akoel.hetram.gui.drawingelements.HetramDrawnElement;
@@ -38,6 +38,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
@@ -66,6 +68,11 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 public class MainPanel extends JFrame{
 
@@ -106,7 +113,7 @@ public class MainPanel extends JFrame{
 	private Color elementLineColor = Color.blue;
 	private Color elementBackgroundColor = Color.black;
 	private PATTERN_TYPE patternType = PATTERN_TYPE.COLOR;
-	private HOMOGEN_PATTERN homogenPattern = HOMOGEN_PATTERN.HATCH;
+	private HOMOGEN_PATTERNEOUS homogenPattern = HOMOGEN_PATTERNEOUS.HATCH;
 	private ROW_PATTERN rowPattern = ROW_PATTERN.ZIGZAG;
 	private double openEdgeAlphaBegin = 8;
 	private double openEdgeAlphaEnd = 8;
@@ -234,88 +241,16 @@ public class MainPanel extends JFrame{
 		fileSaveMenuItem = new JMenuItem( "Save", KeyEvent.VK_S ); //Mnemonic Akkor ervenyes ha lathato a menu elem
 		fileSaveMenuItem.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_1, ActionEvent.ALT_MASK ) ); //Mindegy hogy lathato-e a menu vagy sem
 		fileSaveMenuItem.getAccessibleContext().setAccessibleDescription( "This doesn't really do anything");
-		fileSaveMenuItem.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				//JMenuItem source = (JMenuItem)(e.getSource());
-
-				@SuppressWarnings("unchecked")
-				ArrayList<HetramDrawnElement> list =  (ArrayList<HetramDrawnElement>) MainPanel.this.getCanvas().getDrawnBlockList();
-
-				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-
-				try {
-					DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-					Document doc = docBuilder.newDocument();
-					
-					//Root element
-					Element rootElement = doc.createElement("hetram");
-					doc.appendChild(rootElement);
-					
-					for( HetramDrawnElement el: list){
-						Element element = el.getXMLElement(doc);
-						rootElement.appendChild(element);
-					}
-					
-					DOMSource source = new DOMSource(doc);
-					
-					TransformerFactory transformerFactory = TransformerFactory.newInstance();
-					Transformer transformer = transformerFactory.newTransformer();
-
-					//To file
-					StreamResult result = new StreamResult(new File("c:\\Users\\afoldvarszky\\Desktop\\file.xml"));
-
-					// Output to console for testing
-					//StreamResult result = new StreamResult(System.out);
-
-					transformer.transform(source, result);
-					
-					
-				} catch (ParserConfigurationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (TransformerConfigurationException e3) {
-					// TODO Auto-generated catch block
-					e3.printStackTrace();
-				} catch (TransformerException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				}
-
-				
-			}
-		});
 		fileMainMenu.add(fileSaveMenuItem);
+		fileSaveMenuItem.addActionListener( new SaveActionListener() );
 		
 		//File-Load
 		fileLoadMenuItem = new JMenuItem( "Load", KeyEvent.VK_L );
 		fileLoadMenuItem.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_2, ActionEvent.ALT_MASK ) );
 		fileLoadMenuItem.getAccessibleContext().setAccessibleDescription( "This doesn't really do anything");
-		fileLoadMenuItem.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				final JFileChooser fc = new JFileChooser( "c:\\Users\\afoldvarszky\\Desktop" );
-
-				fc.setDialogTitle("Load a plan");
-				
-				FileNameExtensionFilter filter = new FileNameExtensionFilter("xml", "xml");
-				fc.setFileFilter(filter);
-				
-				//Nem engedi meg az "All" filter hasznalatat
-				fc.setAcceptAllFileFilterUsed(false);
-				
-				
-				
-				int returnVal = fc.showOpenDialog( MainPanel.this );
-				
-			}
+		fileMainMenu.add(fileLoadMenuItem);
+		fileLoadMenuItem.addActionListener( new LoadActionListener() );
 			
-		});
-		fileMainMenu.add(fileLoadMenuItem);		
-		
 		//Elvalasztas
 		fileMainMenu.addSeparator();
 		
@@ -693,11 +628,11 @@ public class MainPanel extends JFrame{
 		this.patternType = patternType;
 	}
 	
-	public HOMOGEN_PATTERN getHomogenPattern() {
+	public HOMOGEN_PATTERNEOUS getHomogenPattern() {
 		return homogenPattern;
 	}
 
-	public void setHomogenPattern(HOMOGEN_PATTERN homogenPattern) {
+	public void setHomogenPattern(HOMOGEN_PATTERNEOUS homogenPattern) {
 		this.homogenPattern = homogenPattern;
 	}
 
@@ -779,5 +714,166 @@ public class MainPanel extends JFrame{
 		myCanvas.revalidateAndRepaintCoreCanvas();
 	}
 
+	/**
+	 * File mentes menupont vegrehato objektuma
+	 * 
+	 * @author akoel
+	 *
+	 */
+	class SaveActionListener implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			//JMenuItem source = (JMenuItem)(e.getSource());
+
+			@SuppressWarnings("unchecked")
+			ArrayList<HetramDrawnElement> list =  (ArrayList<HetramDrawnElement>) MainPanel.this.getCanvas().getDrawnBlockList();
+
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+
+			try {
+				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+				Document doc = docBuilder.newDocument();
+				
+				//Root element
+				Element rootElement = doc.createElement("hetram");
+				doc.appendChild(rootElement);
+				
+				for( HetramDrawnElement el: list){
+					Element element = el.getXMLElement(doc);
+					rootElement.appendChild(element);
+				}
+				
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = transformerFactory.newTransformer();
+				DOMSource source = new DOMSource(doc);
+				
+				//
+				//Consolra ir
+				//
+				//StreamResult result = new StreamResult(System.out);
+
+				//
+				//File nevet valaszt es beleir
+				//
+				
+				//Filechooser inicializalasa a felhasznalo munkakonyvtaraba
+				final JFileChooser fc = new JFileChooser( System.getProperty("user.dir") );
+
+				//A dialogus ablak cime
+				fc.setDialogTitle("Save the plan");
+				
+				//Csak az XML kiterjesztesu fajlokat lathatom
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("xml", "xml");
+				fc.setFileFilter(filter);
+				
+				//Nem engedi meg az "All" filter hasznalatat
+				fc.setAcceptAllFileFilterUsed(false);				
+				
+				//Dialogus ablak inditasa
+				int returnVal = fc.showSaveDialog( MainPanel.this );
+				
+				//Ha kivalasztottam a nevet
+				if ( returnVal == JFileChooser.APPROVE_OPTION ) {
+																			
+						File file = fc.getSelectedFile();
+						String filePath = file.getPath();
+						
+						//Mindenkeppen XML lesz a kiterjesztese
+						if( !filePath.toLowerCase().endsWith(".xml") ){
+						    file = new File(filePath + ".xml");
+						}
+						
+						//Stream letrehozasa
+						StreamResult result = new StreamResult( file );
+
+						//Iras
+						transformer.transform(source, result);
+
+				}
+				
+			} catch (ParserConfigurationException | TransformerException e1) {
+				JOptionPane.showMessageDialog( MainPanel.this, "Nem sikerült a file mentése: \n" + e1.getMessage(), "Hiba", JOptionPane.ERROR_MESSAGE );
+			}
+
+			
+		}
+	};
+	
+	/**
+	 * File betoltes menupont betolto objektuma
+	 * @author akoel
+	 *
+	 */
+	class LoadActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			final JFileChooser fc = new JFileChooser( System.getProperty("user.dir") );
+
+			fc.setDialogTitle("Load a plan");
+			
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("xml", "xml");
+			fc.setFileFilter(filter);
+			
+			//Nem engedi meg az "All" filter hasznalatat
+			fc.setAcceptAllFileFilterUsed(false);				
+			
+			int returnVal = fc.showOpenDialog( MainPanel.this );
+			
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+	            File file = fc.getSelectedFile();
+	            
+	            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+	        	DocumentBuilder dBuilder;
+				try {
+					dBuilder = dbFactory.newDocumentBuilder();					
+
+					//Error kimenetre irja hogy [Fatal Error] es csak utanna megy a catch agba
+					Document doc = dBuilder.parse( file );
+					
+					//Recommended
+					doc.getDocumentElement().normalize();
+
+					//Root element = "hetram"
+					//doc.getDocumentElement().getNodeName();		
+
+					NodeList nList = doc.getElementsByTagName("drawnblock");
+					for (int i = 0; i < nList.getLength(); i++) {
+						Node nNode = nList.item( i );
+						
+						if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+							 
+							Element eElement = (Element) nNode;
+				 
+String drawnBlockType = eElement.getAttribute("type");
+
+						}
+						
+					}
+					
+				} catch (ParserConfigurationException | SAXException | IOException e1) {
+
+					JOptionPane.showMessageDialog( MainPanel.this, "Nem sikerült a file beolvasása: \n" + e1.getMessage(), "Hiba", JOptionPane.ERROR_MESSAGE );
+					
+					/*Object [] buttonArray = {"Accept", "blabl"};
+					int a3;
+					
+					do {
+					    a3 = JOptionPane.showOptionDialog(null,"Mean arterial pressure restored.\nReassess all vitals STAT.", "Title", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, buttonArray, buttonArray[0]);
+					} while(a3 == JOptionPane.CLOSED_OPTION);
+					if (a3 == JOptionPane.YES_OPTION) { 
+					}
+					if (a3 == JOptionPane.NO_OPTION) {
+					}*/
+
+				}
+	        	
+	           
+			}
+		}
+		
+	};
 
 }
