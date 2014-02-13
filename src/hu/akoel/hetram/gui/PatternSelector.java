@@ -27,21 +27,21 @@ public class PatternSelector extends JComboBox<Integer>{
 	ImageIcon icon;
 	
 	private ArrayList<ImageIcon> images = new ArrayList<ImageIcon>();	
-	private ArrayList<PatternSelectorItem> patternFactoryList = new ArrayList<PatternSelectorItem>();
+	private ArrayList<RawPatternSelectorItem> patternFactoryList = new ArrayList<RawPatternSelectorItem>();
 	    
 	public PatternSelector(){
 		super();		
-		commonConstructor( new PatternSelectorItem[0] );
+		commonConstructor( new RawPatternSelectorItem[0] );
 	}
 
-	public PatternSelector( PatternSelectorItem[] patternFactoryList ){
+	public PatternSelector( RawPatternSelectorItem[] patternFactoryList ){
 		super();
 		commonConstructor(patternFactoryList);
 	}
 
-	private void commonConstructor( PatternSelectorItem[] patternFactoryList ){
+	private void commonConstructor( RawPatternSelectorItem[] patternFactoryList ){
 		
-		for( PatternSelectorItem patternFactory: patternFactoryList ){
+		for( RawPatternSelectorItem patternFactory: patternFactoryList ){
 			addItem( patternFactory );
 		}
 			
@@ -51,7 +51,7 @@ public class PatternSelector extends JComboBox<Integer>{
         this.setMaximumRowCount(6);
 	}
 	
-	public void addItem( PatternSelectorItem patternFactory ){
+	public void addItem( RawPatternSelectorItem patternFactory ){
 
 		colorBufferedImage = new BufferedImage( ICON_WIDTH, ICON_HEIGHT, BufferedImage.TYPE_INT_RGB); 
 		g2 = colorBufferedImage.createGraphics();

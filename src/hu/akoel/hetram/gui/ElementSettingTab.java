@@ -3,8 +3,8 @@ package hu.akoel.hetram.gui;
 import hu.akoel.hetram.HetramDrawnElementFactory;
 import hu.akoel.hetram.gui.drawingelements.ColoredPatternBuildingSturcturalElement;
 import hu.akoel.hetram.gui.drawingelements.DotFullPatternAdapter;
-import hu.akoel.hetram.gui.drawingelements.FullPatternBuildingStructuralElement;
-import hu.akoel.hetram.gui.drawingelements.FullPatternInterface;
+import hu.akoel.hetram.gui.drawingelements.HomogeneousPatternBuildingStructuralElement;
+import hu.akoel.hetram.gui.drawingelements.HomogeneousPatternInterface;
 import hu.akoel.hetram.gui.drawingelements.HatchFullPatternAdapter;
 import hu.akoel.hetram.gui.drawingelements.HetramDrawnElement;
 import hu.akoel.hetram.gui.drawingelements.OpenEdgeElement;
@@ -54,18 +54,18 @@ public class ElementSettingTab extends JPanel{
 		ROW
 	}
 	
-	public static enum HOMOGEN_PATTERN{
+	public static enum HOMOGEN_PATTERNEOUS{
 		HATCH( new HatchPatternSelectorItem() ),
 		DOT( new DotPatternSelectorItem() ),
 		;	
 		
-		PatternSelectorItem patternSelectorItem;
+		RawPatternSelectorItem patternSelectorItem;
 		
-		HOMOGEN_PATTERN( PatternSelectorItem patternSelectorItem ){
+		HOMOGEN_PATTERNEOUS( RawPatternSelectorItem patternSelectorItem ){
 			this.patternSelectorItem = patternSelectorItem;
 		}
 		
-		public PatternSelectorItem getPatternSelectorItem(){
+		public RawPatternSelectorItem getPatternSelectorItem(){
 			return patternSelectorItem;
 		}
 	}
@@ -73,13 +73,13 @@ public class ElementSettingTab extends JPanel{
 	public static enum ROW_PATTERN{
 		ZIGZAG( new ZigZagPatternSelectorItem() );
 		
-		PatternSelectorItem patternSelectorItem;
+		RawPatternSelectorItem patternSelectorItem;
 		
-		ROW_PATTERN( PatternSelectorItem patternSelectorItem ){
+		ROW_PATTERN( RawPatternSelectorItem patternSelectorItem ){
 			this.patternSelectorItem = patternSelectorItem;
 		}
 		
-		public PatternSelectorItem getPatternSelectorItem(){
+		public RawPatternSelectorItem getPatternSelectorItem(){
 			return patternSelectorItem;
 		}
 	}
@@ -183,8 +183,8 @@ public class ElementSettingTab extends JPanel{
 		//Letrehozza a Homogen mintazatot valaszto combobox-ot
 		homogenPatternSelector = new PatternSelector();
 		//Feltolti a combobox-ot az elemekkel
-		for( int i = 0; i < HOMOGEN_PATTERN.values().length; i++ ){
-			homogenPatternSelector.addItem( HOMOGEN_PATTERN.values()[i].getPatternSelectorItem() );
+		for( int i = 0; i < HOMOGEN_PATTERNEOUS.values().length; i++ ){
+			homogenPatternSelector.addItem( HOMOGEN_PATTERNEOUS.values()[i].getPatternSelectorItem() );
 		}
 		//Kivalasztja a default erteket
 		homogenPatternSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getHomogenPattern().ordinal() );
@@ -195,7 +195,7 @@ public class ElementSettingTab extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				
 				PatternSelector ps = (PatternSelector)e.getSource();
-				ElementSettingTab.this.mainPanel.setHomogenPattern( HOMOGEN_PATTERN.values()[ ps.getSelectedIndex() ] );
+				ElementSettingTab.this.mainPanel.setHomogenPattern( HOMOGEN_PATTERNEOUS.values()[ ps.getSelectedIndex() ] );
 				
 			}
 		});
@@ -823,15 +823,15 @@ public class ElementSettingTab extends JPanel{
 			if( patternSelector.equals( PATTERN_TYPE.COLOR ) ){
 				bs = new ColoredPatternBuildingSturcturalElement( status, x1, y1, lambda, color, background );
 			}else if( patternSelector.equals( PATTERN_TYPE.HOMOGEN ) ){	
-				HOMOGEN_PATTERN homogenPattern = ElementSettingTab.this.mainPanel.getHomogenPattern();
-				FullPatternInterface fullPatternInterface = null;
-				if( homogenPattern.equals( HOMOGEN_PATTERN.HATCH ) ){
+				HOMOGEN_PATTERNEOUS homogenPattern = ElementSettingTab.this.mainPanel.getHomogenPattern();
+				HomogeneousPatternInterface fullPatternInterface = null;
+				if( homogenPattern.equals( HOMOGEN_PATTERNEOUS.HATCH ) ){
 					fullPatternInterface = new HatchFullPatternAdapter();
-				}else if( homogenPattern.equals( HOMOGEN_PATTERN.DOT ) ){
+				}else if( homogenPattern.equals( HOMOGEN_PATTERNEOUS.DOT ) ){
 					fullPatternInterface = new DotFullPatternAdapter();
 				}
 				
-				bs = new FullPatternBuildingStructuralElement( fullPatternInterface, status, x1, y1, lambda, color, background );
+				bs = new HomogeneousPatternBuildingStructuralElement( fullPatternInterface, status, x1, y1, lambda, color, background );
 			}else if( patternSelector.equals( PATTERN_TYPE.ROW ) ){
 				ROW_PATTERN rowPattern = ElementSettingTab.this.mainPanel.getRowPattern();
 				RowPatternInterface rowPatternInterface = null;
@@ -848,7 +848,7 @@ public class ElementSettingTab extends JPanel{
 }
 
 
-class HatchPatternSelectorItem implements PatternSelectorItem{
+class HatchPatternSelectorItem implements RawPatternSelectorItem{
 
 	@Override
 	public void drawImageIcon( Graphics2D g2, int width, int height ) {
@@ -865,7 +865,7 @@ class HatchPatternSelectorItem implements PatternSelectorItem{
 	}			
 }
 
-class DotPatternSelectorItem implements PatternSelectorItem{
+class DotPatternSelectorItem implements RawPatternSelectorItem{
 
 	@Override
 	public void drawImageIcon( Graphics2D g2, int width, int height ) {
@@ -883,7 +883,7 @@ class DotPatternSelectorItem implements PatternSelectorItem{
 	}			
 }
 
-class ZigZagPatternSelectorItem implements PatternSelectorItem{
+class ZigZagPatternSelectorItem implements RawPatternSelectorItem{
 
 	@Override
 	public void drawImageIcon( Graphics2D g2, int width, int height ) {

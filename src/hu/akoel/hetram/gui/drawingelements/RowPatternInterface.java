@@ -1,6 +1,7 @@
 package hu.akoel.hetram.gui.drawingelements;
 
 import hu.akoel.hetram.accessories.Displacement;
+import hu.akoel.hetram.gui.ElementSettingTab.ROW_PATTERN;
 
 import java.awt.Graphics2D;
 
@@ -19,7 +20,7 @@ import java.awt.Graphics2D;
  */
 public interface RowPatternInterface {
 
-
+	public ROW_PATTERN getType();
 	
 	/**
 	 * A pattern fuggoleges es vizszintes oldalhosszanak aranya
