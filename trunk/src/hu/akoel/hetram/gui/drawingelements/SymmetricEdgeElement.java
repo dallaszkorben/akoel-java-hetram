@@ -23,7 +23,7 @@ public class SymmetricEdgeElement extends HetramDrawnElement{
 
 	@Override
 	public TYPE getType() {
-		return TYPE.SYMMETRIC_EDGE;
+		return TYPE.EDGE_SYMMETRIC;
 	}
 	
 	public SymmetricEdgeElement( Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth, Color color ){
@@ -38,6 +38,11 @@ public class SymmetricEdgeElement extends HetramDrawnElement{
 		
 	}
 
+	public SymmetricEdgeElement( Element xmlElement ){
+		super( xmlElement );
+		
+	}
+	
 	public Element getXMLElement( Document document ){
 		Element element = super.getXMLElement(document);
 		Attr attr;
