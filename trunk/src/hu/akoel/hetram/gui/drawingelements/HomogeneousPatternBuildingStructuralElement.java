@@ -22,14 +22,29 @@ public class HomogeneousPatternBuildingStructuralElement extends HetramBuildingS
 		return TYPE.BUILDINGSTRUCTURE_HOMOGENEOUSPATTERN;
 	}
 	
+	
+
+	
 	private HomogeneousPatternBuildingStructuralElement(Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth, double lambda, Color lineColor, Color backgroundColor) {
 		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, lambda, lineColor, backgroundColor );
 	}
 	
-	public HomogeneousPatternBuildingStructuralElement(HomogeneousPatternInterface homogeneousPatternInterface, Status status, BigDecimal x1, BigDecimal y1, double lambda, Color lineColor, Color backgroundColor ) {
+	public HomogeneousPatternBuildingStructuralElement( HomogeneousPatternFactory homogeneousPatternFactory, Status status, BigDecimal x1, BigDecimal y1, double lambda, Color lineColor, Color backgroundColor ) {
 		super( status, x1, y1, lambda, lineColor, backgroundColor );
 		
-		this.homogeneousPatternInterface = homogeneousPatternInterface;
+		commonConstructor( homogeneousPatternFactory );
+	}
+	
+	public HomogeneousPatternBuildingStructuralElement( Element xmlElement, HomogeneousPatternFactory homogeneousPatternFactory ){
+		super( xmlElement );
+		
+		commonConstructor( homogeneousPatternFactory );
+		
+	}
+	
+	private void commonConstructor( HomogeneousPatternFactory homogeneousPatternFactory ){
+		
+		homogeneousPatternInterface = homogeneousPatternFactory.getHomogeneousPattern();
 		
 		int patternWidth = homogeneousPatternInterface.getPatternWidth();
 		int patternHeight = homogeneousPatternInterface.getPatternHeight();
@@ -93,7 +108,7 @@ public class HomogeneousPatternBuildingStructuralElement extends HetramBuildingS
 		refreshStatus();
 		
 	}
-
+	
 	public Element getXMLElement( Document document ){
 		Element element = super.getXMLElement(document);
 		Attr attr;
@@ -103,17 +118,23 @@ public class HomogeneousPatternBuildingStructuralElement extends HetramBuildingS
 		attr.setValue( getType().name() ) ;
 		element.setAttributeNode( attr );
 
-		//EXTRAINFO
-		NodeList nl = element.getElementsByTagName("extrainfo");
+		//FORM
+		attr = document.createAttribute("form");
+		attr.setValue( this.homogeneousPatternInterface.getForm().name() ) ;
+		element.setAttributeNode( attr );
+
 		
-		//EXTRAINFO - ROWTYPE		
-		Node nNode = nl.item(0);
+		//EXTRAINFO
+/*		NodeList extrainfoNodeList = element.getElementsByTagName("extrainfo");
+		
+		//EXTRAINFO - HOMOGENEOUSTYPE		
+		Node extrainfoNode = extrainfoNodeList.item(0);
 //		if (nNode.getNodeType() == Node.ELEMENT_NODE) {	
-		Element eElement = (Element) nNode;
-		Element rawTypeElement = document.createElement( "homogenoustype" );		
-		rawTypeElement.appendChild(document.createTextNode( this.homogeneousPatternInterface.getType().name() ) );
-		eElement.appendChild( rawTypeElement );
-			
+		Element extrainfoElement = (Element) extrainfoNode;
+		Element homogeneousTypeElement = document.createElement( "homogenoustype" );		
+		homogeneousTypeElement.appendChild(document.createTextNode( this.homogeneousPatternInterface.getType().name() ) );
+		extrainfoElement.appendChild( homogeneousTypeElement );
+*/			
 		
 		return element;		
 	}

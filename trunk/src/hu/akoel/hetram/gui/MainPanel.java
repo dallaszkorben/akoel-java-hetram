@@ -4,12 +4,21 @@ import hu.akoel.hetram.HetramCanvas;
 import hu.akoel.hetram.HetramDrawnElementFactory;
 import hu.akoel.hetram.Hetram;
 import hu.akoel.hetram.gui.ElementSettingTab.DRAWING_ELEMENT;
-import hu.akoel.hetram.gui.ElementSettingTab.HOMOGEN_PATTERNEOUS;
+import hu.akoel.hetram.gui.ElementSettingTab.HOMOGENEOUS_PATTERN;
 import hu.akoel.hetram.gui.ElementSettingTab.PATTERN_TYPE;
 import hu.akoel.hetram.gui.ElementSettingTab.ROW_PATTERN;
+import hu.akoel.hetram.gui.drawingelements.ColoredPatternBuildingSturcturalElement;
+import hu.akoel.hetram.gui.drawingelements.DotFullPatternAdapter;
+import hu.akoel.hetram.gui.drawingelements.HatchFullPatternAdapter;
 import hu.akoel.hetram.gui.drawingelements.HetramDrawnElement;
 import hu.akoel.hetram.gui.drawingelements.HetramDrawnElement.TYPE;
+import hu.akoel.hetram.gui.drawingelements.HomogeneousPatternBuildingStructuralElement;
+import hu.akoel.hetram.gui.drawingelements.HomogeneousPatternFactory;
+import hu.akoel.hetram.gui.drawingelements.OpenEdgeElement;
+import hu.akoel.hetram.gui.drawingelements.RowPatternBuildingStructuralElement;
+import hu.akoel.hetram.gui.drawingelements.RowPatternFactory;
 import hu.akoel.hetram.gui.drawingelements.SymmetricEdgeElement;
+import hu.akoel.hetram.gui.drawingelements.ZigZagRowPatternAdapter;
 import hu.akoel.hetram.listeners.CalculationListener;
 import hu.akoel.hetram.thermicpoint.ThermicPoint;
 import hu.akoel.hetram.thermicpoint.ThermicPointList;
@@ -110,7 +119,7 @@ public class MainPanel extends JFrame{
 	private Color elementLineColor = Color.blue;
 	private Color elementBackgroundColor = Color.black;
 	private PATTERN_TYPE patternType = PATTERN_TYPE.COLOR;
-	private HOMOGEN_PATTERNEOUS homogenPattern = HOMOGEN_PATTERNEOUS.HATCH;
+	private HOMOGENEOUS_PATTERN homogenPattern = HOMOGENEOUS_PATTERN.HATCH;
 	private ROW_PATTERN rowPattern = ROW_PATTERN.ZIGZAG;
 	private double openEdgeAlphaBegin = 8;
 	private double openEdgeAlphaEnd = 8;
@@ -625,11 +634,11 @@ public class MainPanel extends JFrame{
 		this.patternType = patternType;
 	}
 	
-	public HOMOGEN_PATTERNEOUS getHomogenPattern() {
+	public HOMOGENEOUS_PATTERN getHomogenPattern() {
 		return homogenPattern;
 	}
 
-	public void setHomogenPattern(HOMOGEN_PATTERNEOUS homogenPattern) {
+	public void setHomogenPattern(HOMOGENEOUS_PATTERN homogenPattern) {
 		this.homogenPattern = homogenPattern;
 	}
 
@@ -823,8 +832,9 @@ public class MainPanel extends JFrame{
 			//HetramDrawnElement hetramDrawnElement;
 			
 			//Az eredeti rajzolatot torlom
-			ArrayList<HetramDrawnElement> hetramDrawnElementList = MainPanel.this.myCanvas.getDrawnBlockList();
-			hetramDrawnElementList.clear();
+			//ArrayList<HetramDrawnElement> ahetramDrawnElementList = MainPanel.this.myCanvas.getDrawnBlockList();
+			//hetramDrawnElementList.clear();
+			MainPanel.this.myCanvas.getDrawnBlockList().clear();
 			
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 	            File file = fc.getSelectedFile();
@@ -846,30 +856,43 @@ public class MainPanel extends JFrame{
 					NodeList nList = doc.getElementsByTagName("drawnblock");
 					for (int i = 0; i < nList.getLength(); i++) {
 						
-						Node nNode = nList.item( i );
+						Node drawnBlockNode = nList.item( i );
 						
-						if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+						if (drawnBlockNode.getNodeType() == Node.ELEMENT_NODE) {
 							
-							Element eElement = (Element) nNode;
+							Element drawnBlockElement = (Element) drawnBlockNode;
 				 							
-							String drawnBlockType = eElement.getAttribute("type");
+							String drawnBlockType = drawnBlockElement.getAttribute("type");
+							String drawnBlockForm = drawnBlockElement.getAttribute("form");
 
 							//BUILDING STRUCTURE - HOMOGENEOUS
 							if( drawnBlockType.equals( TYPE.BUILDINGSTRUCTURE_HOMOGENEOUSPATTERN.name() ) ){
+								if( drawnBlockForm.equals( ElementSettingTab.HOMOGENEOUS_PATTERN.DOT.name() ) ){
+									MainPanel.this.myCanvas.addDrawnBlock( new HomogeneousPatternBuildingStructuralElement( drawnBlockElement, new HomogeneousPatternFactory( new DotFullPatternAdapter() ) ) );	
+								}else if( drawnBlockForm.equals( ElementSettingTab.HOMOGENEOUS_PATTERN.HATCH.name() ) ){
+									MainPanel.this.myCanvas.addDrawnBlock( new HomogeneousPatternBuildingStructuralElement( drawnBlockElement, new HomogeneousPatternFactory( new HatchFullPatternAdapter() ) ) );
+								}
 								
 							//BUILDING STRUCTURE - ROWPATTERN
 							}else if( drawnBlockType.equals( TYPE.BUILDINGSTRUCTURE_ROWPATTERN.name() ) ){
+								if( drawnBlockForm.equals( ElementSettingTab.ROW_PATTERN.ZIGZAG.name() ) ){
+									MainPanel.this.myCanvas.addDrawnBlock( new RowPatternBuildingStructuralElement( drawnBlockElement, new RowPatternFactory( new ZigZagRowPatternAdapter() ), MainPanel.this) );
+								}
 
 							//BUILDING STRUCTURE - COLORED
 							}else if( drawnBlockType.equals( TYPE.BUILDINGSTRUCTURE_COLORED.name() ) ){
-
+								MainPanel.this.myCanvas.addDrawnBlock( new ColoredPatternBuildingSturcturalElement( drawnBlockElement ) );
+								//hetramDrawnElementList.add(  );
+								
 							//EDGE - OPEN
 							}else if( drawnBlockType.equals( TYPE.EDGE_OPEN.name() ) ){
-
+								MainPanel.this.myCanvas.addDrawnBlock( new OpenEdgeElement( drawnBlockElement ) );
+								//hetramDrawnElementList.add( new OpenEdgeElement( eElement ) );
+								
 							//EDGE - SYMMETRIC
 							}else if( drawnBlockType.equals( TYPE.EDGE_SYMMETRIC.name() ) ){
-								
-								hetramDrawnElementList.add( new SymmetricEdgeElement( eElement ) );
+								MainPanel.this.myCanvas.addDrawnBlock( new SymmetricEdgeElement( drawnBlockElement ) );
+								//hetramDrawnElementList.add( new SymmetricEdgeElement( eElement ) );
 								
 							}
 

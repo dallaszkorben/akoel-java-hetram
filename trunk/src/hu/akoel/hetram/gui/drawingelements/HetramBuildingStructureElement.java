@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public abstract class HetramBuildingStructureElement extends HetramDrawnElement{
 	
@@ -44,6 +46,40 @@ public abstract class HetramBuildingStructureElement extends HetramDrawnElement{
 
 	}
 
+	public HetramBuildingStructureElement( Element xmlElement ){
+		super( xmlElement );
+		
+		NodeList mainNodeList = xmlElement.getChildNodes();
+		for (int i = 0; i < mainNodeList.getLength(); i++) {
+			
+			Node mainNode = mainNodeList.item( i );
+			
+			if (mainNode.getNodeType() == Node.ELEMENT_NODE) {
+				Element mainElement = (Element) mainNode;
+				
+				//Ha egy APLHASTART elemrol van szo
+				if( mainElement.getNodeName().equals( "extrainfo" )){
+					
+					NodeList extrainfoNodeList = mainElement.getChildNodes();
+					for (int j = 0; j < extrainfoNodeList.getLength(); j++) {
+						
+						Node extrainfoNode = extrainfoNodeList.item( j );
+						
+						if (extrainfoNode.getNodeType() == Node.ELEMENT_NODE) {
+							Element extrainfoElement = (Element) extrainfoNode;
+
+							//Ha egy APLHASTART elemrol van szo
+							if( extrainfoElement.getNodeName().equals( "lambda" )){
+								this.lambda = Double.valueOf( extrainfoElement.getTextContent() );
+							}							
+						}
+					} 
+				}
+			}
+		}
+	}
+	
+	
 	private void commonConstructor( double lambda, Color lineColor, Color backgroundColor ){
 		this.lambda = lambda;
 		

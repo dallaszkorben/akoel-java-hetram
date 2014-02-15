@@ -8,7 +8,16 @@ import java.math.BigDecimal;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+/**
+ * alpha+T
+ * Harmadfaju hotani peremfeltetel
+ * 
+ * @author akoel
+ *
+ */
 public class OpenEdgeElement extends HetramDrawnElement{
 	
 	private static final Stroke NORMAL_STROKE = new BasicStroke(3);
@@ -54,6 +63,52 @@ public class OpenEdgeElement extends HetramDrawnElement{
 		
 	}
 
+	public OpenEdgeElement( Element xmlElement ){
+		super( xmlElement );
+		
+		NodeList mainNodeList = xmlElement.getChildNodes();
+		for (int i = 0; i < mainNodeList.getLength(); i++) {
+			
+			Node mainNode = mainNodeList.item( i );
+			
+			if (mainNode.getNodeType() == Node.ELEMENT_NODE) {
+				Element mainElement = (Element) mainNode;
+				
+				//Ha egy APLHASTART elemrol van szo
+				if( mainElement.getNodeName().equals( "extrainfo" )){
+					
+					NodeList extrainfoNodeList = mainElement.getChildNodes();
+					for (int j = 0; j < extrainfoNodeList.getLength(); j++) {
+						
+						Node extrainfoNode = extrainfoNodeList.item( j );
+						
+						if (extrainfoNode.getNodeType() == Node.ELEMENT_NODE) {
+							Element extrainfoElement = (Element) extrainfoNode;
+
+							//Ha egy APLHASTART elemrol van szo
+							if( extrainfoElement.getNodeName().equals( "alphastart" )){
+								this.alphaStart = Double.valueOf( extrainfoElement.getTextContent() );
+							
+							//Ha egy APLHASTOP elemrol van szo
+							}else if( extrainfoElement.getNodeName().equals( "alphastop" )){
+									this.alphaStop = Double.valueOf( extrainfoElement.getTextContent() );
+
+							//Ha egy TEMPERATURE elemrol van szo
+							}else if( extrainfoElement.getNodeName().equals( "temperature" )){
+								this.temperature = Double.valueOf( extrainfoElement.getTextContent() );
+							}
+						}
+					} 
+				}
+			}
+		}		
+	}
+	
+	
+	
+
+	
+	
 	public double getAlphaStart() {
 		return alphaStart;
 	}

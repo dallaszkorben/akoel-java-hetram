@@ -1,6 +1,6 @@
 package hu.akoel.hetram.gui.drawingelements;
 
-import hu.akoel.hetram.gui.ElementSettingTab.HOMOGEN_PATTERNEOUS;
+import hu.akoel.hetram.gui.ElementSettingTab.HOMOGENEOUS_PATTERN;
 
 import java.awt.Graphics2D;
 
@@ -24,8 +24,8 @@ public class HatchFullPatternAdapter implements HomogeneousPatternInterface{
 	}
 
 	@Override
-	public HOMOGEN_PATTERNEOUS getType() {		
-		return HOMOGEN_PATTERNEOUS.HATCH;
+	public HOMOGENEOUS_PATTERN getForm() {		
+		return HOMOGENEOUS_PATTERN.HATCH;
 	}
 
 }
