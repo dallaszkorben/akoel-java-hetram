@@ -36,7 +36,7 @@ public class ZigZagRowPatternAdapter implements RowPatternInterface{
 	}
 
 	@Override
-	public ROW_PATTERN getType() {		
+	public ROW_PATTERN getForm() {		
 		return ROW_PATTERN.ZIGZAG;
 	}
 

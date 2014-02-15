@@ -1,12 +1,12 @@
 package hu.akoel.hetram.gui.drawingelements;
 
-import hu.akoel.hetram.gui.ElementSettingTab.HOMOGEN_PATTERNEOUS;
+import hu.akoel.hetram.gui.ElementSettingTab.HOMOGENEOUS_PATTERN;
 
 import java.awt.Graphics2D;
 
 public interface HomogeneousPatternInterface {
 
-	public HOMOGEN_PATTERNEOUS getType();
+	public HOMOGENEOUS_PATTERN getForm();
 	
 	public int getPatternWidth();
 	

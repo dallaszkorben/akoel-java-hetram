@@ -20,7 +20,7 @@ import java.awt.Graphics2D;
  */
 public interface RowPatternInterface {
 
-	public ROW_PATTERN getType();
+	public ROW_PATTERN getForm();
 	
 	/**
 	 * A pattern fuggoleges es vizszintes oldalhosszanak aranya

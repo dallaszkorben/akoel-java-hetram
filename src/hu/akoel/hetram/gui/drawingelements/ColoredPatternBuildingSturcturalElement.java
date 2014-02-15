@@ -21,6 +21,11 @@ public class ColoredPatternBuildingSturcturalElement extends HetramBuildingStruc
 	
 	}
 
+	public ColoredPatternBuildingSturcturalElement( Element xmlElement ){
+		super( xmlElement );
+	}
+	
+	
 	@Override
 	public TYPE getType() {		
 		return TYPE.BUILDINGSTRUCTURE_COLORED;

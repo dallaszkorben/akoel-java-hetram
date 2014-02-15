@@ -9,6 +9,13 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/**
+ * q=0
+ * Masodfaju hotani peremfeltetel
+ * 
+ * @author akoel
+ *
+ */
 public class SymmetricEdgeElement extends HetramDrawnElement{
 	
 	private static final Stroke NORMAL_STROKE = new BasicStroke(3);

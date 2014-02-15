@@ -28,17 +28,32 @@ public class RowPatternBuildingStructuralElement extends HetramBuildingStructure
 	}
 	
 	
-	public RowPatternBuildingStructuralElement(Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth, double lambda, Color lineColor, Color backgroundColor ) {
+	private RowPatternBuildingStructuralElement(Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth, double lambda, Color lineColor, Color backgroundColor ) {
 		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, lambda, lineColor, backgroundColor );
 	}
 
-	public RowPatternBuildingStructuralElement( RowPatternInterface rowPatternInterface, MainPanel mainPanel, Status status, BigDecimal x1, BigDecimal y1, double lambda, Color lineColor, Color backgroundColor ) {
+	public RowPatternBuildingStructuralElement( RowPatternFactory rowPatternFactory, MainPanel mainPanel, Status status, BigDecimal x1, BigDecimal y1, double lambda, Color lineColor, Color backgroundColor ) {
 		super( status, x1, y1, lambda, lineColor, backgroundColor );
 				
-		this.rowPatternInterface = rowPatternInterface;
-		this.mainPanel = mainPanel;
+		this.rowPatternInterface = rowPatternFactory.getRowPattern();
+		this.mainPanel = mainPanel;		
+		
+		commonConstructor(rowPatternFactory, mainPanel);
+	}
+	
+	public RowPatternBuildingStructuralElement( Element xmlElement, RowPatternFactory rowPatternFactory, MainPanel mainPanel ){
+		super( xmlElement );
+		
+		commonConstructor(rowPatternFactory, mainPanel);		
 		
 	}
+	
+	private void commonConstructor( RowPatternFactory rowPatternFactory, MainPanel mainPanel ){
+		this.rowPatternInterface = rowPatternFactory.getRowPattern();
+		this.mainPanel = mainPanel;			
+		
+	}
+	
 
 	public void draw( MGraphics g2 ){
 
@@ -127,7 +142,13 @@ public class RowPatternBuildingStructuralElement extends HetramBuildingStructure
 		attr.setValue( getType().name() ) ;
 		element.setAttributeNode( attr );
 
-		//EXTRAINFO
+		//FORM
+		attr = document.createAttribute("form");
+		attr.setValue( this.rowPatternInterface.getForm().name() ) ;
+		element.setAttributeNode( attr );
+
+		
+/*		//EXTRAINFO
 		NodeList nl = element.getElementsByTagName("extrainfo");
 		
 		//for (int temp = 0; temp < nl.getLength(); temp++) {
@@ -139,7 +160,7 @@ public class RowPatternBuildingStructuralElement extends HetramBuildingStructure
 		Element rawTypeElement = document.createElement( "rawtype" );		
 		rawTypeElement.appendChild(document.createTextNode( this.rowPatternInterface.getType().name() ) );
 		eElement.appendChild( rawTypeElement );
-			
+*/			
 		
 		return element;		
 	}
