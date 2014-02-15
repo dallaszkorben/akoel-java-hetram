@@ -84,13 +84,18 @@ public class MainPanel extends JFrame{
 
 	private static final long serialVersionUID = 3911667532503747257L;
 
-	private static final String version = "v 0.0.2";
+	private static final String version = "1.0.0";
+	
+	public static enum Mode{
+		DRAWING,
+		ANALYSIS
+	}
 	
 	private static final int DEFAULT_WIDTH = 700;
 	private static final int DEFAULT_HEIGHT = 700;
 	private static final int DEFAULT_SETTINGTABBEDPANEL = 310;
 	
-	private static final Precision precision = Precision.ONE_100000;
+	private static final Precision precision = Precision.ONE_1000;
 		
 	private ThermicPointList thermicPointList = null;
 		
@@ -104,6 +109,8 @@ public class MainPanel extends JFrame{
 	private TranslateValue positionToMiddle = new TranslateValue(0.3, 0.6);
 
 	private CalculationListener calculationListener = null;
+	
+	private Mode mode = Mode.DRAWING;
 	
 	//------------------------
 	//
