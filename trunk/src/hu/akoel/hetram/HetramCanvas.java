@@ -1,6 +1,7 @@
 package hu.akoel.hetram;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -24,6 +25,9 @@ import hu.akoel.hetram.gui.drawingelements.OpenEdgeElement;
 import hu.akoel.hetram.gui.drawingelements.SymmetricEdgeElement;
 import hu.akoel.hetram.thermicpoint.ThermicPoint;
 import hu.akoel.hetram.thermicpoint.ThermicPointList;
+import hu.akoel.mgu.MCanvas;
+import hu.akoel.mgu.MGraphics;
+import hu.akoel.mgu.PainterListener;
 import hu.akoel.mgu.PossiblePixelPerUnits;
 import hu.akoel.mgu.drawnblock.DrawnBlock;
 import hu.akoel.mgu.drawnblock.DrawnBlockCanvas;
@@ -38,8 +42,42 @@ public class HetramCanvas extends DrawnBlockCanvas{
 	public HetramCanvas(Border borderType, Color background, PossiblePixelPerUnits possiblePixelPerUnits, TranslateValue positionToMiddle, MainPanel mainPanel, Precision precision ) {
 		super(borderType, background, possiblePixelPerUnits, positionToMiddle, precision );
 		this.mainPanel = mainPanel;
+		
+		//A regi painterlistener(eke)t torlem
+		removePainterListenersFromMiddle();
+		
+		addPainterListenerToMiddle( new DrawnBlockPainterListener() );
 	}
 
+	
+	class DrawnBlockPainterListener implements PainterListener{
+
+		@Override
+		public void paintByWorldPosition(MCanvas canvas, MGraphics g2) {
+
+			for( DrawnBlock drawnBlock: getDrawnBlockList() ){
+				
+				if( drawnBlock instanceof HetramBuildingStructureElement ){
+					drawnBlock.draw(g2);
+				}
+			}
+
+			for( DrawnBlock drawnBlock: getDrawnBlockList() ){
+				
+				if( ! (drawnBlock instanceof HetramBuildingStructureElement) ){
+					drawnBlock.draw(g2);
+				}
+			}
+
+			
+		}
+		
+		@Override
+		public void paintByCanvasAfterTransfer(MCanvas canvas, Graphics2D g2) {}
+		
+	}
+	
+	
 	/**
 	 * Egy DrawnBlock rajzolasat elvegzo factory megadasa
 	 * @param drawnBlockFactory

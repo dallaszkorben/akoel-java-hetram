@@ -5,13 +5,11 @@ import hu.akoel.hetram.gui.drawingelements.ColoredPatternBuildingSturcturalEleme
 import hu.akoel.hetram.gui.drawingelements.DotFullPatternAdapter;
 import hu.akoel.hetram.gui.drawingelements.HomogeneousPatternBuildingStructuralElement;
 import hu.akoel.hetram.gui.drawingelements.HomogeneousPatternFactory;
-import hu.akoel.hetram.gui.drawingelements.HomogeneousPatternInterface;
 import hu.akoel.hetram.gui.drawingelements.HatchFullPatternAdapter;
 import hu.akoel.hetram.gui.drawingelements.HetramDrawnElement;
 import hu.akoel.hetram.gui.drawingelements.OpenEdgeElement;
 import hu.akoel.hetram.gui.drawingelements.RowPatternFactory;
 import hu.akoel.hetram.gui.drawingelements.RowPatternBuildingStructuralElement;
-import hu.akoel.hetram.gui.drawingelements.RowPatternInterface;
 import hu.akoel.hetram.gui.drawingelements.SymmetricEdgeElement;
 import hu.akoel.hetram.gui.drawingelements.ZigZagRowPatternAdapter;
 import hu.akoel.mgu.ColorSelector;
@@ -367,7 +365,7 @@ public class ElementSettingTab extends JPanel{
 		//----------------------------------
 		JPanel openEdgeElementPanel = new JPanel();
 		openEdgeElementPanel.setLayout( new GridBagLayout() );
-		openEdgeElementPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Szabad felület", TitledBorder.LEFT, TitledBorder.TOP ) );		
+		openEdgeElementPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Szabadfelület", TitledBorder.LEFT, TitledBorder.TOP ) );		
 		GridBagConstraints openEdgeElementSelectorConstraints = new GridBagConstraints();
 
 		//AlphaBegin

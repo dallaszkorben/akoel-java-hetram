@@ -2,7 +2,6 @@ package hu.akoel.hetram.thermicpoint;
 
 import hu.akoel.hetram.accessories.BigDecimalPosition;
 import hu.akoel.hetram.accessories.Orientation;
-import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.connectors.OpenEdgeThermicConnector;
 import hu.akoel.hetram.connectors.AThermicPointThermicConnector;
 import hu.akoel.hetram.connectors.SymmetricEdgeThermicConnector;
