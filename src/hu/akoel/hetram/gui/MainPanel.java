@@ -45,6 +45,8 @@ import hu.akoel.mgu.values.Value;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -56,12 +58,15 @@ import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -84,23 +89,35 @@ public class MainPanel extends JFrame{
 
 	private static final long serialVersionUID = 3911667532503747257L;
 
-	private static final String version = "1.0.0";
+	private static final String version = "1.0.1";
 	
 	public static enum Mode{
-		DRAWING,
-		ANALYSIS
+		DRAWING("Rajz mód"),
+		ANALYSIS("Elemzés mód"),
+		CALCULATION("Szamítás");
+		
+		private String name;
+		private Mode( String name ){
+			this.name = name;
+		}
+		
+		public String getName(){
+			return name;
+		}
 	}
 	
 	private static final int DEFAULT_WIDTH = 700;
-	private static final int DEFAULT_HEIGHT = 700;
+	private static final int DEFAULT_HEIGHT = 800;
 	private static final int DEFAULT_SETTINGTABBEDPANEL = 310;
 	
-	private static final Precision precision = Precision.ONE_1000;
+	private static final Precision precision = Precision.mm;
 		
 	private ThermicPointList thermicPointList = null;
 		
 	private StatusLine statusLine;
 	private SettingTabbedPanel controlPanel;
+	private ModePanel modePanel;
+	private JPanel containerPanel;
 
 	// Canvas parameterei
 	private HetramCanvas myCanvas;
@@ -110,7 +127,6 @@ public class MainPanel extends JFrame{
 
 	private CalculationListener calculationListener = null;
 	
-	private Mode mode = Mode.DRAWING;
 	
 	//------------------------
 	//
@@ -118,6 +134,11 @@ public class MainPanel extends JFrame{
 	//
 	//------------------------
 
+	//
+	//Mukodesi mode
+	//
+	private Mode mode = Mode.DRAWING;
+	
 	//
 	//Rajzi elemek - ElementSettings
 	//	
@@ -381,14 +402,27 @@ public class MainPanel extends JFrame{
 		// Vezerlo egyseg letrehozasa
 		//
 		this.controlPanel = new SettingTabbedPanel( this );
-			
+		
+		//
+		// Mode
+		//
+		this.modePanel = new ModePanel( this );	
+		
+		this.containerPanel = new JPanel();
+		this.containerPanel.setLayout( new BoxLayout( containerPanel, BoxLayout.Y_AXIS ) );
+		this.containerPanel.add( controlPanel );
+		this.containerPanel.add(Box.createVerticalGlue());
+		this.containerPanel.add( modePanel );
+
+		
 		//
 		//Mezooszto
 		//
 		// baloldalan a rajzfelulet
 		// jobboldalan a vezerloegyseg
 		//
-		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,  myCanvas, controlPanel );
+		//JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,  myCanvas, controlPanel );
+		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,  myCanvas, containerPanel );
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setDividerLocation( DEFAULT_WIDTH - DEFAULT_SETTINGTABBEDPANEL );
 		splitPane.setResizeWeight(1.0);
@@ -416,6 +450,23 @@ public class MainPanel extends JFrame{
 //			}
 	}
 	
+	
+	//------------------------------
+	//
+	// Mukodesi mod
+	//
+	//------------------------------
+	public void setMode( Mode mode ){
+		this.mode = mode;		
+	}
+	
+	public Mode getMode(){
+		return this.mode;
+	}
+	
+	public void setModeField( Mode mode ){
+		modePanel.setModeField(mode);
+	}
 	//-----------------------------------
 	//
 	// Vezerlo felulet - ContolSetting
@@ -701,6 +752,8 @@ public class MainPanel extends JFrame{
 		this.myCanvas.setDrawnBlockFactory( dbf );
 	}
 	
+
+	
 	
 	/**
 	 * Termikus pontok letrehozasa es homersekleteik kiszamitasa
@@ -923,6 +976,9 @@ public class MainPanel extends JFrame{
 					}*/
 
 				}	 
+				
+				//Beallitom a modot rajzolasra
+				MainPanel.this.modePanel.setModeField( Mode.DRAWING );
 				
 				//Kirajzoltatom a beolvasott abrat
 				MainPanel.this.myCanvas.revalidateAndRepaintCoreCanvas();

@@ -1,5 +1,6 @@
 package hu.akoel.hetram.gui;
 
+import hu.akoel.hetram.gui.MainPanel.Mode;
 import hu.akoel.hetram.listeners.CalculationListener;
 
 import java.awt.GridBagConstraints;
@@ -8,6 +9,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+
 import javax.swing.BorderFactory;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
@@ -165,6 +167,8 @@ public class ControlSettingTab extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
+				//Mukodesi mod valtas - Calculation
+				ControlSettingTab.this.mainPanel.setModeField( Mode.CALCULATION );
 		
 				//A szal elinditasa elott elinditja a progressBart -indeterminate modban
 				progressBar.setIndeterminate(true);
@@ -227,13 +231,16 @@ public class ControlSettingTab extends JPanel {
 							}			
 						});		
 						
-						//Ujra engedelyezi a Kalkulacios homb hasznalatat
+						//Ujra engedelyezi a Kalkulacios gomb hasznalatat
 						//Letiltja a Kalkulacios gombot
 						ControlSettingTab.this.calculateButton.setEnabled(true);
 						
 						//Nullazza a progressBar-t
 						progressBar.setValue(0);
 						ControlSettingTab.this.mainPanel.setCalculationListener(null);
+						
+						//Mukodesi mod valtas - Elemzes
+						ControlSettingTab.this.mainPanel.setModeField( Mode.ANALYSIS );
 				     
 				    }
 				};	
