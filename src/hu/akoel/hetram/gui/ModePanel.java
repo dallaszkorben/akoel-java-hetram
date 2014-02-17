@@ -20,11 +20,16 @@ public class ModePanel extends JPanel{
 	private MainPanel mainPanel;
 	private JLabel modeField;
 	private JButton drawingButton;
+	private DrawSecondaryCursor drawSecondaryCursor;
+	private AnalysisSecondaryCursor analysisSecondaryCursor;
 	
 	public ModePanel( MainPanel mainPanel ){
 		super();
 		
 		this.mainPanel = mainPanel;
+		
+		drawSecondaryCursor = new DrawSecondaryCursor( mainPanel.getCanvas() );
+		analysisSecondaryCursor = new AnalysisSecondaryCursor( mainPanel.getCanvas() );
 		
 		//this.setBorder(BorderFactory.createLoweredBevelBorder());
 		this.setLayout( new BoxLayout( this, BoxLayout.X_AXIS));
@@ -70,7 +75,10 @@ public class ModePanel extends JPanel{
 			//Torlom a mar letezo Thermikus Pont listat es az ertekelofelulet ujrarajzolasaval el is tuntetem
 			ModePanel.this.mainPanel.setThermicPointList(null);
 			ModePanel.this.mainPanel.getCanvas().setEnabledDrawn( true );
-			ModePanel.this.mainPanel.getCanvas().revalidateAndRepaintCoreCanvas();
+			
+			ModePanel.this.mainPanel.getCanvas().setSecondaryCursor( drawSecondaryCursor );
+			
+			//ModePanel.this.mainPanel.getCanvas().revalidateAndRepaintCoreCanvas();
 			
 			
 		}else if( mode.equals( Mode.ANALYSIS ) ){
@@ -79,12 +87,16 @@ public class ModePanel extends JPanel{
 			drawingButton.setEnabled( true );
 			
 			ModePanel.this.mainPanel.getCanvas().setEnabledDrawn( false );
+			
+			ModePanel.this.mainPanel.getCanvas().setSecondaryCursor( analysisSecondaryCursor );
 
 		}else if( mode.equals( Mode.CALCULATION ) ){
 			drawingButton.setSelected( false );
 			drawingButton.setEnabled( false );
 			
 			ModePanel.this.mainPanel.getCanvas().setEnabledDrawn( false );
+			
+			ModePanel.this.mainPanel.getCanvas().setSecondaryCursor( analysisSecondaryCursor );
 		}
 
 		
