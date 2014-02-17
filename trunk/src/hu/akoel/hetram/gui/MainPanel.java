@@ -115,7 +115,7 @@ public class MainPanel extends JFrame{
 	private ThermicPointList thermicPointList = null;
 		
 	private StatusLine statusLine;
-	private SettingTabbedPanel controlPanel;
+	private SettingTabbedPanel settingTabbedPanel;
 	private ModePanel modePanel;
 	private JPanel containerPanel;
 
@@ -401,7 +401,7 @@ public class MainPanel extends JFrame{
 		//
 		// Vezerlo egyseg letrehozasa
 		//
-		this.controlPanel = new SettingTabbedPanel( this );
+		this.settingTabbedPanel = new SettingTabbedPanel( this );
 		
 		//
 		// Mode
@@ -410,7 +410,7 @@ public class MainPanel extends JFrame{
 		
 		this.containerPanel = new JPanel();
 		this.containerPanel.setLayout( new BoxLayout( containerPanel, BoxLayout.Y_AXIS ) );
-		this.containerPanel.add( controlPanel );
+		this.containerPanel.add( settingTabbedPanel );
 		this.containerPanel.add(Box.createVerticalGlue());
 		this.containerPanel.add( modePanel );
 
@@ -450,6 +450,9 @@ public class MainPanel extends JFrame{
 //			}
 	}
 	
+	public SettingTabbedPanel getSettingTabbedPanel(){
+		return settingTabbedPanel;
+	}
 	
 	//------------------------------
 	//
@@ -479,7 +482,7 @@ public class MainPanel extends JFrame{
 	
 	public void setHorizontalMaximumDifference( BigDecimal horizontalMaximumDifference ){
 		this.horizontalMaximumDifference = horizontalMaximumDifference;
-		controlPanel.controlSettingTab.setHorizontalMaximumDifference( horizontalMaximumDifference );
+		settingTabbedPanel.controlSettingTab.setHorizontalMaximumDifference( horizontalMaximumDifference );
 	}
 
 	public BigDecimal getVerticalMaximumDifference(){
@@ -488,12 +491,12 @@ public class MainPanel extends JFrame{
 
 	public void setVerticalMaximumDifference( BigDecimal verticalMaximumDifference ){
 		this.verticalMaximumDifference = verticalMaximumDifference;
-		controlPanel.controlSettingTab.setVerticalMaximumDifference(verticalMaximumDifference);
+		settingTabbedPanel.controlSettingTab.setVerticalMaximumDifference(verticalMaximumDifference);
 	}
 	
 	public void setHorizontalAppliedDifference( BigDecimal difference ){
 		this.horizontalAppliedDifference = difference;
-		controlPanel.controlSettingTab.setHorizontalAppliedDifference(difference);
+		settingTabbedPanel.controlSettingTab.setHorizontalAppliedDifference(difference);
 	}
 	
 	public BigDecimal getHorizontalAppliedDifference(){
@@ -502,7 +505,7 @@ public class MainPanel extends JFrame{
 
 	public void setVerticalAppliedDifference( BigDecimal difference ){
 		this.verticalAppliedDifference = difference;
-		controlPanel.controlSettingTab.setVerticalAppliedDifference(difference);
+		settingTabbedPanel.controlSettingTab.setVerticalAppliedDifference(difference);
 	}
 
 	public BigDecimal getVerticalAppliedDifference(){

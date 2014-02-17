@@ -72,6 +72,10 @@ public class ModePanel extends JPanel{
 //			ModePanel.this.mainPanel.set appliedXDeltaField.setText("");
 //			ControlSettingTab.this.appliedYDeltaField.setText("");
 			
+			ModePanel.this.mainPanel.getSettingTabbedPanel().showElementSettingTab();
+			ModePanel.this.mainPanel.getSettingTabbedPanel().hideVisibilitySettingTab();
+			
+			
 			//Torlom a mar letezo Thermikus Pont listat es az ertekelofelulet ujrarajzolasaval el is tuntetem
 			ModePanel.this.mainPanel.setThermicPointList(null);
 			ModePanel.this.mainPanel.getCanvas().setEnabledDrawn( true );
@@ -85,6 +89,9 @@ public class ModePanel extends JPanel{
 			//drawingButton.setSelected( true );
 			drawingButton.setSelected( false );
 			drawingButton.setEnabled( true );
+
+			ModePanel.this.mainPanel.getSettingTabbedPanel().hideElementSettingTab();
+			ModePanel.this.mainPanel.getSettingTabbedPanel().showVisibilitySettingTab();
 			
 			ModePanel.this.mainPanel.getCanvas().setEnabledDrawn( false );
 			
