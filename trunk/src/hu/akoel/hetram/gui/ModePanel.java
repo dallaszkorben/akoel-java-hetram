@@ -104,8 +104,6 @@ public class ModePanel extends JPanel{
 			ModePanel.this.mainPanel.getCanvas().setEnabledDrawn( false );
 			
 			ModePanel.this.mainPanel.getCanvas().setSecondaryCursor( analysisSecondaryCursor );
-		}
-
-		
+		}		
 	}
 }
