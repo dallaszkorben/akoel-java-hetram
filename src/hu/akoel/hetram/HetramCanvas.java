@@ -2,6 +2,8 @@ package hu.akoel.hetram;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ public class HetramCanvas extends DrawnBlockCanvas{
 	private static final long serialVersionUID = -6015123637668801411L;
 	
 	private MainPanel mainPanel;
+	HetramMouseListener hetramMouseListener;
 	
 	public HetramCanvas(Border borderType, Color background, PossiblePixelPerUnits possiblePixelPerUnits, TranslateValue positionToMiddle, MainPanel mainPanel, Precision precision ) {
 		super(borderType, background, possiblePixelPerUnits, positionToMiddle, precision );
@@ -47,8 +50,28 @@ public class HetramCanvas extends DrawnBlockCanvas{
 		removePainterListenersFromMiddle();
 		
 		addPainterListenerToMiddle( new DrawnBlockPainterListener() );
-	}
+		
+		hetramMouseListener = new HetramMouseListener(this);
 
+		//Sajat egerfigyelo hozzaadasa
+		this.setDrawnBlockMouseListener( hetramMouseListener );
+		
+		//Del figyelese
+		this.addKeyListener( new KeyAdapter(){
+			public void keyPressed(KeyEvent ke){
+
+				//ctrl-z
+				if( ke.getKeyCode() == KeyEvent.VK_DELETE && null != hetramMouseListener ){					
+						
+						//elem kitorlese
+						removeDrawnBlock( hetramMouseListener.getSelectedElement() );
+
+						//Ujrarajzoltatom a Canvas-t a torolt DrawnBlock nelkul
+						revalidateAndRepaintCoreCanvas();
+				}
+			 }		
+		});
+	}
 	
 	class DrawnBlockPainterListener implements PainterListener{
 
@@ -68,8 +91,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 					drawnBlock.draw(g2);
 				}
 			}
-
-			
 		}
 		
 		@Override
@@ -113,6 +134,14 @@ public class HetramCanvas extends DrawnBlockCanvas{
 	 */
 	public void removeDrawnBlock( int drawnBlock ){
 		super.removeDrawnBlock(drawnBlock);
+		doGenerateMaximumDifference();
+	}
+	
+	/**
+	 * eltavolit a listabol egy DrawnBlock element
+	 */
+	public void removeDrawnBlock( DrawnBlock element ){
+		super.removeDrawnBlock( element );
 		doGenerateMaximumDifference();
 	}
 	
