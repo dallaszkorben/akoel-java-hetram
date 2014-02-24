@@ -3,6 +3,7 @@ package hu.akoel.hetram.gui;
 import hu.akoel.hetram.gui.MainPanel.Mode;
 import hu.akoel.hetram.listeners.CalculationListener;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -223,6 +224,7 @@ public class ControlSettingTab extends JPanel {
 		// Szamitas gomb
 		//
 		calculateButton = new JButton("Szamit");
+		calculateButton.setBackground(Color.green);
 		calculateButton.addActionListener(new ActionListener() {
 
 			@Override

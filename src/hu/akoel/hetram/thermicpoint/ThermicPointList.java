@@ -733,7 +733,7 @@ public class ThermicPointList{
 	public void solve( double minDifference ){
 		
 		double difference = -1;
-int cikl = 0;	
+//int cikl = 0;	
 		//Addig vegzi az iteraciot, amig a Termikus Pontok iteraciot megelozo
 		//homersekletenek es az iteraciot koveto homersekletenek kulonbsege kisebb
 		//nem lesz a parameterkent megadott engedelyezett elteresnel
@@ -743,7 +743,7 @@ int cikl = 0;
 			
 			//Elvegez egy iteraciot az egyenletrendszeren
 			oneStepToCalculateTemperature();
-System.err.println("done " + cikl++ + ".");			
+//System.err.println("done " + cikl++ + ".");			
 			for( int i = 0; i < getSize(); i++ ){
 				difference = Math.max( difference, list[i].getTempDifference() );
 			}
@@ -1082,10 +1082,10 @@ System.err.println("done " + cikl++ + ".");
 			}else if( cN instanceof SymmetricEdgeThermicConnector ){
 			
 				//Veszi a Pont felett levo Pontot osszekoto konnektort
-				YThermicPointThermicConnector cp = (YThermicPointThermicConnector)list[i].getSouthThermicConnector();
+/*				YThermicPointThermicConnector cp = (YThermicPointThermicConnector)list[i].getSouthThermicConnector();
 				szamlalo += dx * ( cp.getLambda()/cp.getDelta().doubleValue() / dy ) * cp.getSouthThermicPoint().getActualTemperature();
 				nevezo += dx * cp.getLambda()/cp.getDelta().doubleValue() / dy;
-				
+*/				
 			//Termikus Pont - Szabad felszin
 			}else if( cN instanceof OpenEdgeThermicConnector ){
 				
@@ -1121,10 +1121,10 @@ System.err.println("done " + cikl++ + ".");
 			}else if( cE instanceof SymmetricEdgeThermicConnector ){
 			
 				//Veszi a Pont-tol balra levo Pont-ot osszekoto Konnektort
-				IThermicConnector cp = list[i].getWestThermicConnector();					
+/*				IThermicConnector cp = list[i].getWestThermicConnector();					
 				szamlalo += dy * ( ((AThermicPointThermicConnector) cp).getLambda() / dx ) * ((XThermicPointThermicConnector)cp).getWestThermicPoint().getActualTemperature();
 				nevezo += dy * ((AThermicPointThermicConnector) cp).getLambda() / dx;
-					
+*/					
 			//Termikus Pont - Szabad felszin
 			}else if( cE instanceof OpenEdgeThermicConnector ){
 				
@@ -1160,10 +1160,10 @@ System.err.println("done " + cikl++ + ".");
 			}else if( cS instanceof SymmetricEdgeThermicConnector ){
 				
 				//Veszi a Pont felett levo Pontot osszekoto Konnektort
-				IThermicConnector cp = list[i].getNorthThermicConnector();		
+/*				IThermicConnector cp = list[i].getNorthThermicConnector();		
 				szamlalo += dx * (((AThermicPointThermicConnector) cp).getLambda()/ dy ) * ((YThermicPointThermicConnector)cp).getNorthThermicPoint().getActualTemperature();
 				nevezo += dx * ((AThermicPointThermicConnector) cp).getLambda()/ dy;
-						
+*/						
 			//Termikus Pont - Szabad felszin
 			}else if( cS instanceof OpenEdgeThermicConnector ){
 				
@@ -1199,10 +1199,10 @@ System.err.println("done " + cikl++ + ".");
 			}else if( cW instanceof SymmetricEdgeThermicConnector ){
 				
 				//Veszi a Ponttol jobbra levo Pontot osszekoto Konnektort
-				IThermicConnector cp = list[i].getEastThermicConnector();				
+/*				IThermicConnector cp = list[i].getEastThermicConnector();				
 				szamlalo += dy * ( ((AThermicPointThermicConnector) cp).getLambda() / dx ) * ((XThermicPointThermicConnector)cp).getEastThermicPoint().getActualTemperature();
 				nevezo += dy * ((AThermicPointThermicConnector) cp).getLambda() / dx;
-			
+*/			
 			//Termikus Pont - Szabad felszin
 			}else if( cW instanceof OpenEdgeThermicConnector ){
 				

@@ -16,7 +16,7 @@ public abstract class HetramBuildingStructureElement extends HetramDrawnElement{
 	
 	private final Color SELECTED_COLOR = Color.red;
 //	private final Color SELECTED_BACKGROUND = Color.yellow;
-	private final Stroke SELECTED_STROKE = new BasicStroke(1);
+	private final Stroke SELECTED_STROKE = new BasicStroke(3);
 
 	//private static final Color INPROCESS_COLOR = Color.yellow;
 	//private static final Color INPROCESS_BACKGROUND = Color.gray;
