@@ -9,6 +9,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.swing.BorderFactory;
 import javax.swing.InputVerifier;
@@ -24,8 +25,13 @@ public class ControlSettingTab extends JPanel {
 
 	private static final long serialVersionUID = 6137407949120046302L;
 
+	private static final String DEFAULT_XDELTADIVIDER = "1";
+	private static final String DEFAULT_YDELTADIVIDER = "1";
+
 	private MainPanel mainPanel;
 	
+	private JTextField askedXDeltaDividerField;
+	private JTextField askedYDeltaDividerField;
 	private JTextField appliedXDeltaField;
 	private JTextField appliedYDeltaField;
 	private JButton calculateButton;
@@ -81,7 +87,7 @@ public class ControlSettingTab extends JPanel {
 		// Kert horizontal deltaX oszto
 		//
 		JLabel askedXDeltaDividerLabel = new JLabel("Δx osztó: ");
-		JTextField askedXDeltaDividerField = new JTextField();
+		askedXDeltaDividerField = new JTextField();
 		askedXDeltaDividerField.setEditable(true);
 		askedXDeltaDividerField.setColumns(4);
 		askedXDeltaDividerField.setText("1");
@@ -94,12 +100,28 @@ public class ControlSettingTab extends JPanel {
 				String possibleValue = text.getText();
 				try {
 					Integer.valueOf(possibleValue);
-					goodValue = possibleValue;
+					
+					//Meg kell nezni, hogy nem lesz-e kisebb egy delta mint a felbontas
+					BigDecimal possiblePrecision = ControlSettingTab.this.mainPanel.getHorizontalMaximumDifference().divide( new BigDecimal( possibleValue ), 10, RoundingMode.HALF_UP );
+					BigDecimal prec = new BigDecimal("1E-" + String.valueOf( ControlSettingTab.this.mainPanel.getCanvas().getPrecision().getScale() ) );
+					if( possiblePrecision.compareTo( prec ) >= 0 ){					
+						goodValue = possibleValue;
+					}else{
+						text.setText( goodValue );
+						return false;
+					}
 				} catch (NumberFormatException e) {
 					text.setText(goodValue);
 					return false;
 				}
 				ControlSettingTab.this.mainPanel.setHorizontalDifferenceDivider(Integer.valueOf(goodValue));
+				
+				refreshHorizontalAppliedDifference();
+/*				BigDecimal horizontalAppliedDifference = ControlSettingTab.this.mainPanel.getHorizontalMaximumDifference().divide( new BigDecimal( String.valueOf( ControlSettingTab.this.mainPanel.getHorizontalDifferenceDivider() ) ), 10, RoundingMode.HALF_UP  );
+				//setHorizontalAppliedDifference( horizontalAppliedDifference );
+				ControlSettingTab.this.appliedXDeltaField.setText( ControlSettingTab.this.mainPanel.getCanvas().getRoundedBigDecimalWithPrecisionFormBigDecimal( horizontalAppliedDifference ).toPlainString() );
+				ControlSettingTab.this.mainPanel.setHorizontalAppliedDifference( horizontalAppliedDifference );
+*/				
 				return true;
 			}
 		});
@@ -108,7 +130,7 @@ public class ControlSettingTab extends JPanel {
 		// Kert vertical deltaY oszto
 		//
 		JLabel askedYDeltaDividerLabel = new JLabel("Δy osztó: ");
-		JTextField askedYDeltaDividerField = new JTextField();
+		askedYDeltaDividerField = new JTextField();
 		askedYDeltaDividerField.setEditable(true);
 		askedYDeltaDividerField.setColumns(4);
 		askedYDeltaDividerField.setText("1");
@@ -121,16 +143,55 @@ public class ControlSettingTab extends JPanel {
 				String possibleValue = text.getText();
 				try {
 					Integer.valueOf(possibleValue);
+					
+					//Meg kell nezni, hogy nem lesz-e kisebb egy delta mint a felbontas
+					BigDecimal possiblePrecision = ControlSettingTab.this.mainPanel.getVerticalMaximumDifference().divide( new BigDecimal( possibleValue ), 10, RoundingMode.HALF_UP );
+					BigDecimal prec = new BigDecimal("1E-" + String.valueOf( ControlSettingTab.this.mainPanel.getCanvas().getPrecision().getScale() ) );
+					if( possiblePrecision.compareTo( prec ) >= 0 ){					
+						goodValue = possibleValue;
+					}else{
+						text.setText( goodValue );
+						return false;
+					}
+					
 					goodValue = possibleValue;
 				} catch (NumberFormatException e) {
 					text.setText(goodValue);
 					return false;
 				}
 				ControlSettingTab.this.mainPanel.setVerticalDifferenceDivider(Integer.valueOf(goodValue));
+				
+				refreshVerticalAppliedDifference();
+				
+/*				BigDecimal verticalAppliedDifference = ControlSettingTab.this.mainPanel.getVerticalMaximumDifference().divide( new BigDecimal( String.valueOf( ControlSettingTab.this.mainPanel.getVerticalDifferenceDivider() ) ), 10, RoundingMode.HALF_UP  );
+				//setVerticalAppliedDifference( verticalAppliedDifference );
+				ControlSettingTab.this.appliedYDeltaField.setText( ControlSettingTab.this.mainPanel.getCanvas().getRoundedBigDecimalWithPrecisionFormBigDecimal( verticalAppliedDifference ).toPlainString() );
+				ControlSettingTab.this.mainPanel.setVerticalAppliedDifference( verticalAppliedDifference );
+*/				
 				return true;
 			}
 		});
 
+		//
+		// Alkalmazott horizontal deltaX
+		//
+		JLabel appliedXDeltaLabel = new JLabel("Alkalmazandó Δx: ");
+		appliedXDeltaField = new JTextField();
+		appliedXDeltaField.setEditable(false);
+		appliedXDeltaField.setColumns(8);
+		appliedXDeltaField.setText("");
+		JLabel appliedXDeltaUnit = new JLabel("m");
+
+		//
+		// Alkalmazott vertical deltaY
+		//
+		JLabel appliedYDeltaLabel = new JLabel("Alkalmazandó Δy: ");
+		appliedYDeltaField = new JTextField();
+		appliedYDeltaField.setEditable(false);
+		appliedYDeltaField.setColumns(8);
+		appliedYDeltaField.setText("");
+		JLabel appliedYDeltaUnit = new JLabel("m");
+		
 		//
 		// Szamitas pontossaga
 		//
@@ -174,8 +235,8 @@ public class ControlSettingTab extends JPanel {
 				progressBar.setIndeterminate(true);
 				
 				//A szal elinditasa elott torli az alkalmazott delta ertekeket
-				ControlSettingTab.this.appliedXDeltaField.setText("");
-				ControlSettingTab.this.appliedYDeltaField.setText("");
+//				ControlSettingTab.this.appliedXDeltaField.setText("");
+//				ControlSettingTab.this.appliedYDeltaField.setText("");
 				
 				//Torlom a mar letezo Thermikus Pont listat es az ertekelofelulet ujrarajzolasaval el is tuntetem
 				ControlSettingTab.this.mainPanel.setThermicPointList(null);				
@@ -225,6 +286,9 @@ public class ControlSettingTab extends JPanel {
 							@Override
 							public void run() {
 
+								//Nullazza a progressBar-t (csak ha itt van, akkor mukodik)
+								progressBar.setValue(0);								
+								
 								//Grafika ujra rajzolasa
 								ControlSettingTab.this.mainPanel.revalidateAndRepaint();
 								
@@ -235,8 +299,7 @@ public class ControlSettingTab extends JPanel {
 						//Letiltja a Kalkulacios gombot
 						ControlSettingTab.this.calculateButton.setEnabled(true);
 						
-						//Nullazza a progressBar-t
-						progressBar.setValue(0);
+						//Torli a figyelo interfacet
 						ControlSettingTab.this.mainPanel.setCalculationListener(null);
 						
 						//Mukodesi mod valtas - Elemzes
@@ -257,26 +320,6 @@ public class ControlSettingTab extends JPanel {
 		//
 		progressBar = new JProgressBar();
 		
-		
-		// Alkalmazott horizontal deltaX
-		//
-		JLabel appliedXDeltaLabel = new JLabel("Alkalmazott Δx: ");
-		appliedXDeltaField = new JTextField();
-		appliedXDeltaField.setEditable(false);
-		appliedXDeltaField.setColumns(8);
-		appliedXDeltaField.setText("");
-		JLabel appliedXDeltaUnit = new JLabel("m");
-
-		//
-		// Alkalmazott vertical deltaY
-		//
-		JLabel appliedYDeltaLabel = new JLabel("Alkalmazott Δy: ");
-		appliedYDeltaField = new JTextField();
-		appliedYDeltaField.setEditable(false);
-		appliedYDeltaField.setColumns(8);
-		appliedYDeltaField.setText("");
-		JLabel appliedYDeltaUnit = new JLabel("m");
-
 		// ************************************
 		// ************************************
 		// TABOK FELTOLTESE
@@ -376,59 +419,9 @@ public class ControlSettingTab extends JPanel {
 		this.add(askedYDeltaDividerField, controlConstraints);
 
 		//
-		// Kalkulacio pontossaga
-		//
-		row++;
-		controlConstraints.gridx = 0;
-		controlConstraints.gridy = row;
-		controlConstraints.anchor = GridBagConstraints.NORTH;
-		controlConstraints.weighty = 0;
-		controlConstraints.fill = GridBagConstraints.HORIZONTAL;
-		this.add(calculationPrecisionLabel, controlConstraints);
-
-		controlConstraints.gridx = 1;
-		controlConstraints.gridy = row;
-		controlConstraints.anchor = GridBagConstraints.NORTH;
-		controlConstraints.weighty = 0;
-		controlConstraints.fill = GridBagConstraints.HORIZONTAL;
-		this.add(calculationPrecisionField, controlConstraints);
-		
-		//
-		// Calculate gomb
-		//
-		row++;
-		controlConstraints.gridx = 0;
-		controlConstraints.gridy = row;
-		controlConstraints.gridwidth = 3;
-		controlConstraints.anchor = GridBagConstraints.NORTH;
-		controlConstraints.weighty = 0;
-		controlConstraints.fill = GridBagConstraints.HORIZONTAL;
-		this.add(calculateButton, controlConstraints);
-
-		//
-		// Progress bar
-		//
-
-		row++;
-		Insets insets = controlConstraints.insets;
-		int ipady = controlConstraints.ipady;
-		controlConstraints.insets = new Insets(5, 0, 5, 0);
-		controlConstraints.ipady = 8;
-		controlConstraints.gridx = 0;
-		controlConstraints.gridy = row;
-		controlConstraints.gridwidth = 3;
-		controlConstraints.anchor = GridBagConstraints.NORTH;
-		controlConstraints.weighty = 0;
-		controlConstraints.fill = GridBagConstraints.HORIZONTAL;
-		this.add(progressBar, controlConstraints);
-
-		
-		//
 		// Alkalmazott X delta
 		//
 		row++;
-		controlConstraints.insets = insets;
-		controlConstraints.ipady = ipady;
 		controlConstraints.gridx = 0;
 		controlConstraints.gridy = row;
 		controlConstraints.gridwidth = 1;
@@ -480,6 +473,57 @@ public class ControlSettingTab extends JPanel {
 		controlConstraints.weighty = 0;
 		controlConstraints.fill = GridBagConstraints.HORIZONTAL;
 		this.add(appliedYDeltaUnit, controlConstraints);
+		
+		//
+		// Kalkulacio pontossaga
+		//
+		row++;
+		controlConstraints.gridx = 0;
+		controlConstraints.gridy = row;
+		controlConstraints.anchor = GridBagConstraints.NORTH;
+		controlConstraints.weighty = 0;
+		controlConstraints.fill = GridBagConstraints.HORIZONTAL;
+		this.add(calculationPrecisionLabel, controlConstraints);
+
+		controlConstraints.gridx = 1;
+		controlConstraints.gridy = row;
+		controlConstraints.anchor = GridBagConstraints.NORTH;
+		controlConstraints.weighty = 0;
+		controlConstraints.fill = GridBagConstraints.HORIZONTAL;
+		this.add(calculationPrecisionField, controlConstraints);
+		
+		//
+		// Calculate gomb
+		//
+		row++;
+//		Insets insets = controlConstraints.insets;
+//		int ipady = controlConstraints.ipady;
+//		controlConstraints.insets = insets;
+//		controlConstraints.ipady = ipady;
+		controlConstraints.gridx = 0;
+		controlConstraints.gridy = row;
+		controlConstraints.gridwidth = 3;
+		controlConstraints.anchor = GridBagConstraints.NORTH;
+		controlConstraints.weighty = 0;
+		controlConstraints.fill = GridBagConstraints.HORIZONTAL;
+		this.add(calculateButton, controlConstraints);
+
+		//
+		// Progress bar
+		//
+
+		row++;
+//		Insets insets = controlConstraints.insets;
+//		int ipady = controlConstraints.ipady;
+		controlConstraints.insets = new Insets(5, 0, 5, 0);
+		controlConstraints.ipady = 8;
+		controlConstraints.gridx = 0;
+		controlConstraints.gridy = row;
+		controlConstraints.gridwidth = 3;
+		controlConstraints.anchor = GridBagConstraints.NORTH;
+		controlConstraints.weighty = 0;
+		controlConstraints.fill = GridBagConstraints.HORIZONTAL;
+		this.add(progressBar, controlConstraints);
 
 		//
 		// Felfele igazitas
@@ -493,59 +537,109 @@ public class ControlSettingTab extends JPanel {
 		controlConstraints.fill = GridBagConstraints.HORIZONTAL;
 		this.add(new JLabel(), controlConstraints);
 
+		//Default ertekek beallitasa
+		askedXDeltaDividerField.setText( DEFAULT_XDELTADIVIDER );
+		//ControlSettingTab.this.mainPanel.setHorizontalAppliedDifference( new BigDecimal( DEFAULT_XDELTADIVIDER ) );
+		
+		askedYDeltaDividerField.setText( DEFAULT_YDELTADIVIDER );
+		//ControlSettingTab.this.mainPanel.setVerticalAppliedDifference( new BigDecimal( DEFAULT_YDELTADIVIDER ) );
+		
+		setEnableCalculateButton( false );
 	}
 	
 //	public JTextField getMaximumXDeltaField() {
 //		return maximumXDeltaField;
 //	}
 	
+	/**
+	 * A HetramCanvas szamitja ki az erteket es monjda meg a mainPanel-en keresztul.
+	 * Itt tehat allitjauk a megjelenitett max erteket es az alkalmazott felosztast
+	 * 
+	 * @param horizontalMaximumDifference
+	 */
 	public void setHorizontalMaximumDifference( BigDecimal horizontalMaximumDifference) {
-/*		if( horizontalMaximumDifference > 0 ){
-			this.maximumXDeltaField.setText( String.valueOf( horizontalMaximumDifference ) );
-		}else{
-			this.maximumXDeltaField.setText( "" );
-		}
-*/		
+		
 		if( null != horizontalMaximumDifference ){
-			this.maximumXDeltaField.setText( horizontalMaximumDifference.toPlainString() );
+			this.maximumXDeltaField.setText( horizontalMaximumDifference.toPlainString() );	
+			this.askedXDeltaDividerField.setText( DEFAULT_XDELTADIVIDER );
+			this.mainPanel.setHorizontalDifferenceDivider(Integer.valueOf(DEFAULT_XDELTADIVIDER));
+			
+			//Ha a vertikalisnak mar van maximum difference-e, akkor engedelyezi a kalkulaciot
+			if( null != ControlSettingTab.this.mainPanel.getVerticalMaximumDifference() ){
+				setEnableCalculateButton( true );	
+			}			
+		
+		//Nincs Maximum Difference, vagyis nincs rajzi elem
 		}else{
+			
+			//Tiltja a kalkulaciot
+			setEnableCalculateButton( false );
 			this.maximumXDeltaField.setText( "" );
 		}
+		
+		refreshHorizontalAppliedDifference();
 	}
-	
-//	public JTextField getMaximumYDeltaField() {
-//		return maximumYDeltaField;
-//	}
 
+	/**
+	 * A HetramCanvas szamitja ki az erteket es monjda meg a mainPanel-en keresztul.
+	 * Itt tehat allitjauk a megjelenitett max erteket es az alkalmazott felosztast
+	 * 
+	 * @param verticalMaximumDifference
+	 */
 	public void setVerticalMaximumDifference( BigDecimal verticalMaximumDifference) {
 		if( null != verticalMaximumDifference ){
 			this.maximumYDeltaField.setText( verticalMaximumDifference.toPlainString() );
+			this.askedYDeltaDividerField.setText( DEFAULT_YDELTADIVIDER );
+			this.mainPanel.setVerticalDifferenceDivider(Integer.valueOf(DEFAULT_YDELTADIVIDER));
+
+			//Ha a horizontalisnak mar van maximum difference-e, akkor engedelyezi a kalkulaciot
+			if( null != ControlSettingTab.this.mainPanel.getHorizontalMaximumDifference() ){
+				setEnableCalculateButton( true );	
+			}
+			
+		//Nincs Maximum Difference, vagyis nincs rajzi elem
 		}else{
+			
+			//Tiltja a kalkulaciot
+			setEnableCalculateButton( false );
 			this.maximumYDeltaField.setText("");
 		}
 		
-//		if( verticalMaximumDifference > 0 ){
-//			this.maximumYDeltaField.setText( String.valueOf( verticalMaximumDifference ) );
-//		}else{
-//			this.maximumYDeltaField.setText("");
-//		}
-
+		refreshVerticalAppliedDifference();
+		
 	}
-	
-	public void setHorizontalAppliedDifference( BigDecimal difference ){
-		if( null != difference ){
-			this.appliedXDeltaField.setText( difference.toPlainString() );
+
+	private void refreshHorizontalAppliedDifference(){
+		if( null == ControlSettingTab.this.mainPanel.getHorizontalMaximumDifference() ){
+			ControlSettingTab.this.appliedXDeltaField.setText("");
+			ControlSettingTab.this.mainPanel.setHorizontalAppliedDifference( null );
 		}else{
-			this.appliedXDeltaField.setText("");
+			BigDecimal horizontalAppliedDifference = ControlSettingTab.this.mainPanel.getHorizontalMaximumDifference().divide( new BigDecimal( String.valueOf( ControlSettingTab.this.mainPanel.getHorizontalDifferenceDivider() ) ), 10, RoundingMode.HALF_UP  );
+			ControlSettingTab.this.appliedXDeltaField.setText( ControlSettingTab.this.mainPanel.getCanvas().getRoundedBigDecimalWithPrecisionFormBigDecimal( horizontalAppliedDifference ).toPlainString() );
+			ControlSettingTab.this.mainPanel.setHorizontalAppliedDifference( horizontalAppliedDifference );
 		}
 	}
 	
-	public void setVerticalAppliedDifference( BigDecimal difference ){
-		if( null != difference ){
-			this.appliedYDeltaField.setText( difference.toPlainString() );
+	private void refreshVerticalAppliedDifference(){
+		if( null == ControlSettingTab.this.mainPanel.getVerticalMaximumDifference() ){
+			ControlSettingTab.this.appliedYDeltaField.setText("");
+			ControlSettingTab.this.mainPanel.setVerticalAppliedDifference( null );
 		}else{
-			this.appliedYDeltaField.setText("");
+			BigDecimal verticalAppliedDifference = ControlSettingTab.this.mainPanel.getVerticalMaximumDifference().divide( new BigDecimal( String.valueOf( ControlSettingTab.this.mainPanel.getVerticalDifferenceDivider() ) ), 10, RoundingMode.HALF_UP  );
+			ControlSettingTab.this.appliedYDeltaField.setText( ControlSettingTab.this.mainPanel.getCanvas().getRoundedBigDecimalWithPrecisionFormBigDecimal( verticalAppliedDifference ).toPlainString() );
+			ControlSettingTab.this.mainPanel.setVerticalAppliedDifference( verticalAppliedDifference );
 		}
 	}
+	
+	public void setAppliedXDeltaField( String appliedDelta ){
+		this.appliedXDeltaField.setText( appliedDelta );
+	}
 
+	public void setAppliedYDeltaField( String appliedDelta ){
+		this.appliedYDeltaField.setText( appliedDelta );
+	}
+	
+	public void setEnableCalculateButton( boolean enable ){
+		this.calculateButton.setEnabled( enable );
+	}
 }

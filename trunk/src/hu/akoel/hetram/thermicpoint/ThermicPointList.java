@@ -2,7 +2,6 @@ package hu.akoel.hetram.thermicpoint;
 
 import hu.akoel.hetram.accessories.BigDecimalPosition;
 import hu.akoel.hetram.accessories.ColorTransient;
-import hu.akoel.hetram.accessories.CommonOperations;
 import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.connectors.OpenEdgeThermicConnector;
 import hu.akoel.hetram.connectors.AThermicPointThermicConnector;
@@ -13,6 +12,7 @@ import hu.akoel.hetram.connectors.YThermicPointThermicConnector;
 import hu.akoel.hetram.listeners.CalculationListener;
 import hu.akoel.mgu.MCanvas;
 import hu.akoel.mgu.MGraphics;
+import hu.akoel.mgu.drawnblock.DrawnBlockCanvas;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -27,8 +27,10 @@ import java.util.Collection;
 import javax.swing.SwingUtilities;
 
 public class ThermicPointList{
+	
+	//Gauss iteracio kezdeti erteke
+	private static final double DEFAULT_TEMPERATURE = -1;
 	private ThermicPoint[] list;
-//	private StructureSet elementSet;
 	private int position = 0;
 	private CalculationListener calculationListener = null;
 	private CURRENT_TYPE currentType = CURRENT_TYPE.TRAJECTORY;
@@ -61,7 +63,7 @@ public class ThermicPointList{
 		thermicPoint.setPositionInTheList( position );
 		
 		//A Termikus pont Kezdeti erteke - Gauss iteracio kezdeti erteke
-		thermicPoint.setActualTemperature( 1 );
+		thermicPoint.setActualTemperature( DEFAULT_TEMPERATURE );
 		
 		//A Termikus Pont elhelyezese a listaban
 		list[position] = thermicPoint;
@@ -183,7 +185,7 @@ public class ThermicPointList{
 	 * @param canvas
 	 * @param g2
 	 */
-	public void drawPointTemperatureByFont( MCanvas canvas, MGraphics g2 ){
+	public void drawPointTemperatureByFont( DrawnBlockCanvas canvas, MGraphics g2 ){
 		
 		//Ha vannak termikus pontjaim
 		if ( this.getSize() > 0 ) {
@@ -213,7 +215,8 @@ public class ThermicPointList{
 				FontRenderContext frc = g2.getFontRenderContext();
 
 				g2.setColor(Color.white);
-				TextLayout textLayout = new	TextLayout(String.valueOf( CommonOperations.get2Decimals( this.get( j ).getActualTemperature() ) ), font, frc );
+				TextLayout textLayout = new	TextLayout(String.valueOf( canvas.getRoundedBigDecimalWithPrecision( this.get( j ).getActualTemperature() ) ), font, frc );
+				//TextLayout textLayout = new	TextLayout(String.valueOf( CommonOperations.get2Decimals( this.get( j ).getActualTemperature() ) ), font, frc );
 				g2.drawFont( textLayout, position.getX().doubleValue(), position.getY().doubleValue() );
 			}
 		}
@@ -730,7 +733,7 @@ public class ThermicPointList{
 	public void solve( double minDifference ){
 		
 		double difference = -1;
-	
+int cikl = 0;	
 		//Addig vegzi az iteraciot, amig a Termikus Pontok iteraciot megelozo
 		//homersekletenek es az iteraciot koveto homersekletenek kulonbsege kisebb
 		//nem lesz a parameterkent megadott engedelyezett elteresnel
@@ -740,7 +743,7 @@ public class ThermicPointList{
 			
 			//Elvegez egy iteraciot az egyenletrendszeren
 			oneStepToCalculateTemperature();
-			
+System.err.println("done " + cikl++ + ".");			
 			for( int i = 0; i < getSize(); i++ ){
 				difference = Math.max( difference, list[i].getTempDifference() );
 			}
@@ -1003,7 +1006,7 @@ public class ThermicPointList{
 	private void oneStepToCalculateTemperature(){
 		
 		for( int i = 0; i < position; i++ ){
-			
+//System.err.println(list[i].getActualTemperature());			
 			double nevezo = 0;
 			double szamlalo = 0;
 			double temperature;

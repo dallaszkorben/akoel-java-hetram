@@ -80,19 +80,19 @@ public class StatusLine extends JPanel{
 	public void setScale( Double scale ){
 		
 		if (scale < 1.0) {			
-			scaleField.setText( "M=" + CommonOperations.get3Decimals(scale) + ":1" );
+			scaleField.setText( "M=" + mainPanel.getCanvas().getRoundedDoubleWitPrecision(scale) + ":1" );
 		} else {
-			scaleField.setText( "M=1:" + CommonOperations.get3Decimals(scale) );
+			scaleField.setText( "M=1:" + mainPanel.getCanvas().getRoundedDoubleWitPrecision(scale) );
 		}
 	}
 	
 	public void setXPosition( double xPosition ){
-		xPositionField.setText( "x:" + CommonOperations.get3Decimals(xPosition) + " m");
+		xPositionField.setText( "x:" + mainPanel.getCanvas().getRoundedDoubleWitPrecision(xPosition) + " m");
 		//xPositionField.setText( "y:" + xPosition.setScale( mainPanel.getCanvas().getPrecision().getScale(), RoundingMode.HALF_UP ).toPlainString() + " m");
 	}
 	
 	public void setYPosition( double yPosition ){
-		yPositionField.setText( "y:" + CommonOperations.get3Decimals(yPosition) + " m");
+		yPositionField.setText( "y:" + mainPanel.getCanvas().getRoundedDoubleWitPrecision(yPosition) + " m");
 		//yPositionField.setText( "y:" + yPosition.setScale( mainPanel.getCanvas().getPrecision().getScale(), RoundingMode.HALF_UP ).toPlainString() + " m");
 	}
 	
