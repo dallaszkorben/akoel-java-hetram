@@ -75,7 +75,6 @@ public class ModePanel extends JPanel{
 			ModePanel.this.mainPanel.getSettingTabbedPanel().showElementSettingTab();
 			ModePanel.this.mainPanel.getSettingTabbedPanel().hideVisibilitySettingTab();
 			
-			
 			//Torlom a mar letezo Thermikus Pont listat es az ertekelofelulet ujrarajzolasaval el is tuntetem
 			ModePanel.this.mainPanel.setThermicPointList(null);
 			ModePanel.this.mainPanel.getCanvas().setEnabledDrawn( true );
@@ -84,17 +83,23 @@ public class ModePanel extends JPanel{
 			
 			//ModePanel.this.mainPanel.getCanvas().revalidateAndRepaintCoreCanvas();
 			
-			
 		}else if( mode.equals( Mode.ANALYSIS ) ){
 			//drawingButton.setSelected( true );
 			drawingButton.setSelected( false );
 			drawingButton.setEnabled( true );
 
+			//Elrejti a Rajzi elemenk tab-ot
 			ModePanel.this.mainPanel.getSettingTabbedPanel().hideElementSettingTab();
-			ModePanel.this.mainPanel.getSettingTabbedPanel().showVisibilitySettingTab();
 			
+			//Es megjeleniti a Megjelenites tab-ot
+			ModePanel.this.mainPanel.getSettingTabbedPanel().showVisibilitySettingTab();
+
+//			ModePanel.this.mainPanel.getSettingTabbedPanel().setSelectedIndex(index);
+			
+			//Tiltja a rajzolast
 			ModePanel.this.mainPanel.getCanvas().setEnabledDrawn( false );
 			
+			//Analysis tipusu kurzort jelenit meg
 			ModePanel.this.mainPanel.getCanvas().setSecondaryCursor( analysisSecondaryCursor );
 
 		}else if( mode.equals( Mode.CALCULATION ) ){

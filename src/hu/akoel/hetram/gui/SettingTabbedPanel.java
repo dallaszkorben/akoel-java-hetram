@@ -58,20 +58,34 @@ public class SettingTabbedPanel extends JTabbedPane{
 
 	}
 	
+	/**
+	 * Lathatova teszi a Rajzi Elemenk Tab-ot
+	 * es rogton ki is valasztja
+	 */
 	public void showElementSettingTab(){
 		this.insertTab(null, elementSettingTabIcon, elementSettingTab, null, 0);
 		this.setSelectedIndex( 0 );
 	}
 	
+	/**
+	 * Lathatova teszi a Visibility Tab-ot
+	 * de tovabbra is az elozoleg kivalasztott Control Tab lesz kivalasztva 
+	 */
 	public void showVisibilitySettingTab(){
 		this.insertTab(null, visibilitySettingTabIcon, visibilitySettingTab, null, 0);
-		this.setSelectedIndex( 0 );
+		//this.setSelectedIndex( 0 );
 	}
 	
+	/**
+	 * Elrejti a Rajzi Elemenk Tab-ot
+	 */
 	public void hideElementSettingTab(){
 		this.remove( elementSettingTab );
 	}
 	
+	/**
+	 * Elrejti a Visibility Tab-ot
+	 */
 	public void hideVisibilitySettingTab(){
 		this.remove( visibilitySettingTab);
 	}

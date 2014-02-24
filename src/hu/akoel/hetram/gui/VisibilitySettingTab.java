@@ -2,8 +2,6 @@ package hu.akoel.hetram.gui;
 
 import hu.akoel.hetram.thermicpoint.ThermicPointList;
 import hu.akoel.hetram.thermicpoint.ThermicPointList.CURRENT_TYPE;
-import hu.akoel.mgu.axis.Axis.AxisPosition;
-
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

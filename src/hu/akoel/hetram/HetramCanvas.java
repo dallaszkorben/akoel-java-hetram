@@ -354,11 +354,14 @@ public class HetramCanvas extends DrawnBlockCanvas{
 		
 		HetramBuildingStructureElement element;
 		
-		BigDecimal verticalAppliedDifference = mainPanel.getVerticalMaximumDifference().divide( new BigDecimal( String.valueOf( mainPanel.getVerticalDifferenceDivider() ) ), 10, RoundingMode.HALF_UP  );
-		BigDecimal horizontalAppliedDifference = mainPanel.getHorizontalMaximumDifference().divide( new BigDecimal( String.valueOf( mainPanel.getHorizontalDifferenceDivider() ) ), 10, RoundingMode.HALF_UP  );
+//		BigDecimal verticalAppliedDifference = mainPanel.getVerticalMaximumDifference().divide( new BigDecimal( String.valueOf( mainPanel.getVerticalDifferenceDivider() ) ), 10, RoundingMode.HALF_UP  );
+//		BigDecimal horizontalAppliedDifference = mainPanel.getHorizontalMaximumDifference().divide( new BigDecimal( String.valueOf( mainPanel.getHorizontalDifferenceDivider() ) ), 10, RoundingMode.HALF_UP  );
 		
-		mainPanel.setHorizontalAppliedDifference( horizontalAppliedDifference );
-		mainPanel.setVerticalAppliedDifference( verticalAppliedDifference );
+//		mainPanel.setHorizontalAppliedDifference( horizontalAppliedDifference );
+//		mainPanel.setVerticalAppliedDifference( verticalAppliedDifference );
+	
+		BigDecimal verticalAppliedDifference = mainPanel.getVerticalAppliedDifference();
+		BigDecimal horizontalAppliedDifference = mainPanel.getHorizontalAppliedDifference();
 		
 		HashMap<BigDecimalPosition, ThermicPoint> thermicPointMap = new HashMap<>();
 		
@@ -755,6 +758,7 @@ public class HetramCanvas extends DrawnBlockCanvas{
 	
 	/**
 	 * Megallapitja a lehetseges legnagyobb differencia ertekeket vizszitnes illetve fuggoleges iranyban
+	 * Egy elem hozzaadasakor illetve elvetelekor kerul meghivasra
 	 * 
 	 */
 	public void doGenerateMaximumDifference(){
@@ -817,10 +821,16 @@ public class HetramCanvas extends DrawnBlockCanvas{
 		
 			mainPanel.setVerticalMaximumDifference( getMaximumDifference( verticalDifferencesList ) );
 			mainPanel.setHorizontalMaximumDifference( getMaximumDifference( horizontalDifferencesList ) );
+			
+//			mainPanel.setVerticalAppliedDifference(new BigDecimal("1"));
+//			mainPanel.setHorizontalAppliedDifference(new BigDecimal("1"));
+			
 		}else{
 			mainPanel.setVerticalMaximumDifference( null );
 			mainPanel.setHorizontalMaximumDifference( null );
 		}
+//		mainPanel.setVerticalAppliedDifference(new BigDecimal("1"));
+//		mainPanel.setHorizontalAppliedDifference(new BigDecimal("1"));
 		
 	}
 	
