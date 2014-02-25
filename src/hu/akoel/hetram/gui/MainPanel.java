@@ -102,7 +102,7 @@ public class MainPanel extends JFrame {
 		}
 	}
 
-	private static final int DEFAULT_WIDTH = 700;
+	private static final int DEFAULT_WIDTH = 900;
 	private static final int DEFAULT_HEIGHT = 800;
 	private static final int DEFAULT_SETTINGTABBEDPANEL = 310;
 
@@ -264,27 +264,26 @@ public class MainPanel extends JFrame {
 		// File
 		fileMainMenu = new JMenu("File");
 		fileMainMenu.setMnemonic(KeyEvent.VK_F);
-		fileMainMenu.getAccessibleContext().setAccessibleDescription(
-				"The only menu in this program that has menu items");
+		//fileMainMenu.getAccessibleContext().setAccessibleDescription("The only menu in this program that has menu items");
 		menuBar.add(fileMainMenu);
 
 		// File-New
-		fileNewMenuItem = new JMenuItem("New", KeyEvent.VK_N); // Mnemonic Akkor ervenyes ha lathato a menu elem
+		fileNewMenuItem = new JMenuItem("Új", KeyEvent.VK_N); // Mnemonic Akkor ervenyes ha lathato a menu elem
 		fileNewMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.ALT_MASK)); // Mindegy hogy lathato-e a menu vagy
 		fileNewMenuItem.addActionListener(new NewActionListener());
 		fileMainMenu.add(fileNewMenuItem);
 		
 		// File-Save
-		fileSaveMenuItem = new JMenuItem("Save", KeyEvent.VK_S); // Mnemonic Akkor ervenyes ha lathato a menu elem
+		fileSaveMenuItem = new JMenuItem("Mentés ...", KeyEvent.VK_S); // Mnemonic Akkor ervenyes ha lathato a menu elem
 		fileSaveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK)); // Mindegy hogy lathato-e a menu vagy sem
-		fileSaveMenuItem.getAccessibleContext().setAccessibleDescription("This doesn't really do anything");
+		//fileSaveMenuItem.getAccessibleContext().setAccessibleDescription("This doesn't really do anything");
 		fileSaveMenuItem.addActionListener(new SaveActionListener());
 		fileMainMenu.add(fileSaveMenuItem);
 
 		// File-Load
-		fileLoadMenuItem = new JMenuItem("Load", KeyEvent.VK_L);
+		fileLoadMenuItem = new JMenuItem("Betöltés", KeyEvent.VK_L);
 		fileLoadMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.ALT_MASK));
-		fileLoadMenuItem.getAccessibleContext().setAccessibleDescription( "This doesn't really do anything");
+		//fileLoadMenuItem.getAccessibleContext().setAccessibleDescription( "This doesn't really do anything");
 		fileLoadMenuItem.addActionListener(new LoadActionListener());
 		fileMainMenu.add(fileLoadMenuItem);
 
@@ -299,9 +298,7 @@ public class MainPanel extends JFrame {
 
 		this.setJMenuBar(menuBar);
 
-		myCanvas = new HetramCanvas(BorderFactory.createLoweredBevelBorder(),
-				background, possiblePixelPerUnits, positionToMiddle, this,
-				precision);
+		myCanvas = new HetramCanvas(BorderFactory.createLoweredBevelBorder(), background, possiblePixelPerUnits, positionToMiddle, this,	precision);
 
 		//
 		// Szamitott eredmenyek grafikus megjelenitese a legfelsobb layer-en
@@ -421,8 +418,7 @@ public class MainPanel extends JFrame {
 		this.modePanel = new ModePanel(this);
 
 		this.containerPanel = new JPanel();
-		this.containerPanel.setLayout(new BoxLayout(containerPanel,
-				BoxLayout.Y_AXIS));
+		this.containerPanel.setLayout(new BoxLayout(containerPanel,	BoxLayout.Y_AXIS));
 		this.containerPanel.add(settingTabbedPanel);
 		this.containerPanel.add(Box.createVerticalGlue());
 		this.containerPanel.add(modePanel);
@@ -922,9 +918,7 @@ public class MainPanel extends JFrame {
 				}
 
 			} catch (ParserConfigurationException | TransformerException e1) {
-				JOptionPane.showMessageDialog(MainPanel.this,
-						"Nem sikerült a file mentése: \n" + e1.getMessage(),
-						"Hiba", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(MainPanel.this, "Nem sikerült a file mentése: \n" + e1.getMessage(), "Hiba", JOptionPane.ERROR_MESSAGE);
 			}
 
 		}
@@ -946,8 +940,7 @@ public class MainPanel extends JFrame {
 
 			fc.setDialogTitle("Load a plan");
 
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("xml",
-					"xml");
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("xml",	"xml");
 			fc.setFileFilter(filter);
 
 			// Nem engedi meg az "All" filter hasznalatat
