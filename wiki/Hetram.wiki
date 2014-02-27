@@ -1,4 +1,4 @@
-#summary Releases
+#summary Features of the releases
 
 = Features of the releases =
 
