@@ -14,6 +14,7 @@
    * Only the necessary tabs are visible in the particular mode
   * The resolution under the calculation can not be less than the basic resolution - wont crashes the program
   * Possible to select an element by clicking on it - in Drawing mode - and delete it by pushing the *Del* button
+  * The calculation of the *SymmetricEdge* is fixed. Now the q=0 is defined
 
 == 1.0.2 ==
   * Does not possible to put Structural element with 0 width or height
