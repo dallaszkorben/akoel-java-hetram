@@ -10,8 +10,6 @@ import java.math.BigDecimal;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 public class HomogeneousPatternBuildingStructuralElement extends HetramBuildingStructureElement{
 
@@ -25,8 +23,10 @@ public class HomogeneousPatternBuildingStructuralElement extends HetramBuildingS
 	
 
 	
-	private HomogeneousPatternBuildingStructuralElement(Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth, double lambda, Color lineColor, Color backgroundColor) {
+	public HomogeneousPatternBuildingStructuralElement(HomogeneousPatternFactory homogeneousPatternFactory, Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth, double lambda, Color lineColor, Color backgroundColor) {
 		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, lambda, lineColor, backgroundColor );
+		
+		commonConstructor( homogeneousPatternFactory );
 	}
 	
 	public HomogeneousPatternBuildingStructuralElement( HomogeneousPatternFactory homogeneousPatternFactory, Status status, BigDecimal x1, BigDecimal y1, double lambda, Color lineColor, Color backgroundColor ) {

@@ -10,9 +10,6 @@ import java.math.BigDecimal;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import hu.akoel.hetram.accessories.Displacement;
 import hu.akoel.hetram.gui.MainPanel;
 import hu.akoel.mgu.MGraphics;
@@ -28,15 +25,14 @@ public class RowPatternBuildingStructuralElement extends HetramBuildingStructure
 	}
 	
 	
-	private RowPatternBuildingStructuralElement(Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth, double lambda, Color lineColor, Color backgroundColor ) {
-		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, lambda, lineColor, backgroundColor );
+	public RowPatternBuildingStructuralElement(RowPatternFactory rowPatternFactory, MainPanel mainPanel, Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth, double lambda, Color lineColor, Color backgroundColor ) {
+		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, lambda, lineColor, backgroundColor );	
+		
+		commonConstructor(rowPatternFactory, mainPanel);
 	}
 
 	public RowPatternBuildingStructuralElement( RowPatternFactory rowPatternFactory, MainPanel mainPanel, Status status, BigDecimal x1, BigDecimal y1, double lambda, Color lineColor, Color backgroundColor ) {
-		super( status, x1, y1, lambda, lineColor, backgroundColor );
-				
-		this.rowPatternInterface = rowPatternFactory.getRowPattern();
-		this.mainPanel = mainPanel;		
+		super( status, x1, y1, lambda, lineColor, backgroundColor );	
 		
 		commonConstructor(rowPatternFactory, mainPanel);
 	}

@@ -812,15 +812,18 @@ public class ElementSettingTab extends JPanel{
 		public HetramDrawnElement getNewDrawnBlock( Status status, BigDecimal x1, BigDecimal y1 ) {
 
 			//TODO lehet hogy at kellene pakolni a BuildingSturctureElement osztalyba			
+
+			//A szerkezeti elem minimalis merete, mellyel le lehet helyezni
+			BigDecimal minimalSize = new BigDecimal("1E-" + String.valueOf( ElementSettingTab.this.mainPanel.getCanvas().getPrecision().getScale() ) );
 			
 			//Parameterek megszerzese
 			double lambda = ElementSettingTab.this.mainPanel.getBuildingStructureLambda();
 			Color color = ElementSettingTab.this.mainPanel.getElementLineColor();
 			Color background = ElementSettingTab.this.mainPanel.getElementBackgroundColor();
-		
+
 			PATTERN_TYPE patternSelector = ElementSettingTab.this.mainPanel.getPatternType();
 			if( patternSelector.equals( PATTERN_TYPE.COLOR ) ){
-				bs = new ColoredPatternBuildingSturcturalElement( status, x1, y1, lambda, color, background );
+				bs = new ColoredPatternBuildingSturcturalElement( status, x1, y1, minimalSize, null, minimalSize, null, lambda, color, background );
 			}else if( patternSelector.equals( PATTERN_TYPE.HOMOGEN ) ){	
 				HOMOGENEOUS_PATTERN homogenPattern = ElementSettingTab.this.mainPanel.getHomogenPattern();
 				HomogeneousPatternFactory homogeneousPatternFactory = null;
@@ -830,7 +833,7 @@ public class ElementSettingTab extends JPanel{
 					homogeneousPatternFactory = new HomogeneousPatternFactory( new DotFullPatternAdapter() );
 				}
 				
-				bs = new HomogeneousPatternBuildingStructuralElement( homogeneousPatternFactory, status, x1, y1, lambda, color, background );
+				bs = new HomogeneousPatternBuildingStructuralElement( homogeneousPatternFactory, status, x1, y1, minimalSize, null, minimalSize, null, lambda, color, background );
 			}else if( patternSelector.equals( PATTERN_TYPE.ROW ) ){
 				ROW_PATTERN rowPattern = ElementSettingTab.this.mainPanel.getRowPattern();
 				RowPatternFactory rowPatternFactory = null;
@@ -838,7 +841,7 @@ public class ElementSettingTab extends JPanel{
 					rowPatternFactory = new RowPatternFactory( new ZigZagRowPatternAdapter() );
 				}
 				
-				bs = new RowPatternBuildingStructuralElement( rowPatternFactory, mainPanel, status, x1, y1, lambda, color, background);		
+				bs = new RowPatternBuildingStructuralElement( rowPatternFactory, mainPanel, status, x1, y1, minimalSize, null, minimalSize, null, lambda, color, background);		
 			}
 
 			return bs;

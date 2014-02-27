@@ -726,7 +726,8 @@ public class ThermicPointList{
 	
 	/**
 	 * A sokismeretlenes egyenletrendszer megoldasa 
-	 * eredmenye a Termikus Pontok homerseklete
+	 * eredmenye a Termikus Pontok homerseklete es
+	 * a termikus pontok kozotti hoaram
 	 * 
 	 * @param minDifference
 	 */
@@ -831,6 +832,7 @@ public class ThermicPointList{
 			//Szabad feluletu kapcsolat
 			//
 			if( c instanceof OpenEdgeThermicConnector ){
+				
 				double alpha = (( OpenEdgeThermicConnector)c).getAlpha();
 				double deltaT = this.get(i).getActualTemperature() - ((OpenEdgeThermicConnector)c).getAirTemperature();
 								
@@ -928,7 +930,7 @@ public class ThermicPointList{
 				
 				double q = alpha * deltaT * dx;
 				this.get(i).setSouthCurrent( q );
-			
+//System.err.println(alpha + " - " + q);			
 			//
 			//Normal termikus kapcsolat
 			//
@@ -995,7 +997,8 @@ public class ThermicPointList{
 			}
 			
 		}
-		
+//System.err.println();
+//System.err.println();
 	}
 	
 	/**
@@ -1105,6 +1108,7 @@ public class ThermicPointList{
 			if( dYPerpendicular == dYNormal ){
 				dx = dXNormal;
 				dy = dYNormal;
+				
 			//NORTH vagy SOUTH iranyba Szabadfelszin, vagy Szimmetrikus kapcsolat van 
 			}else{
 				dx = dXNormal;
@@ -1166,7 +1170,7 @@ public class ThermicPointList{
 */						
 			//Termikus Pont - Szabad felszin
 			}else if( cS instanceof OpenEdgeThermicConnector ){
-				
+			
 				szamlalo += ((OpenEdgeThermicConnector)cS).getAlpha() * ((OpenEdgeThermicConnector)cS).getAirTemperature() * dx;
 				nevezo += ((OpenEdgeThermicConnector)cS).getAlpha() * dx;
 			
@@ -1217,7 +1221,7 @@ public class ThermicPointList{
 			temperature = szamlalo/nevezo;
 			list[i].setActualTemperature( temperature );	
 			
-		}		
+		}	
 	}
 	
 	/**
