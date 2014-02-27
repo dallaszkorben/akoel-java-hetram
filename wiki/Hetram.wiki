@@ -5,9 +5,13 @@
 
 == 1.0.0 ==
   * Graphical interface to draw the structural cross sections
+  * Possible to save a drawing and load it
 
 == 1.0.1 ==
-  * 3 Difference modes (Drawing, Calculation, Analyze )
-  ** Different secondary cursors in the particular modes
-  ** Only the necessary tabs are visible in the particular mode
-  * The resolution under the calculation can not be less than the basic resolution - wont crashes the program
+  * *"New"* menu for start a new drawing
+  * 3 Difference *modes* (Drawing, Calculation, Analyze )
+   * Different secondary cursors in the particular modes
+   * Only the necessary tabs are visible in the particular mode
+  * The resolution under the calculation can not be less than the basic resolution - 
+wont crashes the program
+  * Possible to select an element by clicking on it - in Drawing mode - and delete it by pushing the *Del* button
