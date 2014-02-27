@@ -69,12 +69,12 @@ public class ThermicPoint {
 	 * Termikus Pont szabad feluleti pontkent valo megjelolese
 	 * 
 	 * @param orientation
-	 * @param alfa
+	 * @param alpha
 	 * @param airTemperature
 	 */
-	public void connectToOpenEdge( Orientation orientation, double alfa, double airTemperature ){
-		
-		 OpenEdgeThermicConnector connector = new OpenEdgeThermicConnector( alfa, airTemperature );
+	public void connectToOpenEdge( Orientation orientation, double alpha, double airTemperature ){
+	
+		 OpenEdgeThermicConnector connector = new OpenEdgeThermicConnector( alpha, airTemperature );
 		
 		if( orientation.equals( Orientation.NORTH ) ){
 			northThermicConnector = connector;

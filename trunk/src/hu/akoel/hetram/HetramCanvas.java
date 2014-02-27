@@ -596,7 +596,7 @@ public class HetramCanvas extends DrawnBlockCanvas{
 								//Megfelelo pozicio
 								if( openEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y.compareTo( openEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( openEdgeElementWithPosition.element.getY2() ) <= 0 ){
 								//if( openEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y >= openEdgeElementWithPosition.element.getY1() && y <= openEdgeElementWithPosition.element.getY2() ){
-
+									
 									//Alfa es homerseklet kapcsolasa
 									actualThermicPoint.connectToOpenEdge( Orientation.WEST, openEdgeElementWithPosition.element.getAlphaByPosition( y.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );		
 									break;
@@ -696,7 +696,7 @@ public class HetramCanvas extends DrawnBlockCanvas{
 								//Megfelelo pozicio
 								if( openEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x.compareTo( openEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( openEdgeElementWithPosition.element.getX2() ) <= 0 ){
 								//if( openEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x >= openEdgeElementWithPosition.element.getX1() && x <= openEdgeElementWithPosition.element.getX2() ){
-							
+//System.err.println(openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue()) + " - " + x.doubleValue() );							
 									//Alfa es homerseklet kapcsolasa
 									actualThermicPoint.connectToOpenEdge( Orientation.SOUTH, openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );		
 									
