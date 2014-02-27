@@ -8,4 +8,6 @@
 
 == 1.0.1 ==
   * 3 Difference modes (Drawing, Calculation, Analyze )
+  ** Different secondary cursors in the particular modes
+  ** Only the necessary tabs are visible in the particular mode
   * The resolution under the calculation can not be less than the basic resolution - wont crashes the program
