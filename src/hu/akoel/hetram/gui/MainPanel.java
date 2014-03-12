@@ -117,10 +117,9 @@ public class MainPanel extends JFrame {
 
 	// Canvas parameterei
 	private HetramCanvas myCanvas;
-	private Color background = Color.black;
-	private PossiblePixelPerUnits possiblePixelPerUnits = new PossiblePixelPerUnits(
-			new PixelPerUnitValue(1, 1));
-	private TranslateValue positionToMiddle = new TranslateValue(0.3, 0.6);
+	private Color background = Color.white;
+	private PossiblePixelPerUnits possiblePixelPerUnits = new PossiblePixelPerUnits( new PixelPerUnitValue( 1, 1 ) );
+	private TranslateValue positionToMiddle = new TranslateValue( 0.3, 0.6 );
 
 	private CalculationListener calculationListener = null;
 

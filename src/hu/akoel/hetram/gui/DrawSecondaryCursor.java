@@ -11,7 +11,7 @@ import hu.akoel.mgu.drawnblock.SecondaryCursor;
 
 public class DrawSecondaryCursor implements SecondaryCursor{
 
-	private Color color = Color.white;
+	private Color color = Color.black;
 	private Stroke stroke = new BasicStroke(1);
 	
 	private BigDecimal positionX;
