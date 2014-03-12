@@ -930,7 +930,7 @@ public class ThermicPointList{
 				
 				double q = alpha * deltaT * dx;
 				this.get(i).setSouthCurrent( q );
-//System.err.println(alpha + " - " + q);			
+		
 			//
 			//Normal termikus kapcsolat
 			//
@@ -997,8 +997,7 @@ public class ThermicPointList{
 			}
 			
 		}
-//System.err.println();
-//System.err.println();
+
 	}
 	
 	/**
@@ -1009,7 +1008,7 @@ public class ThermicPointList{
 	private void oneStepToCalculateTemperature(){
 		
 		for( int i = 0; i < position; i++ ){
-//System.err.println(list[i].getActualTemperature());			
+		
 			double nevezo = 0;
 			double szamlalo = 0;
 			double temperature;
