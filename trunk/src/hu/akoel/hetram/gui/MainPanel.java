@@ -384,6 +384,11 @@ public class MainPanel extends JFrame {
 
 					if (null == tp) {
 						statusLine.setTemperature(null);
+/*						
+						statusLine.setQVertical( null );
+						statusLine.setQHorizontal( null );
+*/											
+						
 						statusLine.setQNorth(null);
 						statusLine.setQEast(null);
 						statusLine.setQSouth(null);
@@ -392,10 +397,20 @@ public class MainPanel extends JFrame {
 					} else {
 						statusLine.setTemperature(tp.getActualTemperature());
 
+/*						Double northCurrent = tp.getNorthCurrent();
+						Double eastCurrent = tp.getEastCurrent();
+						Double southCurrent = tp.getSouthCurrent();
+						Double westCurrent = tp.getWestCurrent();
+						
+System.err.println(northCurrent + " - " + southCurrent + " | " + westCurrent + " - " + eastCurrent );
+						statusLine.setQVertical( northCurrent );
+						statusLine.setQHorizontal( eastCurrent );
+*/						
 						statusLine.setQNorth(tp.getNorthCurrent());
 						statusLine.setQEast(tp.getEastCurrent());
 						statusLine.setQSouth(tp.getSouthCurrent());
 						statusLine.setQWest(tp.getWestCurrent());
+						
 					}
 				}
 			}
@@ -788,7 +803,7 @@ public class MainPanel extends JFrame {
 
 		// Termikus pontok legyartasa, kozottuk levo kapcsolatok megteremtese
 		// (nics szamolas meg)
-		thermicPointList = myCanvas.generateThermicPoints();
+		thermicPointList = myCanvas.generateThermicPointList();
 		// System.err.println(thermicPointList);
 		// thermicPointList = elementSet.generateThermicPoints();
 

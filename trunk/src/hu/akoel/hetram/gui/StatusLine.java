@@ -22,10 +22,14 @@ public class StatusLine extends JPanel{
 	private JTextField xPositionField = new JTextField();
 	private JTextField yPositionField = new JTextField();
 	private JTextField temperatureField = new JTextField();
-	private JTextField qNorthField = new JTextField();
+
+/*	private JTextField qVerticalField = new JTextField();
+	private JTextField qHorizontalField = new JTextField();
+*/	private JTextField qNorthField = new JTextField();
 	private JTextField qEastField = new JTextField();
 	private JTextField qSouthField = new JTextField();
 	private JTextField qWestField = new JTextField();
+	
 
 	public StatusLine( MainPanel mainPanel ) {
 		super();
@@ -54,23 +58,33 @@ public class StatusLine extends JPanel{
 		temperatureField.setEditable(false);
 		temperatureField.setBackground( Color.yellow );
 		this.add( temperatureField );
-		
-		qNorthField.setColumns( 13 );
+/*		
+		qVerticalField.setColumns( 8 );
+		qVerticalField.setBorder(BorderFactory.createLoweredBevelBorder());
+		qVerticalField.setEditable(false);
+		this.add( qVerticalField);
+
+		qHorizontalField.setColumns( 8 );
+		qHorizontalField.setBorder(BorderFactory.createLoweredBevelBorder());
+		qHorizontalField.setEditable(false);
+		this.add( qHorizontalField);
+*/
+		qNorthField.setColumns( 9 );
 		qNorthField.setBorder(BorderFactory.createLoweredBevelBorder());
 		qNorthField.setEditable(false);
 		this.add( qNorthField);
 		
-		qEastField.setColumns( 13 );
+		qEastField.setColumns( 9 );
 		qEastField.setBorder(BorderFactory.createLoweredBevelBorder());
 		qEastField.setEditable(false);
 		this.add( qEastField );
 		
-		qSouthField.setColumns( 13 );
+		qSouthField.setColumns( 9 );
 		qSouthField.setBorder(BorderFactory.createLoweredBevelBorder());
 		qSouthField.setEditable(false);
 		this.add( qSouthField );
 
-		qWestField.setColumns( 13 );
+		qWestField.setColumns( 9 );
 		qWestField.setBorder(BorderFactory.createLoweredBevelBorder());
 		qWestField.setEditable(false);
 		this.add( qWestField );
@@ -104,6 +118,36 @@ public class StatusLine extends JPanel{
 			temperatureField.setText( CommonOperations.get3Decimals(temperature) + "°C");
 		}
 	}
+/*
+	public void setQVertical( Double q ){
+		if( null == q ){
+			qVerticalField.setText( "" );
+		}else{
+			String out = "q";
+			if( q > 0 )
+				out += "↑: "  + CommonOperations.get3Decimals( q );
+			else if( q < 0 )
+				out += "↓: "  + CommonOperations.get3Decimals( q );
+			out += "W";
+			qVerticalField.setText( out );
+		}		
+	}
+	
+	public void setQHorizontal( Double q ){
+		if( null == q ){
+			qVerticalField.setText( "" );
+		}else{
+			String out = "q";
+			if( q > 0 )
+				out += "→: "  + CommonOperations.get3Decimals( q );
+			else if( q < 0 )
+				out += "←: "  + CommonOperations.get3Decimals( q );
+			out += "W";
+			qHorizontalField.setText( out );
+		}
+		
+	}
+*/
 	
 	public void setQNorth( Double qNorth ){
 		if( null == qNorth ){
@@ -114,9 +158,11 @@ public class StatusLine extends JPanel{
 				out += " ↑ ";
 			else if( qNorth < 0 )
 				out += " ↓ ";
-			out += "W/1m";
+			//out += "W/1m";
+			out += "W";
 			qNorthField.setText( out );
 		}
+		
 	}
 	
 	public void setQEast( Double qEast ){
@@ -128,7 +174,8 @@ public class StatusLine extends JPanel{
 				out += " → ";
 			else if( qEast < 0 )
 				out += " ← ";
-			out += "W/1m";
+			//out += "W/1m";
+			out += "W";
 			qEastField.setText( out );
 		}
 	}
@@ -142,7 +189,8 @@ public class StatusLine extends JPanel{
 				out += " ↓ ";
 			else if( qSouth < 0)
 				out += " ↑ ";
-			out += "W/1m";
+			//out += "W/1m";
+			out += "W";
 			qSouthField.setText( out );
 		}
 	}
@@ -156,7 +204,8 @@ public class StatusLine extends JPanel{
 				out += " ← ";
 			else if (qWest < 0)
 				out += " → ";
-			out += "W/1m";
+			//out += "W/1m";
+			out += "W";
 			qWestField.setText( out );
 		}
 	}

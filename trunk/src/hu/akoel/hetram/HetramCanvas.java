@@ -378,7 +378,7 @@ public class HetramCanvas extends DrawnBlockCanvas{
 	 * @return
 	 */
 
-	public ThermicPointList generateThermicPoints( ){
+	public ThermicPointList generateThermicPointList( ){
 		int scale = getPrecision().getScale();
 		
 		HetramBuildingStructureElement element;
