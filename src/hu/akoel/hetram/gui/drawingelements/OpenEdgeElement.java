@@ -22,7 +22,7 @@ public class OpenEdgeElement extends HetramDrawnElement{
 	
 	private static final Stroke NORMAL_STROKE = new BasicStroke(3);
 	
-	private static final Color SELECTED_COLOR = Color.red;
+	private static final Color SELECTED_COLOR = new Color(255,125,209);
 	private static final Stroke SELECTED_STROKE = new BasicStroke(3);
 	
 	private static final Color INFOCUS_COLOR = Color.yellow;

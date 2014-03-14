@@ -793,7 +793,7 @@ public class ThermicPointList{
 				dXPerpendicular = dXNormal / 2;
 			}
 			
-			//Van NORTH es SOUTH iranyba is Normal termikus pon kapcsolat
+			//Van NORTH es SOUTH iranyba is Normal termikus pont kapcsolat
 			if( cN instanceof YThermicPointThermicConnector && cS instanceof YThermicPointThermicConnector ){
 				dYNormal = ((YThermicPointThermicConnector)cN).getDelta().doubleValue() / 2;
 				dYNormal += ((YThermicPointThermicConnector)cS).getDelta().doubleValue() / 2;
