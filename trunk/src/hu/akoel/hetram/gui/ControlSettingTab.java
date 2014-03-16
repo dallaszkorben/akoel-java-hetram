@@ -231,7 +231,8 @@ public class ControlSettingTab extends JPanel {
 			public void actionPerformed(ActionEvent arg0) {
 
 				//Mukodesi mod valtas - Calculation
-				ControlSettingTab.this.mainPanel.setModeField( Mode.CALCULATION );
+				//ControlSettingTab.this.mainPanel.setModeField( Mode.CALCULATION );
+				ControlSettingTab.this.mainPanel.setMode( Mode.CALCULATION );
 		
 				//A szal elinditasa elott elinditja a progressBart -indeterminate modban
 				progressBar.setIndeterminate(true);
@@ -239,6 +240,9 @@ public class ControlSettingTab extends JPanel {
 				//A szal elinditasa elott torli az alkalmazott delta ertekeket
 //				ControlSettingTab.this.appliedXDeltaField.setText("");
 //				ControlSettingTab.this.appliedYDeltaField.setText("");
+				
+				//Minden selectet torlok
+				ControlSettingTab.this.mainPanel.clearAllSelected();
 				
 				//Torlom a mar letezo Thermikus Pont listat es az ertekelofelulet ujrarajzolasaval el is tuntetem
 				ControlSettingTab.this.mainPanel.setThermicPointList(null);				
@@ -305,7 +309,8 @@ public class ControlSettingTab extends JPanel {
 						ControlSettingTab.this.mainPanel.setCalculationListener(null);
 						
 						//Mukodesi mod valtas - Elemzes
-						ControlSettingTab.this.mainPanel.setModeField( Mode.ANALYSIS );
+						//ControlSettingTab.this.mainPanel.setModeField( Mode.ANALYSIS );
+						ControlSettingTab.this.mainPanel.setMode( Mode.ANALYSIS );
 				     
 				    }
 				};	

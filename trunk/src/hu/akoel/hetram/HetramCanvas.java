@@ -1,7 +1,6 @@
 package hu.akoel.hetram;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
@@ -16,7 +15,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.swing.border.Border;
-
 import hu.akoel.hetram.accessories.BigDecimalPosition;
 import hu.akoel.hetram.accessories.Orientation;
 import hu.akoel.hetram.connectors.AThermicPointThermicConnector;
@@ -25,11 +23,9 @@ import hu.akoel.hetram.gui.drawingelements.HetramBuildingStructureElement;
 import hu.akoel.hetram.gui.drawingelements.HetramDrawnElement;
 import hu.akoel.hetram.gui.drawingelements.OpenEdgeElement;
 import hu.akoel.hetram.gui.drawingelements.SymmetricEdgeElement;
+import hu.akoel.hetram.listeners.HetramMouseListener;
 import hu.akoel.hetram.thermicpoint.ThermicPoint;
 import hu.akoel.hetram.thermicpoint.ThermicPointList;
-import hu.akoel.mgu.MCanvas;
-import hu.akoel.mgu.MGraphics;
-import hu.akoel.mgu.PainterListener;
 import hu.akoel.mgu.PossiblePixelPerUnits;
 import hu.akoel.mgu.drawnblock.DrawnBlock;
 import hu.akoel.mgu.drawnblock.DrawnBlockCanvas;
@@ -47,16 +43,18 @@ public class HetramCanvas extends DrawnBlockCanvas{
 		this.mainPanel = mainPanel;
 		
 		//A regi painterlistener(eke)t torlem
-		removePainterListenersFromMiddle();
+//		removePainterListenersFromMiddle();
 		
-		addPainterListenerToMiddle( new DrawnBlockPainterListener() );
+//		addPainterListenerToMiddle( new DrawnBlockPainterListener() );
 		
 		hetramMouseListener = new HetramMouseListener(this);
 
 		//Sajat egerfigyelo hozzaadasa
 		this.setDrawnBlockMouseListener( hetramMouseListener );
 		
+		//
 		//Del figyelese
+		//
 		this.addKeyListener( new KeyAdapter(){
 			public void keyPressed(KeyEvent ke){
 
@@ -71,9 +69,17 @@ public class HetramCanvas extends DrawnBlockCanvas{
 				}
 			 }		
 		});
+				
 	}
 	
-	class DrawnBlockPainterListener implements PainterListener{
+	/**
+	 * Amikor kirajzoltatodik a Middle reteg, akkor a paintByWorldPosition metodus hajtodik vegre,
+	 * ami vegig megy a DrawnBlockList-en es kirajzolja az ott levo DrawnBlock-okat
+	 * 
+	 * @author akoel
+	 *
+	 */
+/*	class DrawnBlockPainterListener implements PainterListener{
 
 		@Override
 		public void paintByWorldPosition(MCanvas canvas, MGraphics g2) {
@@ -97,7 +103,15 @@ public class HetramCanvas extends DrawnBlockCanvas{
 		public void paintByCanvasAfterTransfer(MCanvas canvas, Graphics2D g2) {}
 		
 	}
+*/	
 	
+	public void clearAllSelected(){
+		hetramMouseListener.clearAllSelected();
+	}
+	
+	public MainPanel getMainPanel(){
+		return this.mainPanel;
+	}
 	
 	/**
 	 * Egy DrawnBlock rajzolasat elvegzo factory megadasa
@@ -378,6 +392,9 @@ public class HetramCanvas extends DrawnBlockCanvas{
 	 * @return
 	 */
 
+	
+//TODO at kell helyezni a mainPanel-be  !!!mit keres itt?????	
+	
 	public ThermicPointList generateThermicPointList( ){
 		int scale = getPrecision().getScale();
 		
@@ -696,7 +713,7 @@ public class HetramCanvas extends DrawnBlockCanvas{
 								//Megfelelo pozicio
 								if( openEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x.compareTo( openEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( openEdgeElementWithPosition.element.getX2() ) <= 0 ){
 								//if( openEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x >= openEdgeElementWithPosition.element.getX1() && x <= openEdgeElementWithPosition.element.getX2() ){
-//System.err.println(openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue()) + " - " + x.doubleValue() );							
+						
 									//Alfa es homerseklet kapcsolasa
 									actualThermicPoint.connectToOpenEdge( Orientation.SOUTH, openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );		
 									
@@ -906,22 +923,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 		}
 		
 		return this.getRoundedBigDecimalWithPrecision( (double)a / powered );
-	
-/*		int prec = 1000;
-		
-		int a = (int)( prec * CommonOperations.get10Decimals( sourceList.get(0) ) );
-		int b;
-		
-		//Vegig az osztaskoz-tavolsagokon
-		for( Double s: sourceList ){
-
-			b = (int)( prec * CommonOperations.get10Decimals( s ) );
-
-			a = LNKO(a, b);
-			
-		}
-		return CommonOperations.get10Decimals( (double)a / (double)prec );
-*/
 		
 	}
 	
@@ -931,14 +932,9 @@ public class HetramCanvas extends DrawnBlockCanvas{
 		public int compare(BigDecimal o1, BigDecimal o2) {
 	
 			return o1.compareTo(o2);
-/*			if( o1 > o2 ){
-				return 1;
-			}else if( o1 < o2 ){
-				return -1;
-			}else{
-				return 0;
-			}
-*/			
+			
 		}		
 	}
+	
+	
 }

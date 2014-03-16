@@ -118,42 +118,12 @@ public class StatusLine extends JPanel{
 			temperatureField.setText( CommonOperations.get3Decimals(temperature) + "°C");
 		}
 	}
-/*
-	public void setQVertical( Double q ){
-		if( null == q ){
-			qVerticalField.setText( "" );
-		}else{
-			String out = "q";
-			if( q > 0 )
-				out += "↑: "  + CommonOperations.get3Decimals( q );
-			else if( q < 0 )
-				out += "↓: "  + CommonOperations.get3Decimals( q );
-			out += "W";
-			qVerticalField.setText( out );
-		}		
-	}
-	
-	public void setQHorizontal( Double q ){
-		if( null == q ){
-			qVerticalField.setText( "" );
-		}else{
-			String out = "q";
-			if( q > 0 )
-				out += "→: "  + CommonOperations.get3Decimals( q );
-			else if( q < 0 )
-				out += "←: "  + CommonOperations.get3Decimals( q );
-			out += "W";
-			qHorizontalField.setText( out );
-		}
-		
-	}
-*/
 	
 	public void setQNorth( Double qNorth ){
 		if( null == qNorth ){
 			qNorthField.setText( "" );
 		}else{
-			String out = "qN: " + CommonOperations.get3Decimals( qNorth );
+			String out = "qN: " + CommonOperations.get3Decimals( Math.abs( qNorth ) );
 			if( qNorth > 0 )
 				out += " ↑ ";
 			else if( qNorth < 0 )
@@ -169,7 +139,7 @@ public class StatusLine extends JPanel{
 		if( null == qEast ){
 			qEastField.setText( "" );
 		}else{
-			String out = "qE: " + + CommonOperations.get3Decimals( qEast );
+			String out = "qE: " + + CommonOperations.get3Decimals( Math.abs( qEast ) );
 			if( qEast > 0 )
 				out += " → ";
 			else if( qEast < 0 )
@@ -184,7 +154,7 @@ public class StatusLine extends JPanel{
 		if( null == qSouth ){
 			qSouthField.setText( "" );
 		}else{
-			String out = "qS: " + CommonOperations.get3Decimals( qSouth ); 
+			String out = "qS: " + CommonOperations.get3Decimals( Math.abs( qSouth ) ); 
 			if( qSouth > 0 )
 				out += " ↓ ";
 			else if( qSouth < 0)
@@ -199,7 +169,7 @@ public class StatusLine extends JPanel{
 		if( null == qWest ){
 			qWestField.setText( "" );
 		}else{
-			String out = "qW: " + + CommonOperations.get3Decimals( qWest );
+			String out = "qW: " + CommonOperations.get3Decimals( Math.abs( qWest ) );
 			if( qWest > 0 )
 				out += " ← ";
 			else if (qWest < 0)
@@ -209,5 +179,62 @@ public class StatusLine extends JPanel{
 			qWestField.setText( out );
 		}
 	}
+	
+	public void setVerticalOpenEdgeSumQ( Double qSumEast, Double qSumWest ){
+		String out = "";
+		
+		qNorthField.setText( "" );
+		qSouthField.setText( "" );
+		qEastField.setText( "" );
+		qWestField.setText( "" );
+		
+		if( qSumEast != 0 ){
+			if( qSumEast > 0 ){
+				out = "QE: " + CommonOperations.get3Decimals( Math.abs(qSumEast)) + " W → ";
+			}else if( qSumEast < 0 ){
+				out = "QE: " + CommonOperations.get3Decimals( Math.abs(qSumEast)) + " W ← ";
+			}
+			qEastField.setText( out );
+		}
+
+		if( qSumWest != 0 ){
+			if( qSumWest > 0 ){
+				out = "QW: " + CommonOperations.get3Decimals( Math.abs(qSumWest)) + " W ← ";
+			}else if( qSumWest < 0 ){
+				out = "QW: " + CommonOperations.get3Decimals( Math.abs(qSumWest)) + " W → ";
+			}
+			qWestField.setText( out );
+		}
+		
+	}
+	
+	public void setHorizontalOpenEdgeSumQ( Double qSumNorth, Double qSumSouth ){
+		String out = "";
+		
+		qNorthField.setText( "" );
+		qSouthField.setText( "" );
+		qEastField.setText( "" );
+		qWestField.setText( "" );
+
+		if( qSumNorth != 0 ){
+			if( qSumNorth > 0 ){
+				out = "QN: " + CommonOperations.get3Decimals( Math.abs(qSumNorth)) + " W ↑ ";
+			}else if( qSumNorth < 0 ){
+				out = "QN: " + CommonOperations.get3Decimals( Math.abs(qSumNorth)) + " W ↓ ";
+			}
+			qNorthField.setText( out );
+		}
+
+		if( qSumSouth != 0 ){
+			if( qSumSouth > 0 ){
+				out = "QS: " + CommonOperations.get3Decimals( Math.abs(qSumSouth)) + " W ↓ ";
+			}else if( qSumSouth < 0 ){
+				out = "QS: " + CommonOperations.get3Decimals( Math.abs(qSumSouth)) + " W ↑ ";
+			}
+			qSouthField.setText( out );
+		}
+
+	}
+
 
 }

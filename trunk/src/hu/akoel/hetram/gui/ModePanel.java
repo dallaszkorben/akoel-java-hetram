@@ -43,13 +43,18 @@ public class ModePanel extends JPanel{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ModePanel.this.mainPanel.setModeField( Mode.DRAWING );				
+//				ModePanel.this.mainPanel.setModeField( Mode.DRAWING );				
+				ModePanel.this.mainPanel.setMode( Mode.DRAWING );
+				
+				//Minden selectet torlok
+				ModePanel.this.mainPanel.clearAllSelected();
 			}
 		});	
 		
 		modeGroup.add( drawingButton );
 		
 		modeField = new JLabel();
+		
 		//Default ertek beallitasa
 		setModeField( ModePanel.this.mainPanel.getMode() );
 				
