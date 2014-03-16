@@ -35,11 +35,13 @@ public class CanvasSettingTab extends MControlPanel {
 		this.setBorder(BorderFactory.createLoweredBevelBorder());
 		this.setLayout(new GridBagLayout());
 
+		JPanel canvasControl = myCanvas.getControl();
 		JPanel gridControl = myGrid.getControl( myScale );
 		JPanel crossLineControl = myCrossLine.getControl( myScale );
 //		JPanel scaleControl = myScale.getControl();
 		JPanel axisControl = myAxis.getControl();		
 		
+		this.addElement( canvasControl );
 		this.addElement( gridControl );
 		this.addElement( crossLineControl );
 //		this.addElement( scaleControl );

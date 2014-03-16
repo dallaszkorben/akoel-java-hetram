@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ClassDiagram>
     <Class name="hu.akoel.hetram.gui.ElementSettingTab.PATTERN_TYPE"
-        x="1082" y="349">
+        x="1252" y="218">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -10,7 +10,7 @@
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
     </Class>
-    <Class name="hu.akoel.hetram.gui.VisibilitySettingTab" x="294" y="538">
+    <Class name="hu.akoel.hetram.gui.VisibilitySettingTab" x="287" y="704">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -23,7 +23,7 @@
             endpointName="mainPanel" kind="Simple"/>
         <Communication destinationClassName="hu.akoel.hetram.gui.MainPanel"/>
     </Class>
-    <Class name="hu.akoel.hetram.gui.ControlSettingTab" x="304" y="316">
+    <Class name="hu.akoel.hetram.gui.ControlSettingTab" x="288" y="509">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -34,8 +34,20 @@
         <Association
             destinationClassName="hu.akoel.hetram.gui.MainPanel"
             endpointName="mainPanel" kind="Simple"/>
+        <Communication destinationClassName="hu.akoel.hetram.gui.MainPanel"/>
     </Class>
-    <Class name="hu.akoel.hetram.gui.ElementSettingTab" x="302" y="58">
+    <Class
+        name="hu.akoel.hetram.gui.ElementSettingTab.HOMOGENEOUS_PATTERN"
+        x="1256" y="399">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="hu.akoel.hetram.gui.ElementSettingTab" x="289" y="324">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -48,10 +60,20 @@
             endpointName="mainPanel" kind="Simple"/>
         <Communication destinationClassName="hu.akoel.hetram.gui.ElementSettingTab.ROW_PATTERN"/>
         <Communication destinationClassName="hu.akoel.hetram.gui.ElementSettingTab.HOMOGEN_PATTERNEOUS"/>
+        <Communication destinationClassName="hu.akoel.hetram.gui.ElementSettingTab.HOMOGENEOUS_PATTERN"/>
         <Communication destinationClassName="hu.akoel.hetram.gui.MainPanel"/>
     </Class>
+    <Class name="hu.akoel.hetram.gui.ZigZagPatternSelectorItem" x="1504" y="160">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
     <Class name="hu.akoel.hetram.gui.ElementSettingTab.ROW_PATTERN"
-        x="1080" y="561">
+        x="1248" y="508">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -60,18 +82,7 @@
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
     </Class>
-    <Class
-        name="hu.akoel.hetram.gui.ElementSettingTab.HOMOGEN_PATTERNEOUS"
-        x="1083" y="445">
-        <AttributesDisplayFilter public-accepted="true"
-            private-accepted="true" protected-accepted="true"
-            default-accepted="true" static-accepted="false"/>
-        <MethodDisplayFilter public-accepted="true"
-            private-accepted="false" protected-accepted="false"
-            default-accepted="false" static-accepted="false"
-            accessors-accepted="false" constructors-accepted="false"/>
-    </Class>
-    <Class name="hu.akoel.hetram.gui.MainPanel" x="679" y="-2">
+    <Class name="hu.akoel.hetram.gui.MainPanel" x="823" y="-2">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -83,27 +94,24 @@
             destinationClassName="hu.akoel.hetram.gui.ElementSettingTab.ROW_PATTERN"
             endpointName="rowPattern" kind="Simple"/>
         <Association
-            destinationClassName="hu.akoel.hetram.gui.ElementSettingTab.HOMOGEN_PATTERNEOUS"
-            endpointName="homogenPattern" kind="Simple"/>
-        <Association
             destinationClassName="hu.akoel.hetram.gui.ElementSettingTab.DRAWING_ELEMENT"
             endpointName="drawingElement" kind="Simple"/>
+        <Association
+            destinationClassName="hu.akoel.hetram.gui.ElementSettingTab.HOMOGENEOUS_PATTERN"
+            endpointName="homogenPattern" kind="Simple"/>
+        <Association
+            destinationClassName="hu.akoel.hetram.gui.SettingTabbedPanel"
+            endpointName="settingTabbedPanel" kind="Simple"/>
         <Association
             destinationClassName="hu.akoel.hetram.gui.ElementSettingTab.PATTERN_TYPE"
             endpointName="patternType" kind="Simple"/>
         <Association
             destinationClassName="hu.akoel.hetram.gui.StatusLine"
             endpointName="statusLine" kind="Simple"/>
-        <Association
-            destinationClassName="hu.akoel.hetram.gui.SettingTabbedPanel"
-            endpointName="controlPanel" kind="Simple">
-            <Point x="681" y="50"/>
-            <Point x="566" y="48"/>
-        </Association>
         <Communication destinationClassName="hu.akoel.hetram.gui.ControlSettingTab"/>
         <Communication destinationClassName="hu.akoel.hetram.gui.StatusLine"/>
     </Class>
-    <Class name="hu.akoel.hetram.gui.StatusLine" x="1069" y="16">
+    <Class name="hu.akoel.hetram.gui.StatusLine" x="1200" y="7">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -115,7 +123,7 @@
             destinationClassName="hu.akoel.hetram.gui.MainPanel"
             endpointName="mainPanel" kind="Simple"/>
     </Class>
-    <Class name="hu.akoel.hetram.gui.SettingTabbedPanel" x="98" y="11">
+    <Class name="hu.akoel.hetram.gui.SettingTabbedPanel" x="85" y="4">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -126,30 +134,26 @@
         <Association
             destinationClassName="hu.akoel.hetram.gui.CanvasSettingTab"
             endpointName="canvasSettingTab" kind="Simple">
-            <Point x="179" y="714"/>
+            <Point x="169" y="872"/>
         </Association>
         <Association
             destinationClassName="hu.akoel.hetram.gui.VisibilitySettingTab"
             endpointName="visibilitySettingTab" kind="Simple">
-            <Point x="222" y="570"/>
+            <Point x="222" y="745"/>
         </Association>
         <Association
             destinationClassName="hu.akoel.hetram.gui.MainPanel"
-            endpointName="mainPanel" kind="Simple">
-            <Point x="677" y="36"/>
-        </Association>
+            endpointName="mainPanel" kind="Simple"/>
         <Association
             destinationClassName="hu.akoel.hetram.gui.ControlSettingTab"
             endpointName="controlSettingTab" kind="Simple">
-            <Point x="241" y="381"/>
+            <Point x="245" y="584"/>
         </Association>
         <Association
             destinationClassName="hu.akoel.hetram.gui.ElementSettingTab"
-            endpointName="elementSettingTab" kind="Simple">
-            <Point x="251" y="131"/>
-        </Association>
+            endpointName="elementSettingTab" kind="Simple"/>
     </Class>
-    <Class name="hu.akoel.hetram.gui.CanvasSettingTab" x="291" y="659">
+    <Class name="hu.akoel.hetram.gui.CanvasSettingTab" x="288" y="809">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -160,7 +164,7 @@
         <Communication destinationClassName="hu.akoel.hetram.gui.MainPanel"/>
     </Class>
     <Class name="hu.akoel.hetram.gui.ElementSettingTab.DRAWING_ELEMENT"
-        x="1089" y="660">
+        x="1267" y="640">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
