@@ -67,8 +67,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -111,7 +113,7 @@ public class MainPanel extends JFrame {
 		THERMICPOINT,
 		OPENEDGE
 	}
-	
+
 	private static final int DEFAULT_WIDTH = 900;
 	private static final int DEFAULT_HEIGHT = 800;
 	private static final int DEFAULT_SETTINGTABBEDPANEL = 310;
@@ -135,6 +137,7 @@ public class MainPanel extends JFrame {
 
 	private CalculationListener calculationListener = null;
 
+	
 	// ------------------------
 	//
 	// Kiindulasi parameterek
@@ -146,6 +149,7 @@ public class MainPanel extends JFrame {
 	//
 	private Mode mode = Mode.DRAWING;
 	private QShow qShow = QShow.THERMICPOINT;
+	private boolean needToStopCalculation = false;
 
 	//
 	// Rajzi elemek - ElementSettings
@@ -251,6 +255,10 @@ public class MainPanel extends JFrame {
 		return myAxis;
 	}
 
+	public boolean needToStopCalculation(){
+		return needToStopCalculation;
+	}
+	
 	JMenuBar menuBar;
 	JMenu fileMainMenu;
 	JMenuItem fileNewMenuItem;
@@ -446,13 +454,10 @@ public class MainPanel extends JFrame {
 		// baloldalan a rajzfelulet
 		// jobboldalan a vezerloegyseg
 		//
-		// JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
-		// myCanvas, controlPanel );
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				myCanvas, containerPanel);
+		// JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, myCanvas, controlPanel );
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myCanvas, containerPanel);
 		splitPane.setOneTouchExpandable(true);
-		splitPane
-				.setDividerLocation(DEFAULT_WIDTH - DEFAULT_SETTINGTABBEDPANEL);
+		splitPane.setDividerLocation(DEFAULT_WIDTH - DEFAULT_SETTINGTABBEDPANEL);
 		splitPane.setResizeWeight(1.0);
 
 		this.getContentPane().setLayout(new BorderLayout(10, 10));
@@ -616,6 +621,10 @@ public class MainPanel extends JFrame {
 		settingTabbedPanel.controlSettingTab.setEnableCalculateButton( enable );
 	}
 */	
+	public JProgressBar getProgressBar(){
+		return settingTabbedPanel.controlSettingTab.getProgressBar();
+	}
+	
 	// -----------------------------------
 	//
 	// Megjelenites - VisibilitySetting
@@ -842,20 +851,51 @@ public class MainPanel extends JFrame {
 	 */
 	public void doCalculate(double precision) {
 
-		// Termikus pontok legyartasa, kozottuk levo kapcsolatok megteremtese
-		// (nics szamolas meg)
-		thermicPointList = myCanvas.generateThermicPointList();
-		// System.err.println(thermicPointList);
-		// thermicPointList = elementSet.generateThermicPoints();
+		//Ha rajz vagy analizis modban vagyok, akkor a szamitas ujra elvegezendo
+		if( getMode().equals( Mode.DRAWING ) || getMode().equals( Mode.ANALYSIS)){
+		
+			//Mukodesi mod valtas - Calculation
+			setMode( Mode.CALCULATION );
 
-		// Figyelo osztaly a szamitas nyomonkovetesere
-		if (null != calculationListener) {
-			thermicPointList.setCalculationListener(calculationListener);
+			//Minden selectet torlok
+			clearAllSelected();
+		
+			//Torlom a mar letezo Thermikus Pont listat es az ertekelofelulet ujrarajzolasaval el is tuntetem
+			//mind a szinkodokat, mind a termikus vektorokat, a termikus pont jeloleseket es a homerseklet kijelzest
+			setThermicPointList(null);				
+				
+			//Jelzok alapallapotba allitasa
+			SwingUtilities.invokeLater( new Thread(){
+				
+				@Override
+				public void run() {
+					
+					//Nyomogomb allitas
+					getSettingTabbedPanel().getControlSettingTab().getCalculateButton().setBackground( Color.red );
+					getSettingTabbedPanel().getControlSettingTab().getCalculateButton().setText( "Stop" );
+					
+					//Progressbar: Indeterminate tipusu, 0 hosszu, nincs kijelzes
+					getProgressBar().setIndeterminate(true);
+					getProgressBar().setStringPainted(false);
+					getProgressBar().setValue(0);
+
+				}
+			});	
+				
+			needToStopCalculation = false;
+			
+			// Termikus pontok legyartasa, kozottuk levo kapcsolatok megteremtese (nics szamolas meg)
+			myCanvas.generateThermicPointList()
+
+			// Sokismeretlenes egyenletrendszer megoldasa, eredmenye: a termikus pontok homerseklete
+			.solve(this, precision);
+			
+		//Ha viszont eppen szamitas tortenik, akkor le kell allitani azt
+		}else if( getMode().equals( Mode.CALCULATION ) ){
+			needToStopCalculation = true;
 		}
-
-		// Sokismeretlenes egyenletrendszer megoldasa, eredmenye: a termikus
-		// pontok homerseklete
-		thermicPointList.solve(precision);
+	
+		
 	}
 
 	public void revalidateAndRepaint() {
@@ -902,11 +942,9 @@ public class MainPanel extends JFrame {
 			// JMenuItem source = (JMenuItem)(e.getSource());
 
 			@SuppressWarnings("unchecked")
-			ArrayList<HetramDrawnElement> list = (ArrayList<HetramDrawnElement>) MainPanel.this
-					.getCanvas().getDrawnBlockList();
+			ArrayList<HetramDrawnElement> list = (ArrayList<HetramDrawnElement>) MainPanel.this.getCanvas().getDrawnBlockList();
 
-			DocumentBuilderFactory docFactory = DocumentBuilderFactory
-					.newInstance();
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 
 			try {
 				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -918,11 +956,11 @@ public class MainPanel extends JFrame {
 
 				for (HetramDrawnElement el : list) {
 					Element element = el.getXMLElement(doc);
+			
 					rootElement.appendChild(element);
 				}
 
-				TransformerFactory transformerFactory = TransformerFactory
-						.newInstance();
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
 				Transformer transformer = transformerFactory.newTransformer();
 				DOMSource source = new DOMSource(doc);
 

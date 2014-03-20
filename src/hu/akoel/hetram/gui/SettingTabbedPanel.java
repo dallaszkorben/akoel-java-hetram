@@ -89,4 +89,8 @@ public class SettingTabbedPanel extends JTabbedPane{
 	public void hideVisibilitySettingTab(){
 		this.remove( visibilitySettingTab);
 	}
+	
+	public ControlSettingTab getControlSettingTab(){
+		return controlSettingTab;
+	}
 }
