@@ -25,7 +25,27 @@ public class HetramMouseListener extends DrawnBlockMouseListener{
 		this.canvas = canvas;
 	}
 		
+	/**
+	 * Elvegzi az osszes muveletet ahhoz, hogy torlodjon minden kivalasztott elem
+	 * es ujra rajzolja a Canvas-t
+	 */
 	public void clearAllSelected(){
+		
+		clearAllSelected( true );
+		
+	}
+	
+	/**
+	 * Elvegzi az osszes muveletet ahhoz, hogy torlodjon minden kivalasztott elem
+	 * es parameterkent megadhato, hogy ujra rajzolja-e a Canvast
+	 * Ha volt kivalasztott elem, melyet torolni kellet es nem volt szukseg a Canvas
+	 * kozvetlen ujrarajzolsara, akkor true erteket ad vissza. 
+	 * Ellenkezo esetben false-t
+	 * 
+	 * @param needDirectRevalidate
+	 * @return
+	 */
+	private boolean clearAllSelected( boolean needDirectRevalidate){
 		
 		if( null != selectedElement ){
 			selectedElement.setStatus( Status.NORMAL );
@@ -37,10 +57,13 @@ public class HetramMouseListener extends DrawnBlockMouseListener{
 			//Most hogy QShow.THERMICPOINT lett a QSHOW mar a termikus pontok hoaramai irodhatnak ki a kurzor alapjan
 			canvas.getMainPanel().setQShow( QShow.THERMICPOINT );
 						
-			canvas.revalidateAndRepaintCoreCanvas();
-
+			if( needDirectRevalidate ){
+				canvas.revalidateAndRepaintCoreCanvas();				
+			}else{
+				return true;
+			}
 		}
-		
+		return false;
 	}
 	
 	public HetramDrawnElement getSelectedElement(){
@@ -54,25 +77,12 @@ public class HetramMouseListener extends DrawnBlockMouseListener{
 	public void mouseClicked(MouseEvent e) {	
 		boolean needRevalidate = false;
 		
-		//Ha volt kivalasztott elem, akkor azt NORMAL statuszra allitja
-		if( null != selectedElement ){
-			selectedElement.setStatus( Status.NORMAL );
-			selectedElement = null;
-
-			//Torli a kivalasztott OPENEDGE-eket
-			canvas.getMainPanel().getSelectedOpenEdgeForSumQList().clear();
-			
-			//Most hogy QShow.THERMICPOINT lett a QSHOW mar a termikus pontok hoaramai irodhatnak ki a kurzor alapjan
-			canvas.getMainPanel().setQShow( QShow.THERMICPOINT );
-			
-			needRevalidate = true;
-
-		}
+		needRevalidate = clearAllSelected( false );
 
 		//Kurzor poziciojanak kerekitese a megadott pontossagra
 		BigDecimal x = canvas.getRoundedBigDecimalWithPrecision( canvas.getWorldXByPixel( e.getX() ) );
 		BigDecimal y = canvas.getRoundedBigDecimalWithPrecision( canvas.getWorldYByPixel( e.getY() ) );
-		
+	
 		int delta = canvas.getSnapDelta();
 		BigDecimal dx = new BigDecimal( canvas.getWorldXLengthByPixel( delta ) );
 		BigDecimal dy = new BigDecimal( canvas.getWorldXLengthByPixel( delta ) );		

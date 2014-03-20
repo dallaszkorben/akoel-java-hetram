@@ -69,22 +69,22 @@ public class StatusLine extends JPanel{
 		qHorizontalField.setEditable(false);
 		this.add( qHorizontalField);
 */
-		qNorthField.setColumns( 9 );
+		qNorthField.setColumns( 10 );
 		qNorthField.setBorder(BorderFactory.createLoweredBevelBorder());
 		qNorthField.setEditable(false);
 		this.add( qNorthField);
 		
-		qEastField.setColumns( 9 );
+		qEastField.setColumns( 10 );
 		qEastField.setBorder(BorderFactory.createLoweredBevelBorder());
 		qEastField.setEditable(false);
 		this.add( qEastField );
 		
-		qSouthField.setColumns( 9 );
+		qSouthField.setColumns( 10 );
 		qSouthField.setBorder(BorderFactory.createLoweredBevelBorder());
 		qSouthField.setEditable(false);
 		this.add( qSouthField );
 
-		qWestField.setColumns( 9 );
+		qWestField.setColumns( 10 );
 		qWestField.setBorder(BorderFactory.createLoweredBevelBorder());
 		qWestField.setEditable(false);
 		this.add( qWestField );

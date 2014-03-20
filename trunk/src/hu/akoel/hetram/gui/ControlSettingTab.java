@@ -1,8 +1,5 @@
 package hu.akoel.hetram.gui;
 
-import hu.akoel.hetram.gui.MainPanel.Mode;
-import hu.akoel.hetram.listeners.CalculationListener;
-
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -20,7 +17,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
 public class ControlSettingTab extends JPanel {
 
@@ -219,7 +215,7 @@ public class ControlSettingTab extends JPanel {
 				return true;
 			}
 		});
-		
+	
 		//
 		// Szamitas gomb
 		//
@@ -230,95 +226,12 @@ public class ControlSettingTab extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
-				//Mukodesi mod valtas - Calculation
-				//ControlSettingTab.this.mainPanel.setModeField( Mode.CALCULATION );
-				ControlSettingTab.this.mainPanel.setMode( Mode.CALCULATION );
-		
-				//A szal elinditasa elott elinditja a progressBart -indeterminate modban
-				progressBar.setIndeterminate(true);
-				
-				//A szal elinditasa elott torli az alkalmazott delta ertekeket
-//				ControlSettingTab.this.appliedXDeltaField.setText("");
-//				ControlSettingTab.this.appliedYDeltaField.setText("");
-				
-				//Minden selectet torlok
-				ControlSettingTab.this.mainPanel.clearAllSelected();
-				
-				//Torlom a mar letezo Thermikus Pont listat es az ertekelofelulet ujrarajzolasaval el is tuntetem
-				ControlSettingTab.this.mainPanel.setThermicPointList(null);				
-				
-				//Letiltja a Kalkulacios gombot
-				ControlSettingTab.this.calculateButton.setEnabled(false);
-				
-				//Majd letrehozom azt a szalat, ami majd a kalkulaciot vegzi
-				Thread thread = new Thread(){
-				   
-					//Egyszer csak elindul a kalkulacio
-					public void run() {
-				    	
-						ControlSettingTab.this.mainPanel.setCalculationListener(new CalculationListener(){
 
-							boolean isIndeterminateMode = true;
-							
-							@Override
-							public void getDifference(double difference) {
-								
-								//Atvaltok rendes modba
-								if( difference <= 1.0 ){ 
-										
-										if( isIndeterminateMode ){
-											progressBar.setIndeterminate( false );
-										}							
-										
-										progressBar.setStringPainted(true);
-										progressBar.setValue( (int)(ControlSettingTab.this.mainPanel.getCalculationPrecision()/difference*100) );
+				//Elinditja a kalkulaciot a megadott ertekekkel
+				ControlSettingTab.this.mainPanel.doCalculate( ControlSettingTab.this.mainPanel.getCalculationPrecision() );
 
-								}
-							}							
-						});
-						
-						//Elinditja a kalkulaciot a megadott ertekekkel
-						ControlSettingTab.this.mainPanel.doCalculate( ControlSettingTab.this.mainPanel.getCalculationPrecision() );
-						
-						//Ha befejezodott a kalkulacio, akkor az alkalmazott delta ertekeket megjeleniti
-//						ControlSettingTab.this.appliedXDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getHorizontalAppliedDifference())));
-//						ControlSettingTab.this.appliedYDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getVerticalAppliedDifference())));
-//						ControlSettingTab.this.appliedXDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getHorizontalAppliedDifference())));
-//						ControlSettingTab.this.appliedYDeltaField.setText(String.valueOf(CommonOperations.get3Decimals(ControlSettingTab.this.mainPanel.getVerticalAppliedDifference())));
-
-						//Ha nem igy rajzoltatom ujra az eredmenyt, akkor nem jelenik meg
-						SwingUtilities.invokeLater( new Runnable(){
-
-							@Override
-							public void run() {
-
-								//Nullazza a progressBar-t (csak ha itt van, akkor mukodik)
-								progressBar.setValue(0);								
-								
-								//Grafika ujra rajzolasa
-								ControlSettingTab.this.mainPanel.revalidateAndRepaint();
-								
-							}			
-						});		
-						
-						//Ujra engedelyezi a Kalkulacios gomb hasznalatat
-						//Letiltja a Kalkulacios gombot
-						ControlSettingTab.this.calculateButton.setEnabled(true);
-						
-						//Torli a figyelo interfacet
-						ControlSettingTab.this.mainPanel.setCalculationListener(null);
-						
-						//Mukodesi mod valtas - Elemzes
-						//ControlSettingTab.this.mainPanel.setModeField( Mode.ANALYSIS );
-						ControlSettingTab.this.mainPanel.setMode( Mode.ANALYSIS );
-				     
-				    }
-				};	
-				
-				//Elinditom a szalat
-				thread.start();
-
-			}
+			
+			} 
 			
 		});
 		
@@ -558,6 +471,10 @@ public class ControlSettingTab extends JPanel {
 //		return maximumXDeltaField;
 //	}
 	
+	public JProgressBar getProgressBar(){
+		return this.progressBar;
+	}
+	
 	/**
 	 * A HetramCanvas szamitja ki az erteket es monjda meg a mainPanel-en keresztul.
 	 * Itt tehat allitjauk a megjelenitett max erteket es az alkalmazott felosztast
@@ -648,5 +565,9 @@ public class ControlSettingTab extends JPanel {
 	
 	public void setEnableCalculateButton( boolean enable ){
 		this.calculateButton.setEnabled( enable );
+	}
+	
+	public JButton getCalculateButton(){
+		return calculateButton;
 	}
 }
