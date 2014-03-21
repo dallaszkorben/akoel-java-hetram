@@ -889,14 +889,7 @@ public class ThermicPointList {
 					Thread progressThread = new UpdateProgressThread(mainPanel, difference );
 					SwingUtilities.invokeLater( progressThread );	
 					
-					try {
-						Thread.sleep(10);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-
 				}while( !( difference < minDifference && difference > 0 ) && !mainPanel.needToStopCalculation() );
-//					}while( difference > minDifference || difference < 0 );
 
 				//Ha megallitottam a futast a Stop gombbal
 				if ( mainPanel.needToStopCalculation() ){
