@@ -1,6 +1,7 @@
 package hu.akoel.hetram;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
@@ -26,7 +27,11 @@ import hu.akoel.hetram.gui.drawingelements.SymmetricEdgeElement;
 import hu.akoel.hetram.listeners.HetramMouseListener;
 import hu.akoel.hetram.thermicpoint.ThermicPoint;
 import hu.akoel.hetram.thermicpoint.ThermicPointList;
+import hu.akoel.mgu.MCanvas;
+import hu.akoel.mgu.MGraphics;
+import hu.akoel.mgu.PainterListener;
 import hu.akoel.mgu.PossiblePixelPerUnits;
+import hu.akoel.mgu.MCanvas.Level;
 import hu.akoel.mgu.drawnblock.DrawnBlock;
 import hu.akoel.mgu.drawnblock.DrawnBlockCanvas;
 import hu.akoel.mgu.values.TranslateValue;
@@ -43,9 +48,9 @@ public class HetramCanvas extends DrawnBlockCanvas{
 		this.mainPanel = mainPanel;
 		
 		//A regi painterlistener(eke)t torlem
-//		removePainterListenersFromMiddle();
+		removePainterListenersFromMiddle();
 		
-//		addPainterListenerToMiddle( new DrawnBlockPainterListener() );
+		addPainterListenerToMiddle( new DrawnBlockPainterListener() );
 		
 		hetramMouseListener = new HetramMouseListener(this);
 
@@ -75,11 +80,12 @@ public class HetramCanvas extends DrawnBlockCanvas{
 	/**
 	 * Amikor kirajzoltatodik a Middle reteg, akkor a paintByWorldPosition metodus hajtodik vegre,
 	 * ami vegig megy a DrawnBlockList-en es kirajzolja az ott levo DrawnBlock-okat
+	 * Azert nem az eredetit hasznalom, mert most az eleket a legfelso szinten kell kirajzolnom
 	 * 
 	 * @author akoel
 	 *
 	 */
-/*	class DrawnBlockPainterListener implements PainterListener{
+	class DrawnBlockPainterListener implements PainterListener{
 
 		@Override
 		public void paintByWorldPosition(MCanvas canvas, MGraphics g2) {
@@ -103,7 +109,8 @@ public class HetramCanvas extends DrawnBlockCanvas{
 		public void paintByCanvasAfterTransfer(MCanvas canvas, Graphics2D g2) {}
 		
 	}
-*/	
+	
+	
 	
 	public void clearAllSelected(){
 		hetramMouseListener.clearAllSelected();

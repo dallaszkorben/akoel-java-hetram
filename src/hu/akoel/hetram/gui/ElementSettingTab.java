@@ -122,55 +122,26 @@ public class ElementSettingTab extends JPanel{
 		buildingStructureElementPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Épulet szerkezet", TitledBorder.LEFT, TitledBorder.TOP ) );		
 		GridBagConstraints buildingStructureElementSelectorConstraints = new GridBagConstraints();
 		
+		//
+		// Lambda erteke
+		//
 		JTextField lambdaField = new JTextField();
 		lambdaField.setColumns( 8 );
 		lambdaField.setText( String.valueOf( ElementSettingTab.this.mainPanel.getBuildingStructureLambda() ) );
-		lambdaField.setInputVerifier( new InputVerifier() {
-			String goodValue =  String.valueOf( ElementSettingTab.this.mainPanel.getBuildingStructureLambda() );
-			
-			@Override
-			public boolean verify(JComponent input) {
-				JTextField text = (JTextField)input;
-	            String possibleValue = text.getText();
-	            try{
-	            	Double.valueOf(possibleValue);
-	            	goodValue = possibleValue;
-	            }catch(NumberFormatException e){
-	            	text.setText(goodValue);
-	            	return false;
-	            }
-	            ElementSettingTab.this.mainPanel.setBuildingStructureLambda( Double.valueOf( goodValue ) );
-	            //ElementSettingTab.this.mainPanel.revalidateAndRepaint();
-
-	            return true;
-			}
-		});
 		
+		
+		//
+		// Rajzolat szin
+		//
 		ColorSelector lineColorSelector = new ColorSelector();
 		lineColorSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getElementLineColor() );
-		lineColorSelector.addActionListener( new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		
 				
-				ColorSelector cs = (ColorSelector) e.getSource();
-				ElementSettingTab.this.mainPanel.setElementLineColor( cs.getSelectedColor() );
-			}
-			
-		});
-				
+		//
+		// Kitolto szin
+		//
 		ColorSelector backgroundColorSelector = new ColorSelector();
 		backgroundColorSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getElementBackgroundColor() );
-		backgroundColorSelector.addActionListener( new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				ColorSelector cs = (ColorSelector) e.getSource();
-				ElementSettingTab.this.mainPanel.setElementBackgroundColor( cs.getSelectedColor() );
-				
-			}
-		});
 		
 		ButtonGroup fillingTypeGroup = new ButtonGroup();
 		patternTypeColorSelector = new JRadioButton("Szín", false );
@@ -180,7 +151,9 @@ public class ElementSettingTab extends JPanel{
 		patternTypeRowSelector = new JRadioButton("Sor kitöltés", false );
 		fillingTypeGroup.add( patternTypeRowSelector );
 		
+		//
 		//Letrehozza a Homogen mintazatot valaszto combobox-ot
+		//
 		homogenPatternSelector = new PatternSelector();
 		//Feltolti a combobox-ot az elemekkel
 		for( int i = 0; i < HOMOGENEOUS_PATTERN.values().length; i++ ){
@@ -188,19 +161,12 @@ public class ElementSettingTab extends JPanel{
 		}
 		//Kivalasztja a default erteket
 		homogenPatternSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getHomogenPattern().ordinal() );
-		//Figyelo interfesz hozzaadasa
-		homogenPatternSelector.addActionListener( new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				PatternSelector ps = (PatternSelector)e.getSource();
-				ElementSettingTab.this.mainPanel.setHomogenPattern( HOMOGENEOUS_PATTERN.values()[ ps.getSelectedIndex() ] );
-				
-			}
-		});
+		
 
+
+		//
 		//Letrehozza a Row mintazatot valaszto combobox-ot
+		//
 		rowPatternSelector = new PatternSelector();
 		//Feltolti a combobox-ot az elemekkel
 		for( int i = 0; i < ROW_PATTERN.values().length; i++ ){
@@ -208,58 +174,6 @@ public class ElementSettingTab extends JPanel{
 		}
 		//Kivalasztja a default erteket
 		rowPatternSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getRowPattern().ordinal() );
-		//Figyelo interface hozzaadasa
-		rowPatternSelector.addActionListener( new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				PatternSelector ps = (PatternSelector)e.getSource();
-				ElementSettingTab.this.mainPanel.setRowPattern( ROW_PATTERN.values()[ ps.getSelectedIndex() ] );
-				
-			}
-		});
-		
-		//Ide kell helyezni, mert olyan mezore hivatkozik ami kesobb lenne definialva
-		patternTypeColorSelector.addChangeListener( new ChangeListener(){
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				AbstractButton aButton = (AbstractButton)e.getSource();
-		        ButtonModel aModel = aButton.getModel();
-		        //boolean armed = aModel.isArmed();
-		        //boolean pressed = aModel.isPressed();
-		        boolean selected = aModel.isSelected();
-		        
-		        if( selected ){
-		        	ElementSettingTab.this.mainPanel.setPatternType( PATTERN_TYPE.COLOR );
-		        	homogenPatternSelector.setEnabled( false );
-		        	rowPatternSelector.setEnabled( false );
-		        }
-			}			
-		});
-		patternTypeHomogenSelector.addChangeListener( new ChangeListener(){
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				
-		        ButtonModel aModel = ((AbstractButton)e.getSource()).getModel();
-		        if( aModel.isSelected() ){		        
-		        	ElementSettingTab.this.mainPanel.setPatternType( PATTERN_TYPE.HOMOGEN );
-		        	homogenPatternSelector.setEnabled( true );
-		        	rowPatternSelector.setEnabled( false );
-		        }
-			}			
-		});
-		patternTypeRowSelector.addChangeListener( new ChangeListener(){
-			@Override
-			public void stateChanged(ChangeEvent e) {
-		        ButtonModel aModel = ((AbstractButton)e.getSource()).getModel();
-		        if( aModel.isSelected() ){		        
-		        	ElementSettingTab.this.mainPanel.setPatternType( PATTERN_TYPE.ROW );
-		        	homogenPatternSelector.setEnabled( false );
-		        	rowPatternSelector.setEnabled( true );
-		        }
-			}			
-		});
 		
 		PATTERN_TYPE patternSelector = ElementSettingTab.this.mainPanel.getPatternType();
 		if( patternSelector.equals( PATTERN_TYPE.COLOR ) ){
@@ -368,94 +282,32 @@ public class ElementSettingTab extends JPanel{
 		openEdgeElementPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Szabadfelület", TitledBorder.LEFT, TitledBorder.TOP ) );		
 		GridBagConstraints openEdgeElementSelectorConstraints = new GridBagConstraints();
 
+		//
 		//AlphaBegin
+		//
 		JTextField openEdgeAlphaBeginField = new JTextField();
 		openEdgeAlphaBeginField.setColumns( 8 );
 		openEdgeAlphaBeginField.setText( String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeAlphaBegin() ) );
-		openEdgeAlphaBeginField.setInputVerifier( new InputVerifier() {
-			String goodValue =  String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeAlphaBegin() );
-			
-			@Override
-			public boolean verify(JComponent input) {
-				JTextField text = (JTextField)input;
-	            String possibleValue = text.getText();
-	            try{
-	            	Double.valueOf(possibleValue);
-	            	goodValue = possibleValue;
-	            }catch(NumberFormatException e){
-	            	text.setText(goodValue);
-	            	return false;
-	            }
-	            ElementSettingTab.this.mainPanel.setAlphaBegin( Double.valueOf( goodValue ) );
-	            //ElementSettingTab.this.mainPanel.revalidateAndRepaint();
+		
 
-	            return true;
-			}
-		});
-
+		//
 		//AlphaEnd
+		//
 		JTextField openEdgeAlphaEndField = new JTextField();
 		openEdgeAlphaEndField.setColumns( 8 );
 		openEdgeAlphaEndField.setText( String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeAlphaEnd() ) );
-		openEdgeAlphaEndField.setInputVerifier( new InputVerifier() {
-			String goodValue =  String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeAlphaEnd() );
-			
-			@Override
-			public boolean verify(JComponent input) {
-				JTextField text = (JTextField)input;
-	            String possibleValue = text.getText();
-	            try{
-	            	Double.valueOf(possibleValue);
-	            	goodValue = possibleValue;
-	            }catch(NumberFormatException e){
-	            	text.setText(goodValue);
-	            	return false;
-	            }
-	            ElementSettingTab.this.mainPanel.setAlphaEnd( Double.valueOf( goodValue ) );
-	            //ElementSettingTab.this.mainPanel.revalidateAndRepaint();
-
-	            return true;
-			}
-		});
+		
 
 		//Temperature
 		JTextField openEdgeTemperatureField = new JTextField();
 		openEdgeTemperatureField.setColumns( 8 );
 		openEdgeTemperatureField.setText( String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeTemperature() ) );
-		openEdgeTemperatureField.setInputVerifier( new InputVerifier() {
-			String goodValue =  String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeTemperature() );
-			
-			@Override
-			public boolean verify(JComponent input) {
-				JTextField text = (JTextField)input;
-	            String possibleValue = text.getText();
-	            try{
-	            	Double.valueOf(possibleValue);
-	            	goodValue = possibleValue;
-	            }catch(NumberFormatException e){
-	            	text.setText(goodValue);
-	            	return false;
-	            }
-	            ElementSettingTab.this.mainPanel.setOpenEdgeTemperature( Double.valueOf( goodValue ) );
-	            //ElementSettingTab.this.mainPanel.revalidateAndRepaint();
-
-	            return true;
-			}
-		});
+		
 
 		//Color
 		ColorSelector openEdgeColorSelector = new ColorSelector();
 		openEdgeColorSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getOpenEdgeColor() );
-		openEdgeColorSelector.addActionListener( new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				ColorSelector cs = (ColorSelector) e.getSource();
-				ElementSettingTab.this.mainPanel.setOpenEdgeColor( cs.getSelectedColor() );
-				
-			}
-		});
+
 		
 		row = 0;
 		//1. sor alpha begin
@@ -545,17 +397,7 @@ public class ElementSettingTab extends JPanel{
 		//Color
 		ColorSelector symmetricEdgeColorSelector = new ColorSelector();
 		symmetricEdgeColorSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getSymmetricEdgeColor() );
-		symmetricEdgeColorSelector.addActionListener( new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
 				
-				ColorSelector cs = (ColorSelector) e.getSource();
-				ElementSettingTab.this.mainPanel.setSymmetricEdgeColor( cs.getSelectedColor() );
-				
-			}
-		});
-		
 		row = 0;
 		//1. sor alpha begin
 		symmetricEdgeElementSelectorConstraints.gridx = 0;
@@ -578,7 +420,6 @@ public class ElementSettingTab extends JPanel{
 		//----------------------------------
 		JPanel drawingElementPanel = new JPanel();
 		drawingElementPanel.setLayout( new GridBagLayout() );
-		//drawingElementPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder( Color.black ), "Rajzolandó elem", TitledBorder.LEFT, TitledBorder.TOP ) );		
 		GridBagConstraints drawingElementSelectorConstraints = new GridBagConstraints();
 		
 		ChangeListener drawingElementSelectorChangeListener = new ChangeListener(){
@@ -633,6 +474,283 @@ public class ElementSettingTab extends JPanel{
 		}else if( ElementSettingTab.this.mainPanel.getDrawingElement().equals( DRAWING_ELEMENT.OPENEDGE ) ){
 			openEdgeSelector.setSelected( true );
 		}
+		
+		
+		//--------------------------------------------------------
+		//
+		// Most jonnek az elemek figyelo interface-enek hozzaadasa
+		// mert kulonben minden default ertek kivalasztasanal
+		// megnyomna a gombokat, amik meg nem is leteznek
+		//
+		//--------------------------------------------------------
+		
+		//
+		// Rajzi elemek
+		//
+		
+		//Lambda ertek
+		lambdaField.setInputVerifier( new InputVerifier() {
+			String goodValue =  String.valueOf( ElementSettingTab.this.mainPanel.getBuildingStructureLambda() );
+			
+			@Override
+			public boolean verify(JComponent input) {
+				JTextField text = (JTextField)input;
+	            String possibleValue = text.getText();
+	            try{
+	            	Double.valueOf(possibleValue);
+	            	goodValue = possibleValue;
+	            }catch(NumberFormatException e){
+	            	text.setText(goodValue);
+	            	return false;
+	            }
+	            ElementSettingTab.this.mainPanel.setBuildingStructureLambda( Double.valueOf( goodValue ) );
+	            
+	            //Kivalasztja az Epuletszerkezet rajzolo gombot, hiszen annak  a tulajdonsagait valtoztattuak
+	            buildingElementSelector.doClick();
+	            
+	            return true;
+			}
+		});
+		
+		//Rajzolat szin
+		lineColorSelector.addActionListener( new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				ColorSelector cs = (ColorSelector) e.getSource();
+				ElementSettingTab.this.mainPanel.setElementLineColor( cs.getSelectedColor() );
+				
+	            //Kivalasztja az Epuletszerkezet rajzolo gombot, hiszen annak  a tulajdonsagait valtoztattuak
+	            buildingElementSelector.doClick();
+
+			}
+			
+		});
+		
+		//Kitoltoszin szin
+		backgroundColorSelector.addActionListener( new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				ColorSelector cs = (ColorSelector) e.getSource();
+				ElementSettingTab.this.mainPanel.setElementBackgroundColor( cs.getSelectedColor() );
+				
+	            //Kivalasztja az Epuletszerkezet rajzolo gombot, hiszen annak  a tulajdonsagait valtoztattuak
+	            buildingElementSelector.doClick();
+				
+			}
+		});
+		
+		//Homogen kitolto szelektor
+		homogenPatternSelector.addActionListener( new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				PatternSelector ps = (PatternSelector)e.getSource();
+				ElementSettingTab.this.mainPanel.setHomogenPattern( HOMOGENEOUS_PATTERN.values()[ ps.getSelectedIndex() ] );
+				
+	            //Kivalasztja az Epuletszerkezet rajzolo gombot, hiszen annak  a tulajdonsagait valtoztattuak
+	            buildingElementSelector.doClick();
+				
+			}
+		});
+		
+		//Sorkitoltes szelektor
+		rowPatternSelector.addActionListener( new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				PatternSelector ps = (PatternSelector)e.getSource();
+				ElementSettingTab.this.mainPanel.setRowPattern( ROW_PATTERN.values()[ ps.getSelectedIndex() ] );
+			
+	            //Kivalasztja az Epuletszerkezet rajzolo gombot, hiszen annak  a tulajdonsagait valtoztattuak
+	            buildingElementSelector.doClick();
+
+			}
+		});
+		
+		// Szin radio button
+		patternTypeColorSelector.addChangeListener( new ChangeListener(){
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				
+				AbstractButton aButton = (AbstractButton)e.getSource();
+		        ButtonModel aModel = aButton.getModel();
+		        //boolean armed = aModel.isArmed();
+		        //boolean pressed = aModel.isPressed();
+		        boolean selected = aModel.isSelected();
+		        
+		        if( selected ){
+		        	ElementSettingTab.this.mainPanel.setPatternType( PATTERN_TYPE.COLOR );
+		        	homogenPatternSelector.setEnabled( false );
+		        	rowPatternSelector.setEnabled( false );
+		        	
+		            //Kivalasztja az Epuletszerkezet rajzolo gombot, hiszen annak  a tulajdonsagait valtoztattuak
+		            buildingElementSelector.doClick();
+
+		        }
+			}			
+		});
+		
+		// Homogen kitoltes radio button
+		patternTypeHomogenSelector.addChangeListener( new ChangeListener(){
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				
+		        ButtonModel aModel = ((AbstractButton)e.getSource()).getModel();
+		        if( aModel.isSelected() ){		        
+		        	ElementSettingTab.this.mainPanel.setPatternType( PATTERN_TYPE.HOMOGEN );
+		        	homogenPatternSelector.setEnabled( true );
+		        	rowPatternSelector.setEnabled( false );
+		        	
+		            //Kivalasztja az Epuletszerkezet rajzolo gombot, hiszen annak  a tulajdonsagait valtoztattuak
+		            buildingElementSelector.doClick();
+
+		        }
+			}			
+		});
+		
+		// Sor kitoltes radiobutton
+		patternTypeRowSelector.addChangeListener( new ChangeListener(){
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+		        ButtonModel aModel = ((AbstractButton)e.getSource()).getModel();
+		        if( aModel.isSelected() ){		        
+		        	ElementSettingTab.this.mainPanel.setPatternType( PATTERN_TYPE.ROW );
+		        	homogenPatternSelector.setEnabled( false );
+		        	rowPatternSelector.setEnabled( true );
+		        	
+		            //Kivalasztja az Epuletszerkezet rajzolo gombot, hiszen annak  a tulajdonsagait valtoztattuak
+		            buildingElementSelector.doClick();
+
+		        }
+			}			
+		});
+		
+		
+		//
+		// Szabad felulet
+		//
+		
+		//Alpha begin
+		openEdgeAlphaBeginField.setInputVerifier( new InputVerifier() {
+			String goodValue =  String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeAlphaBegin() );
+			
+			@Override
+			public boolean verify(JComponent input) {
+				JTextField text = (JTextField)input;
+	            String possibleValue = text.getText();
+	            try{
+	            	Double.valueOf(possibleValue);
+	            	goodValue = possibleValue;
+	            }catch(NumberFormatException e){
+	            	text.setText(goodValue);
+	            	return false;
+	            }
+	            ElementSettingTab.this.mainPanel.setAlphaBegin( Double.valueOf( goodValue ) );
+	            //ElementSettingTab.this.mainPanel.revalidateAndRepaint();
+	            
+	            //Kivalasztja a Szabad felulet-et rajzolo gombot, hiszen annak  a tulajdonsagait valtoztattuak
+	            openEdgeSelector.doClick();
+
+	            return true;
+			}
+		});
+		
+		//Alpha end
+		openEdgeAlphaEndField.setInputVerifier( new InputVerifier() {
+			String goodValue =  String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeAlphaEnd() );
+			
+			@Override
+			public boolean verify(JComponent input) {
+				JTextField text = (JTextField)input;
+	            String possibleValue = text.getText();
+	            try{
+	            	Double.valueOf(possibleValue);
+	            	goodValue = possibleValue;
+	            }catch(NumberFormatException e){
+	            	text.setText(goodValue);
+	            	return false;
+	            }
+	            ElementSettingTab.this.mainPanel.setAlphaEnd( Double.valueOf( goodValue ) );
+	            //ElementSettingTab.this.mainPanel.revalidateAndRepaint();
+
+	            //Kivalasztja a Szabad felulet-et rajzolo gombot, hiszen annak  a tulajdonsagait valtoztattuak
+	            openEdgeSelector.doClick();
+	            
+	            return true;
+			}
+		});
+		
+		//Temperature
+		openEdgeTemperatureField.setInputVerifier( new InputVerifier() {
+			String goodValue =  String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeTemperature() );
+			
+			@Override
+			public boolean verify(JComponent input) {
+				JTextField text = (JTextField)input;
+	            String possibleValue = text.getText();
+	            try{
+	            	Double.valueOf(possibleValue);
+	            	goodValue = possibleValue;
+	            }catch(NumberFormatException e){
+	            	text.setText(goodValue);
+	            	return false;
+	            }
+	            ElementSettingTab.this.mainPanel.setOpenEdgeTemperature( Double.valueOf( goodValue ) );
+	            //ElementSettingTab.this.mainPanel.revalidateAndRepaint();
+
+	            //Kivalasztja a Szabad felulet-et rajzolo gombot, hiszen annak  a tulajdonsagait valtoztattuak
+	            openEdgeSelector.doClick();
+	            
+	            return true;
+			}
+		});
+		
+		//Color
+		openEdgeColorSelector.addActionListener( new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				ColorSelector cs = (ColorSelector) e.getSource();
+				ElementSettingTab.this.mainPanel.setOpenEdgeColor( cs.getSelectedColor() );
+				
+				 //Kivalasztja a Szabad felulet-et rajzolo gombot, hiszen annak  a tulajdonsagait valtoztattuak
+	            openEdgeSelector.doClick();
+	            
+			}
+		});
+		
+		//
+		// Szimmetria el
+		//
+		
+		//Color
+		symmetricEdgeColorSelector.addActionListener( new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				ColorSelector cs = (ColorSelector) e.getSource();
+				ElementSettingTab.this.mainPanel.setSymmetricEdgeColor( cs.getSelectedColor() );
+				
+				 //Kivalasztja a Szabad felulet-et rajzolo gombot, hiszen annak  a tulajdonsagait valtoztattuak
+	            symmetricEdgeSelector.doClick();
+	            
+			}
+		});
+		
+		
+		//
+		//-----------------------------------------------------
+		//
+		
 		
 		
 		
