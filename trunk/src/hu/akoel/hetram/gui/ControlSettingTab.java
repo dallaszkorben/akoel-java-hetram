@@ -226,10 +226,8 @@ public class ControlSettingTab extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
-
 				//Elinditja a kalkulaciot a megadott ertekekkel
 				ControlSettingTab.this.mainPanel.doCalculate( ControlSettingTab.this.mainPanel.getCalculationPrecision() );
-
 			
 			} 
 			
