@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -16,9 +17,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.swing.border.Border;
+
 import hu.akoel.hetram.accessories.BigDecimalPosition;
 import hu.akoel.hetram.accessories.Orientation;
 import hu.akoel.hetram.connectors.AThermicPointThermicConnector;
+import hu.akoel.hetram.connectors.IThermicConnector;
+import hu.akoel.hetram.connectors.OpenEdgeThermicConnector;
+import hu.akoel.hetram.connectors.XThermicPointThermicConnector;
+import hu.akoel.hetram.connectors.YThermicPointThermicConnector;
 import hu.akoel.hetram.gui.MainPanel;
 import hu.akoel.hetram.gui.drawingelements.HetramBuildingStructureElement;
 import hu.akoel.hetram.gui.drawingelements.HetramDrawnElement;
@@ -453,21 +459,18 @@ public class HetramCanvas extends DrawnBlockCanvas{
 				
 					//Az aktualis vertikalis point
 					y = (new BigDecimal(String.valueOf(i)).multiply(verticalAppliedDifference )).add( startYPoint ).setScale( scale, RoundingMode.HALF_UP );					
-					//y = CommonOperations.get10Decimals( startYPoint + i * verticalAppliedDifference );
 				
 					//Elindul a kezdo horizontalis pontbol
 					BigDecimal x = startXPoint;			
 				
 					//Horizontalis felbontas
 					int jSteps = endXPoint.subtract( x ).divide(horizontalAppliedDifference, scale, RoundingMode.HALF_UP ).intValue();
-					//int jSteps = (int)Math.round((endXPoint - x) / horizontalAppliedDifference);
 				
 					//Vegig a horizontalis pontokon
 					for( int j = 0; j <= jSteps; j++ ){
 				
 						//Az aktualis horizontalis pont
 						x = (new BigDecimal(String.valueOf(j)).multiply(horizontalAppliedDifference )).add( startXPoint ).setScale( scale, RoundingMode.HALF_UP );		
-						//x = CommonOperations.get10Decimals( startXPoint + j * horizontalAppliedDifference );
 
 						//Az aktualis pont pozicioja
 						BigDecimalPosition position = new BigDecimalPosition(x, y);
@@ -503,7 +506,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 
 							//Veszem a baloldali kozvetlen kapcsolatat, ami bizonyosan letezik, mivel belso pont						
 							BigDecimal previousX = new BigDecimal( String.valueOf( j - 1 ) ).multiply( horizontalAppliedDifference ).add( startXPoint ).setScale( scale, RoundingMode.HALF_UP);						
-							//double previousX = CommonOperations.get10Decimals( startXPoint + (j - 1) * horizontalAppliedDifference );
 
 							//Es osszekottetest letesitek vele
 							tp.connectToThermicPoint(thermicPointMap.get(new BigDecimalPosition( previousX, y ) ), Orientation.WEST, lambda );
@@ -531,8 +533,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 							//Es osszekottetest letesitek vele
 							tp.connectToThermicPoint(thermicPointMap.get(new BigDecimalPosition( x, previousY ) ), Orientation.SOUTH, lambda );
 							
-							//double previousY = CommonOperations.get10Decimals( startYPoint + (i - 1) * verticalAppliedDifference );						
-							//tp.connectToThermicPoint(thermicPointMap.get(new Position(x, previousY)), Orientation.SOUTH, lambda );
 						}					
 					}
 				}
@@ -571,28 +571,24 @@ public class HetramCanvas extends DrawnBlockCanvas{
 			
 				//Vertikalis felbontas
 				int iSteps = endYPoint.subtract( y ).divide( verticalAppliedDifference , scale, RoundingMode.HALF_UP  ).intValue();
-				//int iSteps = (int)Math.round((endYPoint - y) / verticalAppliedDifference );
 			
 				//Vegig a vertikalis pontokon
 				for( int i = 0; i <= iSteps; i++){
 
 					//Az aktualis vertikalis pont
-					y = (new BigDecimal(String.valueOf(i)).multiply(verticalAppliedDifference )).add( startYPoint ).setScale( scale, RoundingMode.HALF_UP );	
-					//y = CommonOperations.get10Decimals( startYPoint + i * verticalAppliedDifference );				
+					y = (new BigDecimal(String.valueOf(i)).multiply(verticalAppliedDifference )).add( startYPoint ).setScale( scale, RoundingMode.HALF_UP );				
 				
 					//Kezdo horizontalis pontbol indulok
 					BigDecimal x = startXPoint;		
 				
 					//Horizontalis felbontas
 					int jSteps = endXPoint.subtract( x ).divide(horizontalAppliedDifference, scale, RoundingMode.HALF_UP ).intValue();
-					//int jSteps = (int)Math.round((endXPoint - x) / horizontalAppliedDifference);
 				
 					//Vegig a horizontalis pontokon
 					for( int j = 0; j <= jSteps; j++ ){
 					
 						//Az aktualis horizontalis pont
 						x = (new BigDecimal(String.valueOf(j)).multiply(horizontalAppliedDifference )).add( startXPoint ).setScale( scale, RoundingMode.HALF_UP );		
-						//x = CommonOperations.get10Decimals( startXPoint + j * horizontalAppliedDifference );
 					
 						//Az aktualis pont pozicioja
 						BigDecimalPosition position = new BigDecimalPosition(x, y);
@@ -619,7 +615,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 
 								//Megfelelo pozicio
 								if( openEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y.compareTo( openEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( openEdgeElementWithPosition.element.getY2() ) <= 0 ){
-								//if( openEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y >= openEdgeElementWithPosition.element.getY1() && y <= openEdgeElementWithPosition.element.getY2() ){
 									
 									//Alfa es homerseklet kapcsolasa
 									actualThermicPoint.connectToOpenEdge( Orientation.WEST, openEdgeElementWithPosition.element.getAlphaByPosition( y.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );		
@@ -638,7 +633,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 
 								//Megfelelo pozicio
 								if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y.compareTo( symmetricEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( symmetricEdgeElementWithPosition.element.getY2() ) <= 0 ){
-								//if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y >= symmetricEdgeElementWithPosition.element.getY1() && y <= symmetricEdgeElementWithPosition.element.getY2() ){
 
 									actualThermicPoint.connectToSymmetricEdge( Orientation.WEST );
 									break;		
@@ -670,7 +664,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 						
 								//Megfelelo pozicio
 								if( openEdgeElementWithPosition.orientation.equals( Orientation.EAST ) && y.compareTo( openEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( openEdgeElementWithPosition.element.getY2() ) <= 0 ){
-								//if( openEdgeElementWithPosition.orientation.equals( Orientation.EAST ) && y >= openEdgeElementWithPosition.element.getY1() && y <= openEdgeElementWithPosition.element.getY2() ){									
 							
 									//Alfa es homerseklet kapcsolasa
 									actualThermicPoint.connectToOpenEdge( Orientation.EAST, openEdgeElementWithPosition.element.getAlphaByPosition( y.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );		
@@ -688,7 +681,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 
 								//Megfelelo pozicio
 								if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.EAST ) && y.compareTo( symmetricEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( symmetricEdgeElementWithPosition.element.getY2() ) <= 0 ){
-								//if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.EAST ) && y >= symmetricEdgeElementWithPosition.element.getY1() && y <= symmetricEdgeElementWithPosition.element.getY2() ){
 
 									actualThermicPoint.connectToSymmetricEdge( Orientation.EAST );
 									break;																	
@@ -719,7 +711,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 						
 								//Megfelelo pozicio
 								if( openEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x.compareTo( openEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( openEdgeElementWithPosition.element.getX2() ) <= 0 ){
-								//if( openEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x >= openEdgeElementWithPosition.element.getX1() && x <= openEdgeElementWithPosition.element.getX2() ){
 						
 									//Alfa es homerseklet kapcsolasa
 									actualThermicPoint.connectToOpenEdge( Orientation.SOUTH, openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );		
@@ -737,7 +728,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 
 								//Megfelelo pozicio
 								if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x.compareTo( symmetricEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( symmetricEdgeElementWithPosition.element.getX2() ) <= 0 ){
-								//if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x >= symmetricEdgeElementWithPosition.element.getX1() && x <= symmetricEdgeElementWithPosition.element.getX2() ){									
 
 									actualThermicPoint.connectToSymmetricEdge( Orientation.SOUTH );
 									break;																	
@@ -768,7 +758,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 						
 								//Megfelelo pozicio
 								if( openEdgeElementWithPosition.orientation.equals( Orientation.NORTH) && x.compareTo( openEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( openEdgeElementWithPosition.element.getX2() ) <= 0 ){
-								//if( openEdgeElementWithPosition.orientation.equals( Orientation.NORTH) && x >= openEdgeElementWithPosition.element.getX1() && x <= openEdgeElementWithPosition.element.getX2() ){
 									
 									//Alfa es homerseklet kapcsolasa
 									actualThermicPoint.connectToOpenEdge( Orientation.NORTH, openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );		
@@ -786,7 +775,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 
 								//Megfelelo pozicio
 								if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.NORTH ) && x.compareTo( symmetricEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( symmetricEdgeElementWithPosition.element.getX2() ) <= 0 ){
-								//if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.NORTH ) && x >= symmetricEdgeElementWithPosition.element.getX1() && x <= symmetricEdgeElementWithPosition.element.getX2() ){									
 
 									actualThermicPoint.connectToSymmetricEdge( Orientation.NORTH );
 									break;																	
@@ -805,7 +793,168 @@ public class HetramCanvas extends DrawnBlockCanvas{
 			}
 		}
 		
-		return new ThermicPointList( thermicPointMap.values() );
+		//--------------------------------------------------
+		//
+		// Most mar minden termikus pont es kapcsolata meg van
+		// Vegul a Calculation miatt extra informaciok 
+		// hozzaadasa hogy ne kelljen mindig ujra szamolni 
+		//
+		//--------------------------------------------------
+		
+		Collection<ThermicPoint> tpl = thermicPointMap.values();
+
+		IThermicConnector cN;
+		IThermicConnector cE;
+		IThermicConnector cS;
+		IThermicConnector cW;
+		
+		double dX = 0; // Az vizsgalt pontban szamolt szelesseg
+		double dY = 0; // Az vizsgalt pontban szamolt magassag
+		
+		double dNX = 0; // A vizsgalt ponttol E-ra levo pont szelessege
+		double dSX = 0; // A vizsgalt ponttol D-re levo pont szelessege
+		double dEY = 0; // A vizsgalt ponttol K-re levo pont szelessege
+		double dWY = 0; // A vizsgalt ponttol NY-ra levo pont szelessege
+		
+		//double northDeltaNormal; //E-i iranyban a ra meroleges delta
+		//double southDeltaNormal; //D-i iranyban a ra meroleges delta
+		//double eastDeltaNormal; //K-i iranyban a ra meroleges delta
+		//double westDeltaNormal; //NY-i iranyban a ra meroleges delta
+		
+		//double northDelta; //E-i iranyban a delta
+		//double southDelta; //D-i iranyban a delta
+		//double eastDelta; //K-i iranyban a delta
+		//double westDelta; //W-i iranyban a delta
+		
+		//Minden elemen vegig megyek megegyszer utoljara
+		for( ThermicPoint tp : tpl ){
+
+			cN = tp.getNorthThermicConnector();
+			cE = tp.getEastThermicConnector();
+			cS = tp.getSouthThermicConnector();
+			cW = tp.getWestThermicConnector();
+
+			//Az adott pont horizontalis delta
+			if (cE instanceof XThermicPointThermicConnector && cW instanceof XThermicPointThermicConnector) {
+				dX = ((XThermicPointThermicConnector) cE).getDelta().doubleValue();
+			} else if (cE instanceof XThermicPointThermicConnector) {
+				dX = ((XThermicPointThermicConnector) cE).getDelta().doubleValue() / 2;
+			} else if (cW instanceof XThermicPointThermicConnector) {
+				dX = ((XThermicPointThermicConnector) cW).getDelta().doubleValue() / 2;
+			}
+			
+			//Az adott pont vertikalis delta
+			if (cN instanceof YThermicPointThermicConnector && cS instanceof YThermicPointThermicConnector) {
+				dY = ((YThermicPointThermicConnector) cN).getDelta().doubleValue();
+			} else if (cN instanceof YThermicPointThermicConnector) {
+				dY = ((YThermicPointThermicConnector) cN).getDelta().doubleValue() / 2;
+			} else if (cS instanceof YThermicPointThermicConnector) {
+				dY = ((YThermicPointThermicConnector) cS).getDelta().doubleValue() / 2;
+			}
+			
+			//
+			// E-i Termikus Pont-Termikus Pont
+			//
+			if (cN instanceof YThermicPointThermicConnector) {
+
+				YThermicPointThermicConnector ntc = (YThermicPointThermicConnector) cN;
+
+				//E-i szomszed horizontalis delta 
+				IThermicConnector etc = ntc.getNorthThermicPoint().getEastThermicConnector();
+				IThermicConnector wtc = ntc.getNorthThermicPoint().getWestThermicConnector();
+				if (etc instanceof XThermicPointThermicConnector && wtc instanceof XThermicPointThermicConnector) {
+					dNX = ((XThermicPointThermicConnector) etc).getDelta().doubleValue();
+				} else if (etc instanceof XThermicPointThermicConnector) {
+					dNX = ((XThermicPointThermicConnector) etc).getDelta().doubleValue() / 2;
+				} else if (wtc instanceof XThermicPointThermicConnector) {
+					dNX = ((XThermicPointThermicConnector) wtc).getDelta().doubleValue() / 2;
+				}
+
+				tp.setNorthDeltaNormal(Math.min(dNX, dX));
+				tp.setNorthDelta(ntc.getDelta().doubleValue());
+				//northDeltaNormal = Math.min(dNX, dX);
+				//northDelta = ntc.getDelta().doubleValue();
+			
+			// Termikus Pont - Szabad felszin
+			} else if (cN instanceof OpenEdgeThermicConnector) {
+				tp.setNorthDeltaNormal( dX );
+			}
+			
+			//
+			// D-i Termikus Pont-Termikus Pont
+			//
+			if (cS instanceof YThermicPointThermicConnector) {
+
+				YThermicPointThermicConnector stc = (YThermicPointThermicConnector) cS;
+
+				IThermicConnector etc = stc.getSouthThermicPoint().getEastThermicConnector();
+				IThermicConnector wtc = stc.getSouthThermicPoint().getWestThermicConnector();
+				if (etc instanceof XThermicPointThermicConnector && wtc instanceof XThermicPointThermicConnector) {
+					dSX = ((XThermicPointThermicConnector) etc).getDelta().doubleValue();
+				} else if (etc instanceof XThermicPointThermicConnector) {
+					dSX = ((XThermicPointThermicConnector) etc).getDelta().doubleValue() / 2;
+				} else if (wtc instanceof XThermicPointThermicConnector) {
+					dSX = ((XThermicPointThermicConnector) wtc).getDelta().doubleValue() / 2;
+				}
+
+				tp.setSouthDeltaNormal(Math.min(dSX, dX));
+				tp.setSouthDelta(stc.getDelta().doubleValue());
+				//southDeltaNormal = Math.min(dSX, dX);
+				//southDelta = stc.getDelta().doubleValue();
+			
+			} else if (cS instanceof OpenEdgeThermicConnector) {
+				tp.setSouthDeltaNormal(dX);
+			}
+			
+			//
+			// K-i Termikus Pont-Termikus Pont
+			//
+			if (cE instanceof XThermicPointThermicConnector) {
+
+				XThermicPointThermicConnector etc = (XThermicPointThermicConnector) cE;
+
+				IThermicConnector ntc = etc.getEastThermicPoint().getNorthThermicConnector();
+				IThermicConnector stc = etc.getEastThermicPoint().getSouthThermicConnector();
+				if (ntc instanceof YThermicPointThermicConnector && stc instanceof YThermicPointThermicConnector) {
+					dEY = ((YThermicPointThermicConnector) ntc).getDelta().doubleValue();
+				} else if (ntc instanceof YThermicPointThermicConnector) {
+					dEY = ((YThermicPointThermicConnector) ntc).getDelta().doubleValue() / 2;
+				} else if (stc instanceof YThermicPointThermicConnector) {
+					dEY = ((YThermicPointThermicConnector) stc).getDelta().doubleValue() / 2;
+				}
+
+				tp.setEastDeltaNormal(Math.min(dEY, dY));
+				tp.setEastDelta(etc.getDelta().doubleValue());
+			
+			}else if (cE instanceof OpenEdgeThermicConnector) {
+				tp.setEastDeltaNormal(dY);
+			}
+
+			//
+			// NY-i Termikus Pont-Termikus Pont
+			if (cW instanceof XThermicPointThermicConnector) {
+
+				XThermicPointThermicConnector wtc = (XThermicPointThermicConnector) cW;
+
+				IThermicConnector ntc = wtc.getWestThermicPoint().getNorthThermicConnector();
+				IThermicConnector stc = wtc.getWestThermicPoint().getSouthThermicConnector();
+				if (ntc instanceof YThermicPointThermicConnector && stc instanceof YThermicPointThermicConnector) {
+					dWY = ((YThermicPointThermicConnector) ntc).getDelta().doubleValue();
+				} else if (ntc instanceof YThermicPointThermicConnector) {
+					dWY = ((YThermicPointThermicConnector) ntc).getDelta().doubleValue() / 2;
+				} else if (stc instanceof YThermicPointThermicConnector) {
+					dWY = ((YThermicPointThermicConnector) stc).getDelta().doubleValue() / 2;
+				}
+
+				tp.setWestDeltaNormal( Math.min(dWY, dY) );
+				tp.setWestDelta(wtc.getDelta().doubleValue());
+			
+			}else if (cW instanceof OpenEdgeThermicConnector) {
+				tp.setWestDeltaNormal( dY );
+			}
+		}	
+		
+		return new ThermicPointList( tpl );
 		
 	}
 	

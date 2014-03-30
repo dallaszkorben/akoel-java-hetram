@@ -196,6 +196,7 @@ public class ControlSettingTab extends JPanel {
 		JTextField calculationPrecisionField = new JTextField();
 		calculationPrecisionField.setEditable(true);
 		calculationPrecisionField.setColumns(4);
+		
 		calculationPrecisionField.setText( String.valueOf(ControlSettingTab.this.mainPanel.getCalculationPrecision() ) );
 		calculationPrecisionField.setInputVerifier(new InputVerifier() {
 			String goodValue = String.valueOf(ControlSettingTab.this.mainPanel.getCalculationPrecision());

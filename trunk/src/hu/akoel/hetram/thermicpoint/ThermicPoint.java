@@ -26,6 +26,16 @@ public class ThermicPoint {
 	private Double southCurrent;
 	private Double westCurrent;
 	
+	private double northDeltaNormal;
+	private double southDeltaNormal;
+	private double eastDeltaNormal;
+	private double westDeltaNormal;
+	
+	private double northDelta;
+	private double southDelta;
+	private double eastDelta;
+	private double westDelta;
+	
 	/**
 	 * Egy Termikus Pont letrehozasa
 	 * 
@@ -123,6 +133,72 @@ public class ThermicPoint {
 		}
 	}
 	
+	
+	
+	public double getNorthDelta() {
+		return northDelta;
+	}
+
+	public void setNorthDelta(double northDelta) {
+		this.northDelta = northDelta;
+	}
+
+	public double getSouthDelta() {
+		return southDelta;
+	}
+
+	public void setSouthDelta(double southDelta) {
+		this.southDelta = southDelta;
+	}
+
+	public double getEastDelta() {
+		return eastDelta;
+	}
+
+	public void setEastDelta(double eastDelta) {
+		this.eastDelta = eastDelta;
+	}
+
+	public double getWestDelta() {
+		return westDelta;
+	}
+
+	public void setWestDelta(double westDelta) {
+		this.westDelta = westDelta;
+	}
+
+	public double getNorthDeltaNormal() {
+		return northDeltaNormal;
+	}
+
+	public void setNorthDeltaNormal(double northDeltaNormal) {
+		this.northDeltaNormal = northDeltaNormal;
+	}
+
+	public double getSouthDeltaNormal() {
+		return southDeltaNormal;
+	}
+
+	public void setSouthDeltaNormal(double southDeltaNormal) {
+		this.southDeltaNormal = southDeltaNormal;
+	}
+
+	public double getEastDeltaNormal() {
+		return eastDeltaNormal;
+	}
+
+	public void setEastDeltaNormal(double eastDeltaNormal) {
+		this.eastDeltaNormal = eastDeltaNormal;
+	}
+
+	public double getWestDeltaNormal() {
+		return westDeltaNormal;
+	}
+
+	public void setWestDeltaNormal(double westDeltaNormal) {
+		this.westDeltaNormal = westDeltaNormal;
+	}
+
 	public Double getNorthCurrent() {
 		return northCurrent;
 	}
