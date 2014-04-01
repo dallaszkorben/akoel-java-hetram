@@ -132,11 +132,15 @@ public class HetramMouseListener extends DrawnBlockMouseListener{
 			
 					selectedElement = element;
 
-					//Listahoz ad
+					//Hoaram osszegzo listahoz ad
 					canvas.getMainPanel().getSelectedOpenEdgeForSumQList().add( (OpenEdgeElement) selectedElement );
-					
+
 					//A kivalasztott OPENEDGE osszesitett bemeno aramat kell megjeleniteni 
 					canvas.getMainPanel().setQShow( QShow.OPENEDGE );
+					
+//Az OPENEDGE vonalában a hőmérsékletek megjelenítése
+//??Táblázat/grafikon??					
+canvas.getMainPanel().showThermicGraph( (OpenEdgeElement) selectedElement );	
 					
 					//Jelzem, hogy szukseges az ujrarajzolas
 					needRevalidate = true;
