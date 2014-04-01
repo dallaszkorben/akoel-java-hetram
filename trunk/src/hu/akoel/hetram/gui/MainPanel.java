@@ -4,6 +4,9 @@ import hu.akoel.hetram.HetramCanvas;
 import hu.akoel.hetram.HetramDrawnElementFactory;
 import hu.akoel.hetram.Hetram;
 import hu.akoel.hetram.SelectedOpenEdgeForSumQList;
+import hu.akoel.hetram.accessories.BigDecimalPosition;
+import hu.akoel.hetram.connectors.IThermicConnector;
+import hu.akoel.hetram.connectors.OpenEdgeThermicConnector;
 import hu.akoel.hetram.gui.ElementSettingTab.DRAWING_ELEMENT;
 import hu.akoel.hetram.gui.ElementSettingTab.HOMOGENEOUS_PATTERN;
 import hu.akoel.hetram.gui.ElementSettingTab.PATTERN_TYPE;
@@ -55,6 +58,8 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
@@ -94,9 +99,7 @@ public class MainPanel extends JFrame {
 	private static final String version = "1.1.0";
 
 	public static enum Mode {
-		DRAWING("Rajz mód"), 
-		ANALYSIS("Elemzés mód"), 
-		CALCULATION("Szamítás");
+		DRAWING("Rajz mód"), ANALYSIS("Elemzés mód"), CALCULATION("Szamítás");
 
 		private String name;
 
@@ -109,9 +112,8 @@ public class MainPanel extends JFrame {
 		}
 	}
 
-	public static enum QShow{
-		THERMICPOINT,
-		OPENEDGE
+	public static enum QShow {
+		THERMICPOINT, OPENEDGE
 	}
 
 	private static final int DEFAULT_WIDTH = 900;
@@ -121,7 +123,7 @@ public class MainPanel extends JFrame {
 	private static final Precision precision = Precision.per_1000;
 
 	private SelectedOpenEdgeForSumQList selectedOpenEdgeForSumQList = new SelectedOpenEdgeForSumQList();
-	
+
 	private ThermicPointList thermicPointList = null;
 
 	private StatusLine statusLine;
@@ -132,12 +134,11 @@ public class MainPanel extends JFrame {
 	// Canvas parameterei
 	private HetramCanvas myCanvas;
 	private Color background = Color.black;
-	private PossiblePixelPerUnits possiblePixelPerUnits = new PossiblePixelPerUnits( new PixelPerUnitValue( 1, 1 ) );
-	private TranslateValue positionToMiddle = new TranslateValue( 0.3, 0.6 );
+	private PossiblePixelPerUnits possiblePixelPerUnits = new PossiblePixelPerUnits(new PixelPerUnitValue(1, 1));
+	private TranslateValue positionToMiddle = new TranslateValue(0.3, 0.6);
 
 	private CalculationListener calculationListener = null;
 
-	
 	// ------------------------
 	//
 	// Kiindulasi parameterek
@@ -255,10 +256,10 @@ public class MainPanel extends JFrame {
 		return myAxis;
 	}
 
-	public boolean needToStopCalculation(){
+	public boolean needToStopCalculation() {
 		return needToStopCalculation;
 	}
-	
+
 	JMenuBar menuBar;
 	JMenu fileMainMenu;
 	JMenuItem fileNewMenuItem;
@@ -284,26 +285,48 @@ public class MainPanel extends JFrame {
 		// File
 		fileMainMenu = new JMenu("File");
 		fileMainMenu.setMnemonic(KeyEvent.VK_F);
-		//fileMainMenu.getAccessibleContext().setAccessibleDescription("The only menu in this program that has menu items");
+		// fileMainMenu.getAccessibleContext().setAccessibleDescription("The only menu in this program that has menu items");
 		menuBar.add(fileMainMenu);
 
 		// File-New
-		fileNewMenuItem = new JMenuItem("Új", KeyEvent.VK_N); // Mnemonic Akkor ervenyes ha lathato a menu elem
-		fileNewMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.ALT_MASK)); // Mindegy hogy lathato-e a menu vagy
+		fileNewMenuItem = new JMenuItem("Új", KeyEvent.VK_N); // Mnemonic Akkor
+																// ervenyes ha
+																// lathato a
+																// menu elem
+		fileNewMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.ALT_MASK)); // Mindegy
+																										// hogy
+																										// lathato-e
+																										// a
+																										// menu
+																										// vagy
 		fileNewMenuItem.addActionListener(new NewActionListener());
 		fileMainMenu.add(fileNewMenuItem);
-		
+
 		// File-Save
-		fileSaveMenuItem = new JMenuItem("Mentés ...", KeyEvent.VK_S); // Mnemonic Akkor ervenyes ha lathato a menu elem
-		fileSaveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK)); // Mindegy hogy lathato-e a menu vagy sem
-		//fileSaveMenuItem.getAccessibleContext().setAccessibleDescription("This doesn't really do anything");
+		fileSaveMenuItem = new JMenuItem("Mentés ...", KeyEvent.VK_S); // Mnemonic
+																		// Akkor
+																		// ervenyes
+																		// ha
+																		// lathato
+																		// a
+																		// menu
+																		// elem
+		fileSaveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK)); // Mindegy
+																										// hogy
+																										// lathato-e
+																										// a
+																										// menu
+																										// vagy
+																										// sem
+		// fileSaveMenuItem.getAccessibleContext().setAccessibleDescription("This doesn't really do anything");
 		fileSaveMenuItem.addActionListener(new SaveActionListener());
 		fileMainMenu.add(fileSaveMenuItem);
 
 		// File-Load
 		fileLoadMenuItem = new JMenuItem("Betöltés", KeyEvent.VK_L);
 		fileLoadMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.ALT_MASK));
-		//fileLoadMenuItem.getAccessibleContext().setAccessibleDescription( "This doesn't really do anything");
+		// fileLoadMenuItem.getAccessibleContext().setAccessibleDescription(
+		// "This doesn't really do anything");
 		fileLoadMenuItem.addActionListener(new LoadActionListener());
 		fileMainMenu.add(fileLoadMenuItem);
 
@@ -318,7 +341,7 @@ public class MainPanel extends JFrame {
 
 		this.setJMenuBar(menuBar);
 
-		myCanvas = new HetramCanvas(BorderFactory.createLoweredBevelBorder(), background, possiblePixelPerUnits, positionToMiddle, this,	precision);
+		myCanvas = new HetramCanvas(BorderFactory.createLoweredBevelBorder(), background, possiblePixelPerUnits, positionToMiddle, this, precision);
 
 		//
 		// Szamitott eredmenyek grafikus megjelenitese a legfelsobb layer-en
@@ -346,35 +369,38 @@ public class MainPanel extends JFrame {
 				// Ha szukseges a homerseklet megjelenitese
 				//
 				if (needDrawTemperatureByFont && null != thermicPointList) {
-					thermicPointList.drawPointTemperatureByFont( (DrawnBlockCanvas) canvas, g2);
+					thermicPointList.drawPointTemperatureByFont((DrawnBlockCanvas) canvas, g2);
 				}
 
-				// Ha szukseges a hoaram megjelenitese (vektor, vektorpar, trajektoria)
+				// Ha szukseges a hoaram megjelenitese (vektor, vektorpar,
+				// trajektoria)
 				if (needDrawCurrentByArrow && null != thermicPointList) {
 					thermicPointList.setCurrentType(currentType);
 					thermicPointList.drawCurrent(canvas, g2);
 				}
-				
-//TODO semmi ertelme hogy itt legyen. At kene rakni a HetramCanvas-ha. Ott viszon nem parameterezhetem a thermicPointList-tel !!!!!				
+
+				// TODO semmi ertelme hogy itt legyen. At kene rakni a
+				// HetramCanvas-ha. Ott viszon nem parameterezhetem a
+				// thermicPointList-tel !!!!!
 				// A kiemelt OpenEdge az osszegzett Q kijelzese vegett
-				if( null != thermicPointList ){
-					selectedOpenEdgeForSumQList.drawOpenEdge( (DrawnBlockCanvas) canvas, g2 );
+				if (null != thermicPointList) {
+					selectedOpenEdgeForSumQList.drawOpenEdge((DrawnBlockCanvas) canvas, g2);
 				}
 			}
 
 			@Override
 			public void paintByCanvasAfterTransfer(MCanvas canvas, Graphics2D g2) {
 			}
-			
-		}, Level.UNDER );
 
-		myGrid = new Grid(myCanvas, gridType, gridColor, gridWidth,	gridPosition, gridDelta);
+		}, Level.UNDER);
 
-		myCrossLine = new CrossLine(myCanvas, crossLinePosition, crossLineColor, crossLineWidthInPixel, crossLineLength,	crossLinePainterPosition);
+		myGrid = new Grid(myCanvas, gridType, gridColor, gridWidth, gridPosition, gridDelta);
+
+		myCrossLine = new CrossLine(myCanvas, crossLinePosition, crossLineColor, crossLineWidthInPixel, crossLineLength, crossLinePainterPosition);
 
 		myScale = new Scale(myCanvas, pixelPerCm, unit, startScale, rate);
 
-		myAxis = new Axis(myCanvas, axisPosition, axisColor, axisWidthInPixel,	painterPosition);
+		myAxis = new Axis(myCanvas, axisPosition, axisColor, axisWidthInPixel, painterPosition);
 
 		// Meretarany valtozas kijelzese
 		myScale.addScaleChangeListener(new ScaleChangeListener() {
@@ -399,14 +425,14 @@ public class MainPanel extends JFrame {
 			@Override
 			public void getWorldPosition(double xPosition, double yPosition) {
 
-				if (null != thermicPointList && getMode().equals( Mode.ANALYSIS )) {
+				if (null != thermicPointList && getMode().equals(Mode.ANALYSIS)) {
 
 					ThermicPoint tp = thermicPointList.getThermicPointByPosition(xPosition, yPosition);
 
 					if (null == tp) {
-						statusLine.setTemperature(null);										
-						
-						if( getQShow().equals( QShow.THERMICPOINT ) ){
+						statusLine.setTemperature(null);
+
+						if (getQShow().equals(QShow.THERMICPOINT)) {
 							statusLine.setQNorth(null);
 							statusLine.setQEast(null);
 							statusLine.setQSouth(null);
@@ -415,8 +441,8 @@ public class MainPanel extends JFrame {
 
 					} else {
 						statusLine.setTemperature(tp.getActualTemperature());
-					
-						if( getQShow().equals( QShow.THERMICPOINT ) ){
+
+						if (getQShow().equals(QShow.THERMICPOINT)) {
 							statusLine.setQNorth(tp.getNorthCurrent());
 							statusLine.setQEast(tp.getEastCurrent());
 							statusLine.setQSouth(tp.getSouthCurrent());
@@ -443,7 +469,7 @@ public class MainPanel extends JFrame {
 		this.modePanel = new ModePanel(this);
 
 		this.containerPanel = new JPanel();
-		this.containerPanel.setLayout(new BoxLayout(containerPanel,	BoxLayout.Y_AXIS));
+		this.containerPanel.setLayout(new BoxLayout(containerPanel, BoxLayout.Y_AXIS));
 		this.containerPanel.add(settingTabbedPanel);
 		this.containerPanel.add(Box.createVerticalGlue());
 		this.containerPanel.add(modePanel);
@@ -454,7 +480,8 @@ public class MainPanel extends JFrame {
 		// baloldalan a rajzfelulet
 		// jobboldalan a vezerloegyseg
 		//
-		// JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, myCanvas, controlPanel );
+		// JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT,
+		// myCanvas, controlPanel );
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, myCanvas, containerPanel);
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setDividerLocation(DEFAULT_WIDTH - DEFAULT_SETTINGTABBEDPANEL);
@@ -486,14 +513,14 @@ public class MainPanel extends JFrame {
 		return settingTabbedPanel;
 	}
 
-	public void clearAllSelected(){
+	public void clearAllSelected() {
 		this.myCanvas.clearAllSelected();
 	}
-		
-	public SelectedOpenEdgeForSumQList getSelectedOpenEdgeForSumQList(){
+
+	public SelectedOpenEdgeForSumQList getSelectedOpenEdgeForSumQList() {
 		return this.selectedOpenEdgeForSumQList;
 	}
-	
+
 	// ------------------------------
 	//
 	// Mukodesi mod
@@ -508,39 +535,144 @@ public class MainPanel extends JFrame {
 		return this.mode;
 	}
 
+	class TemperatureForGraph{
+		BigDecimal position;
+		double temperature;
+		
+		public TemperatureForGraph( BigDecimal position, double temperature ){
+			this.position = position;
+			this.temperature = temperature;
+		}		
+		public BigDecimal getPosition() {
+			return position;
+		}
+		public void setPosition(BigDecimal position) {
+			this.position = position;
+		}
+		public double getTemperature() {
+			return temperature;
+		}
+		public void setTemperature(double temperature) {
+			this.temperature = temperature;
+		}		
+	}
+	
+	public class TemperatureForGraphComparator implements Comparator<TemperatureForGraph>{
+		 
+	    @Override
+	    public int compare(TemperatureForGraph o1, TemperatureForGraph o2) {
+	    	return o1.position.compareTo(o2.position);
+	    }
+	} 
+	
 	/**
-	 * Beallitja, hogy Analisis modban a kurzor altal kijelolt termikus pont hoaramat, vagy a
-	 * kivalaszott OPENEDGE osszesitett aramat kell megjeleniteni
+	 * A kivalasztott OPENEDGE homersekleti menetet jeleniti meg
+	 * 
+	 * @param openEdgeElement
+	 */
+	public void showThermicGraph(OpenEdgeElement openEdgeElement) {
+		ThermicPoint tp;
+		BigDecimal x1, x2, y1, y2;
+		BigDecimalPosition position;
+
+		x1 = openEdgeElement.getX1();
+		x2 = openEdgeElement.getX2();
+		y1 = openEdgeElement.getY1();
+		y2 = openEdgeElement.getY2();
+
+		ArrayList<TemperatureForGraph> thermicListForGraph = new ArrayList<TemperatureForGraph>();
+		
+		// -----------
+		//
+		// Vertikalis
+		//
+		// -----------
+		if (x1.equals(x2)) {
+			
+			IThermicConnector cE;
+			IThermicConnector cW;
+
+			for (int i = 0; i < thermicPointList.getSize(); i++) {
+				tp = thermicPointList.get(i);
+
+				position = tp.getPosition();
+
+				// Azok a termikus pontok, akik az OpenEdge vonallal egybe esnek
+				if (x1.equals(position.getX()) && position.getY().compareTo(y1) >= 0 && position.getY().compareTo(y2) <= 0) {
+
+					thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getY(), tp.getActualTemperature() ) );
+
+				}
+
+			}
+
+			// -------------
+			//
+			// Horizontalis
+			//
+			// -------------
+		} else if (y1.equals(y2)) {
+
+			IThermicConnector cN;
+			IThermicConnector cS;
+
+			for (int i = 0; i < thermicPointList.getSize(); i++) {
+				tp = thermicPointList.get(i);
+
+				position = tp.getPosition();
+
+				// Azok a termikus pontok, akik az OpenEdge vonallal egybe esnek
+				if (y1.equals(position.getY()) && position.getX().compareTo(x1) >= 0 && position.getX().compareTo(x2) <= 0) {
+
+					thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getX(), tp.getActualTemperature() ) );
+
+				}
+
+			}
+		}
+
+		Collections.sort(thermicListForGraph, new TemperatureForGraphComparator());
+		for( TemperatureForGraph tfg: thermicListForGraph ){
+			System.err.println(tfg.getPosition() + ", " + tfg.getTemperature() );
+		}
+	}
+
+	/**
+	 * Beallitja, hogy Analisis modban a kurzor altal kijelolt termikus pont
+	 * hoaramat, vagy a kivalaszott OPENEDGE osszesitett aramat kell
+	 * megjeleniteni
 	 * 
 	 * @param qShow
 	 */
-	public void setQShow( QShow qShow ){
+	public void setQShow(QShow qShow) {
 		this.qShow = qShow;
-		
-		//Ha a termikus pontok hoaramanak megjelenitesere van szukseg
-		if( qShow.equals( QShow.THERMICPOINT ) ){
-			
-			//Akkor ertesiti a masodlagos kurzorfigyelot, hogy kiirhassa a kurzor poziciojaban elhelyezkedo pong aramait
-			SecondaryCursor secondaryCursor = myCanvas.getSecondaryCursor();			
-			for( CursorPositionChangeListener listener: myCanvas.getSecondaryCursorPositionChangeListenerList() ){
-				listener.getWorldPosition( secondaryCursor.getX().doubleValue(), secondaryCursor.getY().doubleValue() );
+
+		// Ha a termikus pontok hoaramanak megjelenitesere van szukseg
+		if (qShow.equals(QShow.THERMICPOINT)) {
+
+			// Akkor ertesiti a masodlagos kurzorfigyelot, hogy kiirhassa a
+			// kurzor poziciojaban elhelyezkedo pong aramait
+			SecondaryCursor secondaryCursor = myCanvas.getSecondaryCursor();
+			for (CursorPositionChangeListener listener : myCanvas.getSecondaryCursorPositionChangeListenerList()) {
+				listener.getWorldPosition(secondaryCursor.getX().doubleValue(), secondaryCursor.getY().doubleValue());
 			}
-			
-		//Ha a kivalasztott OPENEDGE eredo aramanak megjelenitesere van szukseg
-		}else if( qShow.equals( QShow.OPENEDGE ) ){
-			
-			//Akkor kiirja az osszesitett aramot
-			selectedOpenEdgeForSumQList.writeOpenEdge(thermicPointList, statusLine);			
+
+			// Ha a kivalasztott OPENEDGE eredo aramanak megjelenitesere van
+			// szukseg
+		} else if (qShow.equals(QShow.OPENEDGE)) {
+
+			// Akkor kiirja az osszesitett aramot
+			selectedOpenEdgeForSumQList.writeOpenEdge(thermicPointList, statusLine);
 		}
 	}
-	
-	public QShow getQShow(){
+
+	public QShow getQShow() {
 		return this.qShow;
 	}
-/*	public void setModeField(Mode mode) {
-		modePanel.setModeField(mode);
-	}
-*/
+
+	/*
+	 * public void setModeField(Mode mode) { modePanel.setModeField(mode); }
+	 */
 	// -----------------------------------
 	//
 	// Vezerlo felulet - ContolSetting
@@ -551,7 +683,7 @@ public class MainPanel extends JFrame {
 		return horizontalMaximumDifference;
 	}
 
-	public void setHorizontalMaximumDifference(	BigDecimal horizontalMaximumDifference) {
+	public void setHorizontalMaximumDifference(BigDecimal horizontalMaximumDifference) {
 		this.horizontalMaximumDifference = horizontalMaximumDifference;
 		settingTabbedPanel.controlSettingTab.setHorizontalMaximumDifference(horizontalMaximumDifference);
 	}
@@ -567,12 +699,13 @@ public class MainPanel extends JFrame {
 
 	public void setHorizontalAppliedDifference(BigDecimal difference) {
 		this.horizontalAppliedDifference = difference;
-/*		if( null != difference ){
-			settingTabbedPanel.controlSettingTab.setAppliedXDeltaField( myCanvas.getRoundedBigDecimalWithPrecisionFormBigDecimal( horizontalAppliedDifference ).toPlainString() );;
-		}else{
-			settingTabbedPanel.controlSettingTab.setAppliedXDeltaField("");
-		}
-*/		
+		/*
+		 * if( null != difference ){
+		 * settingTabbedPanel.controlSettingTab.setAppliedXDeltaField(
+		 * myCanvas.getRoundedBigDecimalWithPrecisionFormBigDecimal(
+		 * horizontalAppliedDifference ).toPlainString() );; }else{
+		 * settingTabbedPanel.controlSettingTab.setAppliedXDeltaField(""); }
+		 */
 	}
 
 	public BigDecimal getHorizontalAppliedDifference() {
@@ -581,13 +714,14 @@ public class MainPanel extends JFrame {
 
 	public void setVerticalAppliedDifference(BigDecimal difference) {
 		this.verticalAppliedDifference = difference;
-/*		if( null != difference ){
-			settingTabbedPanel.controlSettingTab.setAppliedYDeltaField( myCanvas.getRoundedBigDecimalWithPrecisionFormBigDecimal( verticalAppliedDifference ).toPlainString() );;
-		}else{
-			settingTabbedPanel.controlSettingTab.setAppliedYDeltaField("");
-		}
-*/		
-		
+		/*
+		 * if( null != difference ){
+		 * settingTabbedPanel.controlSettingTab.setAppliedYDeltaField(
+		 * myCanvas.getRoundedBigDecimalWithPrecisionFormBigDecimal(
+		 * verticalAppliedDifference ).toPlainString() );; }else{
+		 * settingTabbedPanel.controlSettingTab.setAppliedYDeltaField(""); }
+		 */
+
 		// settingTabbedPanel.controlSettingTab.setVerticalAppliedDifference(difference);
 	}
 
@@ -611,20 +745,21 @@ public class MainPanel extends JFrame {
 		this.horizontalDifferenceDivider = horizontalDifferenceDivider;
 	}
 
-/*	public void doGenerateMaximumDifference() {
-		myCanvas.doGenerateMaximumDifference();
-		// System.err.println(getHorizontalMaximumDifference() + ", " +
-		// getVerticalMaximumDifference());
-	}
-*/
-/*	public void setEnableCalculateButton( boolean enable ){
-		settingTabbedPanel.controlSettingTab.setEnableCalculateButton( enable );
-	}
-*/	
-	public JProgressBar getProgressBar(){
+	/*
+	 * public void doGenerateMaximumDifference() {
+	 * myCanvas.doGenerateMaximumDifference(); //
+	 * System.err.println(getHorizontalMaximumDifference() + ", " + //
+	 * getVerticalMaximumDifference()); }
+	 */
+	/*
+	 * public void setEnableCalculateButton( boolean enable ){
+	 * settingTabbedPanel.controlSettingTab.setEnableCalculateButton( enable );
+	 * }
+	 */
+	public JProgressBar getProgressBar() {
 		return settingTabbedPanel.controlSettingTab.getProgressBar();
 	}
-	
+
 	// -----------------------------------
 	//
 	// Megjelenites - VisibilitySetting
@@ -851,51 +986,56 @@ public class MainPanel extends JFrame {
 	 */
 	public void doCalculate(double precision) {
 
-		//Ha rajz vagy analizis modban vagyok, akkor a szamitas ujra elvegezendo
-		if( getMode().equals( Mode.DRAWING ) || getMode().equals( Mode.ANALYSIS)){
-		
-			//Mukodesi mod valtas - Calculation
-			setMode( Mode.CALCULATION );
+		// Ha rajz vagy analizis modban vagyok, akkor a szamitas ujra
+		// elvegezendo
+		if (getMode().equals(Mode.DRAWING) || getMode().equals(Mode.ANALYSIS)) {
 
-			//Minden selectet torlok
+			// Mukodesi mod valtas - Calculation
+			setMode(Mode.CALCULATION);
+
+			// Minden selectet torlok
 			clearAllSelected();
-		
-			//Torlom a mar letezo Thermikus Pont listat es az ertekelofelulet ujrarajzolasaval el is tuntetem
-			//mind a szinkodokat, mind a termikus vektorokat, a termikus pont jeloleseket es a homerseklet kijelzest
-			setThermicPointList(null);				
-				
-			//Jelzok alapallapotba allitasa
-			SwingUtilities.invokeLater( new Thread(){
-				
+
+			// Torlom a mar letezo Thermikus Pont listat es az ertekelofelulet
+			// ujrarajzolasaval el is tuntetem
+			// mind a szinkodokat, mind a termikus vektorokat, a termikus pont
+			// jeloleseket es a homerseklet kijelzest
+			setThermicPointList(null);
+
+			// Jelzok alapallapotba allitasa
+			SwingUtilities.invokeLater(new Thread() {
+
 				@Override
 				public void run() {
-					
-					//Nyomogomb allitas
-					getSettingTabbedPanel().getControlSettingTab().getCalculateButton().setBackground( Color.red );
-					getSettingTabbedPanel().getControlSettingTab().getCalculateButton().setText( "Stop" );
-					
-					//Progressbar: Indeterminate tipusu, 0 hosszu, nincs kijelzes
+
+					// Nyomogomb allitas
+					getSettingTabbedPanel().getControlSettingTab().getCalculateButton().setBackground(Color.red);
+					getSettingTabbedPanel().getControlSettingTab().getCalculateButton().setText("Stop");
+
+					// Progressbar: Indeterminate tipusu, 0 hosszu, nincs
+					// kijelzes
 					getProgressBar().setIndeterminate(true);
 					getProgressBar().setStringPainted(false);
 					getProgressBar().setValue(0);
 
 				}
-			});	
-				
+			});
+
 			needToStopCalculation = false;
-			
-			// Termikus pontok legyartasa, kozottuk levo kapcsolatok megteremtese (nics szamolas meg)
+
+			// Termikus pontok legyartasa, kozottuk levo kapcsolatok
+			// megteremtese (nics szamolas meg)
 			myCanvas.generateThermicPointList()
 
-			// Sokismeretlenes egyenletrendszer megoldasa, eredmenye: a termikus pontok homerseklete
-			.solve(this, precision);
-			
-		//Ha viszont eppen szamitas tortenik, akkor le kell allitani azt
-		}else if( getMode().equals( Mode.CALCULATION ) ){
+			// Sokismeretlenes egyenletrendszer megoldasa, eredmenye: a termikus
+			// pontok homerseklete
+					.solve(this, precision);
+
+			// Ha viszont eppen szamitas tortenik, akkor le kell allitani azt
+		} else if (getMode().equals(Mode.CALCULATION)) {
 			needToStopCalculation = true;
 		}
-	
-		
+
 	}
 
 	public void revalidateAndRepaint() {
@@ -912,7 +1052,7 @@ public class MainPanel extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-		
+
 			// Az eredeti rajzolatot torlom
 			// ArrayList<HetramDrawnElement> ahetramDrawnElementList =
 			// MainPanel.this.myCanvas.getDrawnBlockList();
@@ -924,11 +1064,11 @@ public class MainPanel extends JFrame {
 
 			// Kirajzoltatom a beolvasott abrat
 			MainPanel.this.myCanvas.revalidateAndRepaintCoreCanvas();
-			
+
 		}
 
 	};
-	
+
 	/**
 	 * File mentes menupont vegrehato objektuma
 	 * 
@@ -956,7 +1096,7 @@ public class MainPanel extends JFrame {
 
 				for (HetramDrawnElement el : list) {
 					Element element = el.getXMLElement(doc);
-			
+
 					rootElement.appendChild(element);
 				}
 
@@ -980,7 +1120,7 @@ public class MainPanel extends JFrame {
 				fc.setDialogTitle("Save the plan");
 
 				// Csak az XML kiterjesztesu fajlokat lathatom
-				FileNameExtensionFilter filter = new FileNameExtensionFilter( "xml", "xml");
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("xml", "xml");
 				fc.setFileFilter(filter);
 
 				// Nem engedi meg az "All" filter hasznalatat
@@ -1030,7 +1170,7 @@ public class MainPanel extends JFrame {
 
 			fc.setDialogTitle("Load a plan");
 
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("xml",	"xml");
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("xml", "xml");
 			fc.setFileFilter(filter);
 
 			// Nem engedi meg az "All" filter hasznalatat
@@ -1049,8 +1189,7 @@ public class MainPanel extends JFrame {
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File file = fc.getSelectedFile();
 
-				DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-						.newInstance();
+				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder dBuilder;
 				try {
 					dBuilder = dbFactory.newDocumentBuilder();
@@ -1074,46 +1213,21 @@ public class MainPanel extends JFrame {
 
 							Element drawnBlockElement = (Element) drawnBlockNode;
 
-							String drawnBlockType = drawnBlockElement
-									.getAttribute("type");
-							String drawnBlockForm = drawnBlockElement
-									.getAttribute("form");
+							String drawnBlockType = drawnBlockElement.getAttribute("type");
+							String drawnBlockForm = drawnBlockElement.getAttribute("form");
 
 							// BUILDING STRUCTURE - HOMOGENEOUS
-							if (drawnBlockType
-									.equals(TYPE.BUILDINGSTRUCTURE_HOMOGENEOUSPATTERN
-											.name())) {
-								if (drawnBlockForm
-										.equals(ElementSettingTab.HOMOGENEOUS_PATTERN.DOT
-												.name())) {
-									MainPanel.this.myCanvas
-											.addDrawnBlock(new HomogeneousPatternBuildingStructuralElement(
-													drawnBlockElement,
-													new HomogeneousPatternFactory(
-															new DotFullPatternAdapter())));
-								} else if (drawnBlockForm
-										.equals(ElementSettingTab.HOMOGENEOUS_PATTERN.HATCH
-												.name())) {
-									MainPanel.this.myCanvas
-											.addDrawnBlock(new HomogeneousPatternBuildingStructuralElement(
-													drawnBlockElement,
-													new HomogeneousPatternFactory(
-															new HatchFullPatternAdapter())));
+							if (drawnBlockType.equals(TYPE.BUILDINGSTRUCTURE_HOMOGENEOUSPATTERN.name())) {
+								if (drawnBlockForm.equals(ElementSettingTab.HOMOGENEOUS_PATTERN.DOT.name())) {
+									MainPanel.this.myCanvas.addDrawnBlock(new HomogeneousPatternBuildingStructuralElement(drawnBlockElement, new HomogeneousPatternFactory(new DotFullPatternAdapter())));
+								} else if (drawnBlockForm.equals(ElementSettingTab.HOMOGENEOUS_PATTERN.HATCH.name())) {
+									MainPanel.this.myCanvas.addDrawnBlock(new HomogeneousPatternBuildingStructuralElement(drawnBlockElement, new HomogeneousPatternFactory(new HatchFullPatternAdapter())));
 								}
 
 								// BUILDING STRUCTURE - ROWPATTERN
-							} else if (drawnBlockType
-									.equals(TYPE.BUILDINGSTRUCTURE_ROWPATTERN
-											.name())) {
-								if (drawnBlockForm
-										.equals(ElementSettingTab.ROW_PATTERN.ZIGZAG
-												.name())) {
-									MainPanel.this.myCanvas
-											.addDrawnBlock(new RowPatternBuildingStructuralElement(
-													drawnBlockElement,
-													new RowPatternFactory(
-															new ZigZagRowPatternAdapter()),
-													MainPanel.this));
+							} else if (drawnBlockType.equals(TYPE.BUILDINGSTRUCTURE_ROWPATTERN.name())) {
+								if (drawnBlockForm.equals(ElementSettingTab.ROW_PATTERN.ZIGZAG.name())) {
+									MainPanel.this.myCanvas.addDrawnBlock(new RowPatternBuildingStructuralElement(drawnBlockElement, new RowPatternFactory(new ZigZagRowPatternAdapter()), MainPanel.this));
 								}
 
 								// BUILDING STRUCTURE - COLORED
@@ -1129,7 +1243,7 @@ public class MainPanel extends JFrame {
 
 								// EDGE - SYMMETRIC
 							} else if (drawnBlockType.equals(TYPE.EDGE_SYMMETRIC.name())) {
-								MainPanel.this.myCanvas.addDrawnBlock(new SymmetricEdgeElement( drawnBlockElement));
+								MainPanel.this.myCanvas.addDrawnBlock(new SymmetricEdgeElement(drawnBlockElement));
 								// hetramDrawnElementList.add( new
 								// SymmetricEdgeElement( eElement ) );
 
@@ -1141,7 +1255,7 @@ public class MainPanel extends JFrame {
 
 				} catch (ParserConfigurationException | SAXException | IOException e1) {
 
-					JOptionPane.showMessageDialog( MainPanel.this, "Nem sikerült a file beolvasása: \n" + e1.getMessage(), "Hiba", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(MainPanel.this, "Nem sikerült a file beolvasása: \n" + e1.getMessage(), "Hiba", JOptionPane.ERROR_MESSAGE);
 
 					/*
 					 * Object [] buttonArray = {"Accept", "blabl"}; int a3;
