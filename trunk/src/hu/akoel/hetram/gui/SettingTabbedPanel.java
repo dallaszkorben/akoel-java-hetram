@@ -93,4 +93,8 @@ public class SettingTabbedPanel extends JTabbedPane{
 	public ControlSettingTab getControlSettingTab(){
 		return controlSettingTab;
 	}
+	
+	public ElementSettingTab getElementSettingTab(){
+		return elementSettingTab;
+	}
 }

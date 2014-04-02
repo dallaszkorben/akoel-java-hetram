@@ -84,6 +84,14 @@ public class ElementSettingTab extends JPanel{
 		}
 	}
 	
+	JTextField lambdaField;
+	ColorSelector lineColorSelector;
+	ColorSelector backgroundColorSelector;
+	JTextField openEdgeAlphaBeginField;
+	JTextField openEdgeAlphaEndField;
+	JTextField openEdgeTemperatureField;
+	ColorSelector openEdgeColorSelector;
+	ColorSelector symmetricEdgeColorSelector;
 	
 	JToggleButton buildingElementSelector;
 	JToggleButton symmetricEdgeSelector;
@@ -125,22 +133,21 @@ public class ElementSettingTab extends JPanel{
 		//
 		// Lambda erteke
 		//
-		JTextField lambdaField = new JTextField();
+		lambdaField = new JTextField();
 		lambdaField.setColumns( 8 );
 		lambdaField.setText( String.valueOf( ElementSettingTab.this.mainPanel.getBuildingStructureLambda() ) );
-		
 		
 		//
 		// Rajzolat szin
 		//
-		ColorSelector lineColorSelector = new ColorSelector();
+		lineColorSelector = new ColorSelector();
 		lineColorSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getElementLineColor() );
 		
-				
+
 		//
 		// Kitolto szin
 		//
-		ColorSelector backgroundColorSelector = new ColorSelector();
+		backgroundColorSelector = new ColorSelector();
 		backgroundColorSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getElementBackgroundColor() );
 		
 		ButtonGroup fillingTypeGroup = new ButtonGroup();
@@ -285,27 +292,28 @@ public class ElementSettingTab extends JPanel{
 		//
 		//AlphaBegin
 		//
-		JTextField openEdgeAlphaBeginField = new JTextField();
+		openEdgeAlphaBeginField = new JTextField();
 		openEdgeAlphaBeginField.setColumns( 8 );
 		openEdgeAlphaBeginField.setText( String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeAlphaBegin() ) );
 		
 
+		
 		//
 		//AlphaEnd
 		//
-		JTextField openEdgeAlphaEndField = new JTextField();
+		openEdgeAlphaEndField = new JTextField();
 		openEdgeAlphaEndField.setColumns( 8 );
 		openEdgeAlphaEndField.setText( String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeAlphaEnd() ) );
 		
 
 		//Temperature
-		JTextField openEdgeTemperatureField = new JTextField();
+		openEdgeTemperatureField = new JTextField();
 		openEdgeTemperatureField.setColumns( 8 );
 		openEdgeTemperatureField.setText( String.valueOf( ElementSettingTab.this.mainPanel.getOpenEdgeTemperature() ) );
 		
 
 		//Color
-		ColorSelector openEdgeColorSelector = new ColorSelector();
+		openEdgeColorSelector = new ColorSelector();
 		openEdgeColorSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getOpenEdgeColor() );
 
 		
@@ -395,7 +403,7 @@ public class ElementSettingTab extends JPanel{
 		GridBagConstraints symmetricEdgeElementSelectorConstraints = new GridBagConstraints();
 
 		//Color
-		ColorSelector symmetricEdgeColorSelector = new ColorSelector();
+		symmetricEdgeColorSelector = new ColorSelector();
 		symmetricEdgeColorSelector.setSelectedItem( ElementSettingTab.this.mainPanel.getSymmetricEdgeColor() );
 				
 		row = 0;
@@ -965,6 +973,59 @@ public class ElementSettingTab extends JPanel{
 			return bs;
 		}		
 	}
+	
+	public void setStructureElementLambda( double lambda ){
+		lambdaField.setText( String.valueOf( lambda ) );
+	}
+	
+	public void setStructureElementLineColor( Color color ){
+		lineColorSelector.setSelectedItem(color);
+	}
+
+	public void setStructureElementBackgroundColor( Color color ){
+		backgroundColorSelector.setSelectedItem(color);
+	}
+
+	public void selectPatternTypeColorSelector(){
+		patternTypeColorSelector.setSelected(true);
+	}
+
+	public void selectPatternTypeHomogenSelector(){
+		patternTypeHomogenSelector.setSelected(true);
+	}
+	
+	public void selectPatternTypeRowSelector(){
+		patternTypeRowSelector.setSelected(true);
+	}
+		
+	public void selectHomogeneusPattern(HOMOGENEOUS_PATTERN pattern){
+		homogenPatternSelector.setSelectedItem( pattern.ordinal() );
+	}
+	
+	public void selectRowPattern( ROW_PATTERN pattern ){
+		rowPatternSelector.setSelectedItem( pattern.ordinal() );
+	}
+	
+	public void setOpenEdgeAlphaBegin( double alpha ){
+		openEdgeAlphaBeginField.setText( String.valueOf( alpha ));
+	}
+
+	public void setOpenEdgeAlphaEnd( double alpha ){
+		openEdgeAlphaEndField.setText( String.valueOf( alpha ) );
+	}
+	
+	public void setOpenEdgeTemperature( double temperature ){
+		openEdgeTemperatureField.setText( String.valueOf( temperature ));
+	}
+
+	public void setOpenEdgeColor( Color color ){
+		openEdgeColorSelector.setSelectedItem( color );
+	}
+	
+	public void setSymmetricEdgeColor( Color color ){
+		symmetricEdgeColorSelector.setSelectedItem( color );
+	}	
+	
 }
 
 
