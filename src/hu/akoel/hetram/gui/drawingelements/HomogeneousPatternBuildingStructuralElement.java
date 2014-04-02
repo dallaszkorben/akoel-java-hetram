@@ -20,9 +20,6 @@ public class HomogeneousPatternBuildingStructuralElement extends HetramBuildingS
 		return TYPE.BUILDINGSTRUCTURE_HOMOGENEOUSPATTERN;
 	}
 	
-	
-
-	
 	public HomogeneousPatternBuildingStructuralElement(HomogeneousPatternFactory homogeneousPatternFactory, Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth, double lambda, Color lineColor, Color backgroundColor) {
 		super(status, x1, y1, minLength, maxLength, minWidth, maxWidth, lambda, lineColor, backgroundColor );
 		
@@ -137,6 +134,10 @@ public class HomogeneousPatternBuildingStructuralElement extends HetramBuildingS
 */			
 		
 		return element;		
+	}
+	
+	public HomogeneousPatternInterface getHomogeneusPatternInterface(){
+		return homogeneousPatternInterface;
 	}
 	
 }

@@ -31,7 +31,7 @@ public class OpenEdgeElement extends HetramDrawnElement{
 	private static final Stroke INPROCESS_STROKE = new BasicStroke(5);
 	
 	private double alphaStart;
-	private double alphaStop;
+	private double alphaEnd;
 	private double temperature;
 
 	@Override
@@ -51,7 +51,7 @@ public class OpenEdgeElement extends HetramDrawnElement{
 		super( status, x1, y1, minLength, maxLength, minWidth, maxWidth );
 		
 		this.alphaStart = alphaStart;
-		this.alphaStop = alphaStop;
+		this.alphaEnd = alphaStop;
 		this.temperature = temperature;
 		
 		setNormal( color, NORMAL_STROKE, color );
@@ -91,7 +91,7 @@ public class OpenEdgeElement extends HetramDrawnElement{
 							
 							//Ha egy APLHASTOP elemrol van szo
 							}else if( extrainfoElement.getNodeName().equals( "alphastop" )){
-									this.alphaStop = Double.valueOf( extrainfoElement.getTextContent() );
+									this.alphaEnd = Double.valueOf( extrainfoElement.getTextContent() );
 
 							//Ha egy TEMPERATURE elemrol van szo
 							}else if( extrainfoElement.getNodeName().equals( "temperature" )){
@@ -113,8 +113,8 @@ public class OpenEdgeElement extends HetramDrawnElement{
 		return alphaStart;
 	}
 
-	public double getAlphaStop() {
-		return alphaStop;
+	public double getAlphaEnd() {
+		return alphaEnd;
 	}
 
 	public double getTemperature() {
@@ -127,7 +127,7 @@ public class OpenEdgeElement extends HetramDrawnElement{
 		if( getWidth().compareTo(new BigDecimal("0")) != 0 ){
 //		if( getWidth() != 0 ){			
 //TODO figyelem BigDecimal double valtas			
-			return ( pos - getStartX().doubleValue() ) / ( getStopX().doubleValue() - getStartX().doubleValue() ) * ( this.alphaStop - this.alphaStart ) + this.alphaStart;
+			return ( pos - getStartX().doubleValue() ) / ( getStopX().doubleValue() - getStartX().doubleValue() ) * ( this.alphaEnd - this.alphaStart ) + this.alphaStart;
 //			return ( pos - getStartX() ) / ( getStopX() - getStartX() ) * ( this.alphaStop - this.alphaStart ) + this.alphaStart;
 			
 			
@@ -135,7 +135,7 @@ public class OpenEdgeElement extends HetramDrawnElement{
 		}else if( getHeight().compareTo(new BigDecimal("0")) != 0 ){			
 		//}else if( getHeight() != 0 ){
 			
-			return ( pos - getStartY().doubleValue() ) / ( getStopY().doubleValue() - getStartY().doubleValue() ) * ( this.alphaStop - this.alphaStart ) + this.alphaStart;
+			return ( pos - getStartY().doubleValue() ) / ( getStopY().doubleValue() - getStartY().doubleValue() ) * ( this.alphaEnd - this.alphaStart ) + this.alphaStart;
 			//return ( pos - getStartY() ) / ( getStopY() - getStartY() ) * ( this.alphaStop - this.alphaStart ) + this.alphaStart;			
 			
 		//Ez nem lehet
@@ -165,7 +165,7 @@ public class OpenEdgeElement extends HetramDrawnElement{
 		
 		//EXTRAINFO - alphastop
 		Element alphaStopElement = document.createElement( "alphastop" );		
-		alphaStopElement.appendChild(document.createTextNode( Double.toString( this.alphaStop ) ) );
+		alphaStopElement.appendChild(document.createTextNode( Double.toString( this.alphaEnd ) ) );
 		extraInfoElement.appendChild( alphaStopElement );
 		
 		//EXTRAINFO - temperature

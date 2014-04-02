@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import hu.akoel.hetram.accessories.Displacement;
 import hu.akoel.hetram.gui.MainPanel;
 import hu.akoel.mgu.MGraphics;
@@ -161,7 +162,9 @@ public class RowPatternBuildingStructuralElement extends HetramBuildingStructure
 		return element;		
 	}
 
-
+	public RowPatternInterface getRowPatternInterface(){
+		return rowPatternInterface;
+	}
 }
 
 

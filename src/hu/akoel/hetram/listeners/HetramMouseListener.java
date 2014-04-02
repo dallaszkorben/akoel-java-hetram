@@ -7,8 +7,13 @@ import java.util.ArrayList;
 import hu.akoel.hetram.HetramCanvas;
 import hu.akoel.hetram.gui.MainPanel.Mode;
 import hu.akoel.hetram.gui.MainPanel.QShow;
+import hu.akoel.hetram.gui.drawingelements.ColoredPatternBuildingSturcturalElement;
+import hu.akoel.hetram.gui.drawingelements.HetramBuildingStructureElement;
 import hu.akoel.hetram.gui.drawingelements.HetramDrawnElement;
+import hu.akoel.hetram.gui.drawingelements.HomogeneousPatternBuildingStructuralElement;
 import hu.akoel.hetram.gui.drawingelements.OpenEdgeElement;
+import hu.akoel.hetram.gui.drawingelements.RowPatternBuildingStructuralElement;
+import hu.akoel.hetram.gui.drawingelements.SymmetricEdgeElement;
 import hu.akoel.mgu.CursorPositionChangeListener;
 import hu.akoel.mgu.drawnblock.Block;
 import hu.akoel.mgu.drawnblock.SecondaryCursor;
@@ -121,6 +126,33 @@ public class HetramMouseListener extends DrawnBlockMouseListener{
 				
 					selectedElement = element;
 					selectedElement.setStatus(Status.SELECTED);
+					
+					if( selectedElement instanceof HetramBuildingStructureElement ){
+						canvas.getMainPanel().getSettingTabbedPanel().getElementSettingTab().setStructureElementLambda( ((HetramBuildingStructureElement)selectedElement).getLambda() );
+
+						canvas.getMainPanel().getSettingTabbedPanel().getElementSettingTab().setStructureElementLineColor( ((HetramBuildingStructureElement)selectedElement).getNormalColor());
+						canvas.getMainPanel().getSettingTabbedPanel().getElementSettingTab().setStructureElementBackgroundColor( ((HetramBuildingStructureElement)selectedElement).getBackgroundColor() );
+						
+						if( selectedElement instanceof ColoredPatternBuildingSturcturalElement ){
+							canvas.getMainPanel().getSettingTabbedPanel().getElementSettingTab().selectPatternTypeColorSelector();
+						}else if( selectedElement instanceof HomogeneousPatternBuildingStructuralElement ){
+							canvas.getMainPanel().getSettingTabbedPanel().getElementSettingTab().selectPatternTypeHomogenSelector();
+							canvas.getMainPanel().getSettingTabbedPanel().getElementSettingTab().selectHomogeneusPattern( ((HomogeneousPatternBuildingStructuralElement)selectedElement).getHomogeneusPatternInterface().getForm() );
+							
+						}else if( selectedElement instanceof RowPatternBuildingStructuralElement ){
+							canvas.getMainPanel().getSettingTabbedPanel().getElementSettingTab().selectPatternTypeRowSelector();
+							canvas.getMainPanel().getSettingTabbedPanel().getElementSettingTab().selectRowPattern( ((RowPatternBuildingStructuralElement)selectedElement).getRowPatternInterface().getForm() );
+						}
+						
+					}else if( selectedElement instanceof OpenEdgeElement ){
+						canvas.getMainPanel().getSettingTabbedPanel().getElementSettingTab().setOpenEdgeAlphaBegin( ((OpenEdgeElement)selectedElement).getAlphaStart());
+						canvas.getMainPanel().getSettingTabbedPanel().getElementSettingTab().setOpenEdgeAlphaEnd( ((OpenEdgeElement)selectedElement).getAlphaEnd());
+						canvas.getMainPanel().getSettingTabbedPanel().getElementSettingTab().setOpenEdgeTemperature( ((OpenEdgeElement)selectedElement).getTemperature());
+						canvas.getMainPanel().getSettingTabbedPanel().getElementSettingTab().setOpenEdgeColor( ((OpenEdgeElement)selectedElement).getNormalColor());
+						
+					}else if( selectedElement instanceof SymmetricEdgeElement ){
+						canvas.getMainPanel().getSettingTabbedPanel().getElementSettingTab().setSymmetricEdgeColor( ((SymmetricEdgeElement)selectedElement).getNormalColor());
+					}
 					
 					//Jelzem, hogy szukseges az ujrarajzolas
 					needRevalidate = true;

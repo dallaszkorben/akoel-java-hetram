@@ -6,7 +6,6 @@ import hu.akoel.hetram.Hetram;
 import hu.akoel.hetram.SelectedOpenEdgeForSumQList;
 import hu.akoel.hetram.accessories.BigDecimalPosition;
 import hu.akoel.hetram.connectors.IThermicConnector;
-import hu.akoel.hetram.connectors.OpenEdgeThermicConnector;
 import hu.akoel.hetram.gui.ElementSettingTab.DRAWING_ELEMENT;
 import hu.akoel.hetram.gui.ElementSettingTab.HOMOGENEOUS_PATTERN;
 import hu.akoel.hetram.gui.ElementSettingTab.PATTERN_TYPE;
@@ -95,8 +94,6 @@ import org.xml.sax.SAXException;
 public class MainPanel extends JFrame {
 
 	private static final long serialVersionUID = 3911667532503747257L;
-
-	private static final String version = "1.1.0";
 
 	public static enum Mode {
 		DRAWING("Rajz mód"), ANALYSIS("Elemzés mód"), CALCULATION("Szamítás");
@@ -267,7 +264,7 @@ public class MainPanel extends JFrame {
 	JMenuItem fileLoadMenuItem;
 	JMenu helpMainMenu;
 
-	public MainPanel() {
+	public MainPanel(String version) {
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("Hetram " + version);
@@ -289,35 +286,14 @@ public class MainPanel extends JFrame {
 		menuBar.add(fileMainMenu);
 
 		// File-New
-		fileNewMenuItem = new JMenuItem("Új", KeyEvent.VK_N); // Mnemonic Akkor
-																// ervenyes ha
-																// lathato a
-																// menu elem
-		fileNewMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.ALT_MASK)); // Mindegy
-																										// hogy
-																										// lathato-e
-																										// a
-																										// menu
-																										// vagy
+		fileNewMenuItem = new JMenuItem("Új", KeyEvent.VK_N); // Mnemonic Akkor ervenyes ha lathato a menu elem
+		fileNewMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.ALT_MASK)); // Mindegy hogy lathato-e a menu vagy
 		fileNewMenuItem.addActionListener(new NewActionListener());
 		fileMainMenu.add(fileNewMenuItem);
 
 		// File-Save
-		fileSaveMenuItem = new JMenuItem("Mentés ...", KeyEvent.VK_S); // Mnemonic
-																		// Akkor
-																		// ervenyes
-																		// ha
-																		// lathato
-																		// a
-																		// menu
-																		// elem
-		fileSaveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK)); // Mindegy
-																										// hogy
-																										// lathato-e
-																										// a
-																										// menu
-																										// vagy
-																										// sem
+		fileSaveMenuItem = new JMenuItem("Mentés ...", KeyEvent.VK_S); // Mnemonic Akkor ervenyes ha lathato a menu elem
+		fileSaveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK)); // Mindegy hogy lathato-e a menu vagy sem
 		// fileSaveMenuItem.getAccessibleContext().setAccessibleDescription("This doesn't really do anything");
 		fileSaveMenuItem.addActionListener(new SaveActionListener());
 		fileMainMenu.add(fileSaveMenuItem);
@@ -527,6 +503,16 @@ public class MainPanel extends JFrame {
 	//
 	// ------------------------------
 	public void setMode(Mode mode) {
+		if( mode.equals(Mode.CALCULATION)){		
+			fileNewMenuItem.setEnabled(false);
+			fileLoadMenuItem.setEnabled(false);
+		}else if( mode.equals(Mode.DRAWING)){
+			fileNewMenuItem.setEnabled(true);
+			fileLoadMenuItem.setEnabled(true);
+		}else if( mode.equals( Mode.ANALYSIS)){
+			fileNewMenuItem.setEnabled(true);
+			fileLoadMenuItem.setEnabled(true);
+		}
 		this.mode = mode;
 		modePanel.setModeField(mode);
 	}
@@ -535,36 +521,40 @@ public class MainPanel extends JFrame {
 		return this.mode;
 	}
 
-	class TemperatureForGraph{
+	class TemperatureForGraph {
 		BigDecimal position;
 		double temperature;
-		
-		public TemperatureForGraph( BigDecimal position, double temperature ){
+
+		public TemperatureForGraph(BigDecimal position, double temperature) {
 			this.position = position;
 			this.temperature = temperature;
-		}		
+		}
+
 		public BigDecimal getPosition() {
 			return position;
 		}
+
 		public void setPosition(BigDecimal position) {
 			this.position = position;
 		}
+
 		public double getTemperature() {
 			return temperature;
 		}
+
 		public void setTemperature(double temperature) {
 			this.temperature = temperature;
-		}		
+		}
 	}
-	
-	public class TemperatureForGraphComparator implements Comparator<TemperatureForGraph>{
-		 
-	    @Override
-	    public int compare(TemperatureForGraph o1, TemperatureForGraph o2) {
-	    	return o1.position.compareTo(o2.position);
-	    }
-	} 
-	
+
+	public class TemperatureForGraphComparator implements Comparator<TemperatureForGraph> {
+
+		@Override
+		public int compare(TemperatureForGraph o1, TemperatureForGraph o2) {
+			return o1.position.compareTo(o2.position);
+		}
+	}
+
 	/**
 	 * A kivalasztott OPENEDGE homersekleti menetet jeleniti meg
 	 * 
@@ -581,14 +571,14 @@ public class MainPanel extends JFrame {
 		y2 = openEdgeElement.getY2();
 
 		ArrayList<TemperatureForGraph> thermicListForGraph = new ArrayList<TemperatureForGraph>();
-		
+
 		// -----------
 		//
 		// Vertikalis
 		//
 		// -----------
 		if (x1.equals(x2)) {
-			
+
 			IThermicConnector cE;
 			IThermicConnector cW;
 
@@ -600,7 +590,7 @@ public class MainPanel extends JFrame {
 				// Azok a termikus pontok, akik az OpenEdge vonallal egybe esnek
 				if (x1.equals(position.getX()) && position.getY().compareTo(y1) >= 0 && position.getY().compareTo(y2) <= 0) {
 
-					thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getY(), tp.getActualTemperature() ) );
+					thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getY(), tp.getActualTemperature()));
 
 				}
 
@@ -624,7 +614,7 @@ public class MainPanel extends JFrame {
 				// Azok a termikus pontok, akik az OpenEdge vonallal egybe esnek
 				if (y1.equals(position.getY()) && position.getX().compareTo(x1) >= 0 && position.getX().compareTo(x2) <= 0) {
 
-					thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getX(), tp.getActualTemperature() ) );
+					thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getX(), tp.getActualTemperature()));
 
 				}
 
@@ -632,8 +622,8 @@ public class MainPanel extends JFrame {
 		}
 
 		Collections.sort(thermicListForGraph, new TemperatureForGraphComparator());
-		for( TemperatureForGraph tfg: thermicListForGraph ){
-			System.err.println(tfg.getPosition() + ", " + tfg.getTemperature() );
+		for (TemperatureForGraph tfg : thermicListForGraph) {
+			System.err.println(tfg.getPosition() + ", " + tfg.getTemperature());
 		}
 	}
 
