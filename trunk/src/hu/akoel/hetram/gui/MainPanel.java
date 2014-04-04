@@ -119,6 +119,9 @@ public class MainPanel extends JFrame {
 
 	private static final Precision precision = Precision.per_1000;
 
+	private String version;
+	private File usedDirectory = null;
+	
 	private SelectedOpenEdgeForSumQList selectedOpenEdgeForSumQList = new SelectedOpenEdgeForSumQList();
 
 	private ThermicPointList thermicPointList = null;
@@ -264,10 +267,12 @@ public class MainPanel extends JFrame {
 	JMenuItem fileLoadMenuItem;
 	JMenu helpMainMenu;
 
+
 	public MainPanel(String version) {
 
+		this.version = version;
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setTitle("Hetram " + version);
+		this.setTitle("");
 		this.setUndecorated(false);
 		this.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		this.createBufferStrategy(1);
@@ -1103,8 +1108,14 @@ public class MainPanel extends JFrame {
 				// File nevet valaszt es beleir
 				//
 
+				JFileChooser fc;
+				if( null == usedDirectory ){
+					fc = new JFileChooser(System.getProperty("user.dir"));
+				}else{
+					fc = new JFileChooser( usedDirectory );
+				}
+				
 				// Filechooser inicializalasa a felhasznalo munkakonyvtaraba
-				final JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
 
 				// A dialogus ablak cime
 				fc.setDialogTitle("Save the plan");
@@ -1136,6 +1147,9 @@ public class MainPanel extends JFrame {
 					// Iras
 					transformer.transform(source, result);
 
+					setTitle( " :: " + file.getName() );
+
+					usedDirectory = file;
 				}
 
 			} catch (ParserConfigurationException | TransformerException e1) {
@@ -1156,7 +1170,12 @@ public class MainPanel extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			final JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+			JFileChooser fc;
+			if( null == usedDirectory ){
+				fc = new JFileChooser(System.getProperty("user.dir"));
+			}else{
+				fc = new JFileChooser( usedDirectory );
+			}
 
 			fc.setDialogTitle("Load a plan");
 
@@ -1242,23 +1261,14 @@ public class MainPanel extends JFrame {
 						}
 
 					}
+					
+					setTitle( " :: " + file.getName() );
+					
+					usedDirectory = file;
 
 				} catch (ParserConfigurationException | SAXException | IOException e1) {
 
 					JOptionPane.showMessageDialog(MainPanel.this, "Nem sikerült a file beolvasása: \n" + e1.getMessage(), "Hiba", JOptionPane.ERROR_MESSAGE);
-
-					/*
-					 * Object [] buttonArray = {"Accept", "blabl"}; int a3;
-					 * 
-					 * do { a3 = JOptionPane.showOptionDialog(null,
-					 * "Mean arterial pressure restored.\nReassess all vitals STAT."
-					 * , "Title", JOptionPane.YES_NO_OPTION,
-					 * JOptionPane.ERROR_MESSAGE, null, buttonArray,
-					 * buttonArray[0]); } while(a3 ==
-					 * JOptionPane.CLOSED_OPTION); if (a3 ==
-					 * JOptionPane.YES_OPTION) { } if (a3 ==
-					 * JOptionPane.NO_OPTION) { }
-					 */
 
 				}
 
@@ -1272,4 +1282,7 @@ public class MainPanel extends JFrame {
 
 	};
 
+	public void setTitle( String title ){
+		super.setTitle("Hetram " + version + title );
+	}
 }
