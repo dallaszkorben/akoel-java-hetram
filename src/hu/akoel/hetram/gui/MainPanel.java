@@ -1060,6 +1060,7 @@ public class MainPanel extends JFrame {
 			// Kirajzoltatom a beolvasott abrat
 			MainPanel.this.myCanvas.revalidateAndRepaintCoreCanvas();
 
+			setTitle( "" );
 		}
 
 	};
