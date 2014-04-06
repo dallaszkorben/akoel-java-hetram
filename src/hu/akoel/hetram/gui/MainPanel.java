@@ -121,7 +121,7 @@ public class MainPanel extends JFrame {
 
 	private String version;
 	private File usedDirectory = null;
-	
+
 	private SelectedOpenEdgeForSumQList selectedOpenEdgeForSumQList = new SelectedOpenEdgeForSumQList();
 
 	private ThermicPointList thermicPointList = null;
@@ -264,9 +264,9 @@ public class MainPanel extends JFrame {
 	JMenu fileMainMenu;
 	JMenuItem fileNewMenuItem;
 	JMenuItem fileSaveMenuItem;
+	JMenuItem fileSaveAsMenuItem;
 	JMenuItem fileLoadMenuItem;
 	JMenu helpMainMenu;
-
 
 	public MainPanel(String version) {
 
@@ -297,11 +297,18 @@ public class MainPanel extends JFrame {
 		fileMainMenu.add(fileNewMenuItem);
 
 		// File-Save
-		fileSaveMenuItem = new JMenuItem("Mentés ...", KeyEvent.VK_S); // Mnemonic Akkor ervenyes ha lathato a menu elem
-		fileSaveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK)); // Mindegy hogy lathato-e a menu vagy sem
-		// fileSaveMenuItem.getAccessibleContext().setAccessibleDescription("This doesn't really do anything");
+		fileSaveMenuItem = new JMenuItem("Mentés", KeyEvent.VK_S); // Mnemonic Akkor ervenyes ha lathato a menu elem
+		fileSaveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK)); // Mindegy hogy lathato-e a menu vagy sem
 		fileSaveMenuItem.addActionListener(new SaveActionListener());
+		fileSaveMenuItem.setEnabled(false);
 		fileMainMenu.add(fileSaveMenuItem);
+
+		// File-Save As
+		fileSaveAsMenuItem = new JMenuItem("Mentés as ...", KeyEvent.VK_S); // Mnemonic Akkor ervenyes ha lathato a menu elem
+		// fileSaveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+		// ActionEvent.CTRL_MASK)); // Mindegy hogy lathato-e a menu vagy sem
+		fileSaveAsMenuItem.addActionListener(new SaveAsActionListener());
+		fileMainMenu.add(fileSaveAsMenuItem);
 
 		// File-Load
 		fileLoadMenuItem = new JMenuItem("Betöltés", KeyEvent.VK_L);
@@ -508,13 +515,13 @@ public class MainPanel extends JFrame {
 	//
 	// ------------------------------
 	public void setMode(Mode mode) {
-		if( mode.equals(Mode.CALCULATION)){		
+		if (mode.equals(Mode.CALCULATION)) {
 			fileNewMenuItem.setEnabled(false);
 			fileLoadMenuItem.setEnabled(false);
-		}else if( mode.equals(Mode.DRAWING)){
+		} else if (mode.equals(Mode.DRAWING)) {
 			fileNewMenuItem.setEnabled(true);
 			fileLoadMenuItem.setEnabled(true);
-		}else if( mode.equals( Mode.ANALYSIS)){
+		} else if (mode.equals(Mode.ANALYSIS)) {
 			fileNewMenuItem.setEnabled(true);
 			fileLoadMenuItem.setEnabled(true);
 		}
@@ -1060,7 +1067,9 @@ public class MainPanel extends JFrame {
 			// Kirajzoltatom a beolvasott abrat
 			MainPanel.this.myCanvas.revalidateAndRepaintCoreCanvas();
 
-			setTitle( "" );
+			setTitle("");
+			fileSaveMenuItem.setEnabled(false);
+
 		}
 
 	};
@@ -1072,6 +1081,56 @@ public class MainPanel extends JFrame {
 	 * 
 	 */
 	class SaveActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+
+			@SuppressWarnings("unchecked")
+			ArrayList<HetramDrawnElement> list = (ArrayList<HetramDrawnElement>) MainPanel.this.getCanvas().getDrawnBlockList();
+
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+
+			try {
+				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+				Document doc = docBuilder.newDocument();
+
+				// Root element
+				Element rootElement = doc.createElement("hetram");
+				doc.appendChild(rootElement);
+
+				for (HetramDrawnElement el : list) {
+					Element element = el.getXMLElement(doc);
+
+					rootElement.appendChild(element);
+				}
+
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = transformerFactory.newTransformer();
+				DOMSource source = new DOMSource(doc);
+
+				if (null != usedDirectory) {
+
+					// Stream letrehozasa
+					StreamResult result = new StreamResult(usedDirectory);
+
+					// Iras
+					transformer.transform(source, result);
+				}
+
+			} catch (ParserConfigurationException | TransformerException e1) {
+				JOptionPane.showMessageDialog(MainPanel.this, "Nem sikerült a file mentése: \n" + e1.getMessage(), "Hiba", JOptionPane.ERROR_MESSAGE);
+			}
+
+		}
+	};
+
+	/**
+	 * File mentes maskent menupont vegrehato objektuma
+	 * 
+	 * @author akoel
+	 * 
+	 */
+	class SaveAsActionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -1110,12 +1169,12 @@ public class MainPanel extends JFrame {
 				//
 
 				JFileChooser fc;
-				if( null == usedDirectory ){
+				if (null == usedDirectory) {
 					fc = new JFileChooser(System.getProperty("user.dir"));
-				}else{
-					fc = new JFileChooser( usedDirectory );
+				} else {
+					fc = new JFileChooser(usedDirectory);
 				}
-				
+
 				// Filechooser inicializalasa a felhasznalo munkakonyvtaraba
 
 				// A dialogus ablak cime
@@ -1148,9 +1207,11 @@ public class MainPanel extends JFrame {
 					// Iras
 					transformer.transform(source, result);
 
-					setTitle( " :: " + file.getName() );
+					setTitle(" :: " + file.getName());
 
 					usedDirectory = file;
+					fileSaveMenuItem.setEnabled(true);
+
 				}
 
 			} catch (ParserConfigurationException | TransformerException e1) {
@@ -1172,10 +1233,10 @@ public class MainPanel extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 
 			JFileChooser fc;
-			if( null == usedDirectory ){
+			if (null == usedDirectory) {
 				fc = new JFileChooser(System.getProperty("user.dir"));
-			}else{
-				fc = new JFileChooser( usedDirectory );
+			} else {
+				fc = new JFileChooser(usedDirectory);
 			}
 
 			fc.setDialogTitle("Load a plan");
@@ -1262,10 +1323,11 @@ public class MainPanel extends JFrame {
 						}
 
 					}
-					
-					setTitle( " :: " + file.getName() );
-					
+
+					setTitle(" :: " + file.getName());
+
 					usedDirectory = file;
+					fileSaveMenuItem.setEnabled(true);
 
 				} catch (ParserConfigurationException | SAXException | IOException e1) {
 
@@ -1283,7 +1345,7 @@ public class MainPanel extends JFrame {
 
 	};
 
-	public void setTitle( String title ){
-		super.setTitle("Hetram " + version + title );
+	public void setTitle(String title) {
+		super.setTitle("Hetram " + version + title);
 	}
 }
