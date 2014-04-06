@@ -180,7 +180,7 @@ public class MainPanel extends JFrame {
 
 	private int verticalDifferenceDivider = 1;
 	private int horizontalDifferenceDivider = 1;
-	private double calculationPrecision = 0.00001;
+	private double calculationPrecision = 0.00000001;
 
 	//
 	// Megjelenites - VisibilitySettings
