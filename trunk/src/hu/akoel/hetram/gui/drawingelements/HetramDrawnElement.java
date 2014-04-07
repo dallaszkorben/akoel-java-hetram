@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.w3c.dom.Element;
 
 import hu.akoel.mgu.drawnblock.DrawnBlock;
+import hu.akoel.mgu.drawnblock.DrawnBlockCanvas.Precision;
 
 public abstract class HetramDrawnElement extends DrawnBlock{
 	
@@ -16,8 +17,8 @@ public abstract class HetramDrawnElement extends DrawnBlock{
 		BUILDINGSTRUCTURE_ROWPATTERN
 	}
 
-	public HetramDrawnElement( Element xmlElement ){
-		super( xmlElement );
+	public HetramDrawnElement( Precision precision, Element xmlElement ){
+		super( precision, xmlElement );
 	}
 	
 	public HetramDrawnElement(Status status, BigDecimal x1, BigDecimal y1, BigDecimal minLength, BigDecimal maxLength, BigDecimal minWidth, BigDecimal maxWidth) {

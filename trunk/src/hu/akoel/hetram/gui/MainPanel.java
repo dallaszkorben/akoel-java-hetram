@@ -1290,31 +1290,31 @@ public class MainPanel extends JFrame {
 							// BUILDING STRUCTURE - HOMOGENEOUS
 							if (drawnBlockType.equals(TYPE.BUILDINGSTRUCTURE_HOMOGENEOUSPATTERN.name())) {
 								if (drawnBlockForm.equals(ElementSettingTab.HOMOGENEOUS_PATTERN.DOT.name())) {
-									MainPanel.this.myCanvas.addDrawnBlock(new HomogeneousPatternBuildingStructuralElement(drawnBlockElement, new HomogeneousPatternFactory(new DotFullPatternAdapter())));
+									MainPanel.this.myCanvas.addDrawnBlock( new HomogeneousPatternBuildingStructuralElement(myCanvas.getPrecision(),drawnBlockElement, new HomogeneousPatternFactory(new DotFullPatternAdapter())));
 								} else if (drawnBlockForm.equals(ElementSettingTab.HOMOGENEOUS_PATTERN.HATCH.name())) {
-									MainPanel.this.myCanvas.addDrawnBlock(new HomogeneousPatternBuildingStructuralElement(drawnBlockElement, new HomogeneousPatternFactory(new HatchFullPatternAdapter())));
+									MainPanel.this.myCanvas.addDrawnBlock(new HomogeneousPatternBuildingStructuralElement(myCanvas.getPrecision(),drawnBlockElement, new HomogeneousPatternFactory(new HatchFullPatternAdapter())));
 								}
 
 								// BUILDING STRUCTURE - ROWPATTERN
 							} else if (drawnBlockType.equals(TYPE.BUILDINGSTRUCTURE_ROWPATTERN.name())) {
 								if (drawnBlockForm.equals(ElementSettingTab.ROW_PATTERN.ZIGZAG.name())) {
-									MainPanel.this.myCanvas.addDrawnBlock(new RowPatternBuildingStructuralElement(drawnBlockElement, new RowPatternFactory(new ZigZagRowPatternAdapter()), MainPanel.this));
+									MainPanel.this.myCanvas.addDrawnBlock(new RowPatternBuildingStructuralElement(myCanvas.getPrecision(),drawnBlockElement, new RowPatternFactory(new ZigZagRowPatternAdapter()), MainPanel.this));
 								}
 
 								// BUILDING STRUCTURE - COLORED
 							} else if (drawnBlockType.equals(TYPE.BUILDINGSTRUCTURE_COLORED.name())) {
-								MainPanel.this.myCanvas.addDrawnBlock(new ColoredPatternBuildingSturcturalElement(drawnBlockElement));
+								MainPanel.this.myCanvas.addDrawnBlock(new ColoredPatternBuildingSturcturalElement(myCanvas.getPrecision(),drawnBlockElement));
 								// hetramDrawnElementList.add( );
 
 								// EDGE - OPEN
 							} else if (drawnBlockType.equals(TYPE.EDGE_OPEN.name())) {
-								MainPanel.this.myCanvas.addDrawnBlock(new OpenEdgeElement(drawnBlockElement));
+								MainPanel.this.myCanvas.addDrawnBlock(new OpenEdgeElement(myCanvas.getPrecision(),drawnBlockElement));
 								// hetramDrawnElementList.add( new
 								// OpenEdgeElement( eElement ) );
 
 								// EDGE - SYMMETRIC
 							} else if (drawnBlockType.equals(TYPE.EDGE_SYMMETRIC.name())) {
-								MainPanel.this.myCanvas.addDrawnBlock(new SymmetricEdgeElement(drawnBlockElement));
+								MainPanel.this.myCanvas.addDrawnBlock(new SymmetricEdgeElement(myCanvas.getPrecision(),drawnBlockElement));
 								// hetramDrawnElementList.add( new
 								// SymmetricEdgeElement( eElement ) );
 

@@ -14,6 +14,7 @@ import org.w3c.dom.Element;
 import hu.akoel.hetram.accessories.Displacement;
 import hu.akoel.hetram.gui.MainPanel;
 import hu.akoel.mgu.MGraphics;
+import hu.akoel.mgu.drawnblock.DrawnBlockCanvas.Precision;
 
 public class RowPatternBuildingStructuralElement extends HetramBuildingStructureElement{
 		
@@ -38,8 +39,8 @@ public class RowPatternBuildingStructuralElement extends HetramBuildingStructure
 		commonConstructor(rowPatternFactory, mainPanel);
 	}
 	
-	public RowPatternBuildingStructuralElement( Element xmlElement, RowPatternFactory rowPatternFactory, MainPanel mainPanel ){
-		super( xmlElement );
+	public RowPatternBuildingStructuralElement( Precision precision, Element xmlElement, RowPatternFactory rowPatternFactory, MainPanel mainPanel ){
+		super( precision, xmlElement );
 		
 		commonConstructor(rowPatternFactory, mainPanel);		
 		
