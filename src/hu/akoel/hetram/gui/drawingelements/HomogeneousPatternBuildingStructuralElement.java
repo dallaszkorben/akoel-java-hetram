@@ -1,5 +1,7 @@
 package hu.akoel.hetram.gui.drawingelements;
 
+import hu.akoel.mgu.drawnblock.DrawnBlockCanvas.Precision;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -32,8 +34,8 @@ public class HomogeneousPatternBuildingStructuralElement extends HetramBuildingS
 		commonConstructor( homogeneousPatternFactory );
 	}
 	
-	public HomogeneousPatternBuildingStructuralElement( Element xmlElement, HomogeneousPatternFactory homogeneousPatternFactory ){
-		super( xmlElement );
+	public HomogeneousPatternBuildingStructuralElement( Precision precision, Element xmlElement, HomogeneousPatternFactory homogeneousPatternFactory ){
+		super( precision, xmlElement );
 		
 		commonConstructor( homogeneousPatternFactory );
 		

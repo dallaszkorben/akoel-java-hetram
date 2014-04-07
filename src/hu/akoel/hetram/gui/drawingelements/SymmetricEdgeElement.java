@@ -1,5 +1,7 @@
 package hu.akoel.hetram.gui.drawingelements;
 
+import hu.akoel.mgu.drawnblock.DrawnBlockCanvas.Precision;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Stroke;
@@ -45,8 +47,8 @@ public class SymmetricEdgeElement extends HetramDrawnElement{
 		
 	}
 
-	public SymmetricEdgeElement( Element xmlElement ){
-		super( xmlElement );
+	public SymmetricEdgeElement( Precision precision, Element xmlElement ){
+		super( precision, xmlElement );
 		
 	}
 	

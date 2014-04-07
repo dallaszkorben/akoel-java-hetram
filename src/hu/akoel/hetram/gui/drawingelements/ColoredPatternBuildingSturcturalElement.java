@@ -1,5 +1,7 @@
 package hu.akoel.hetram.gui.drawingelements;
 
+import hu.akoel.mgu.drawnblock.DrawnBlockCanvas.Precision;
+
 import java.awt.Color;
 import java.math.BigDecimal;
 
@@ -21,8 +23,8 @@ public class ColoredPatternBuildingSturcturalElement extends HetramBuildingStruc
 	
 	}
 
-	public ColoredPatternBuildingSturcturalElement( Element xmlElement ){
-		super( xmlElement );
+	public ColoredPatternBuildingSturcturalElement( Precision precision, Element xmlElement ){
+		super( precision, xmlElement );
 	}
 	
 	

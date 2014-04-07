@@ -1,5 +1,7 @@
 package hu.akoel.hetram.gui.drawingelements;
 
+import hu.akoel.mgu.drawnblock.DrawnBlockCanvas.Precision;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Stroke;
@@ -46,8 +48,8 @@ public abstract class HetramBuildingStructureElement extends HetramDrawnElement{
 
 	}
 
-	public HetramBuildingStructureElement( Element xmlElement ){
-		super( xmlElement );
+	public HetramBuildingStructureElement( Precision precision, Element xmlElement ){
+		super( precision, xmlElement );
 		
 		NodeList mainNodeList = xmlElement.getChildNodes();
 		for (int i = 0; i < mainNodeList.getLength(); i++) {
