@@ -37,7 +37,6 @@ import hu.akoel.mgu.MCanvas;
 import hu.akoel.mgu.MGraphics;
 import hu.akoel.mgu.PainterListener;
 import hu.akoel.mgu.PossiblePixelPerUnits;
-import hu.akoel.mgu.MCanvas.Level;
 import hu.akoel.mgu.drawnblock.DrawnBlock;
 import hu.akoel.mgu.drawnblock.DrawnBlockCanvas;
 import hu.akoel.mgu.values.TranslateValue;
@@ -254,27 +253,13 @@ public class HetramCanvas extends DrawnBlockCanvas{
 						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.NORTH ) );
 					}
 					
-//				if( openEdgeElement.getWidth() != 0 && buildingStructureElement.getY2() == openEdgeElement.getY() ){
-//					double dx1 = Math.max(openEdgeElement.getX1(), buildingStructureElement.getX1() );
-//					double dx2 = Math.min(openEdgeElement.getX2(), buildingStructureElement.getX2() );
-//					if( dx2 - dx1 > 0 ){
-//						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.NORTH ) );
-//					}
-					
 				//SOUTH
 				}else if( openEdgeElement.getWidth().compareTo( new BigDecimal("0") ) != 0 && buildingStructureElement.getY1().compareTo( openEdgeElement.getY1() ) == 0 ){
 					BigDecimal dx1 = openEdgeElement.getX1().max( buildingStructureElement.getX1() );
 					BigDecimal dx2 = openEdgeElement.getX2().min( buildingStructureElement.getX2() );
 					if( dx2.subtract( dx1 ).compareTo( new BigDecimal( "0" ) ) > 0 ){
 						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.SOUTH ) );
-					}				
-
-//				}else if( openEdgeElement.getWidth() != 0 && buildingStructureElement.getY1() == openEdgeElement.getY() ){
-//					double dx1 = Math.max(openEdgeElement.getX1(), buildingStructureElement.getX1() );
-//					double dx2 = Math.min(openEdgeElement.getX2(), buildingStructureElement.getX2() );
-//					if( dx2 - dx1 > 0 ){
-//						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.SOUTH ) );
-//					}			
+					}							
 					
 				//EAST
 				}else if( openEdgeElement.getHeight().compareTo( new BigDecimal( "0" ) ) != 0 && buildingStructureElement.getX2().compareTo( openEdgeElement.getX1() ) == 0 ){
@@ -284,13 +269,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.EAST ) );
 					}
 					
-//				}else if( openEdgeElement.getHeight() != 0 && buildingStructureElement.getX2() == openEdgeElement.getX() ){
-//					double dy1 = Math.max(openEdgeElement.getY1(), buildingStructureElement.getY1() );
-//					double dy2 = Math.min(openEdgeElement.getY2(), buildingStructureElement.getY2() );
-//					if( dy2 - dy1 > 0 ){
-//						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.EAST ) );
-//					}
-					
 				//WEST
 				}else if( openEdgeElement.getHeight().compareTo( new BigDecimal("0")) != 0 && buildingStructureElement.getX1().compareTo( openEdgeElement.getX1() ) == 0 ){
 					BigDecimal dy1 = openEdgeElement.getY1().max( buildingStructureElement.getY1() );
@@ -298,13 +276,7 @@ public class HetramCanvas extends DrawnBlockCanvas{
 					if( dy2.subtract( dy1 ).compareTo( new BigDecimal("0") ) > 0 ){
 						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.WEST ) );
 					}	
-					
-//				}else if( openEdgeElement.getHeight() != 0 && buildingStructureElement.getX1() == openEdgeElement.getX() ){
-//					double dy1 = Math.max(openEdgeElement.getY1(), buildingStructureElement.getY1() );
-//					double dy2 = Math.min(openEdgeElement.getY2(), buildingStructureElement.getY2() );
-//					if( dy2 - dy1 > 0 ){
-//						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.WEST ) );
-//					}	
+		
 				}
 			}
 		}
@@ -413,12 +385,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 		
 		HetramBuildingStructureElement element;
 		
-//		BigDecimal verticalAppliedDifference = mainPanel.getVerticalMaximumDifference().divide( new BigDecimal( String.valueOf( mainPanel.getVerticalDifferenceDivider() ) ), 10, RoundingMode.HALF_UP  );
-//		BigDecimal horizontalAppliedDifference = mainPanel.getHorizontalMaximumDifference().divide( new BigDecimal( String.valueOf( mainPanel.getHorizontalDifferenceDivider() ) ), 10, RoundingMode.HALF_UP  );
-		
-//		mainPanel.setHorizontalAppliedDifference( horizontalAppliedDifference );
-//		mainPanel.setVerticalAppliedDifference( verticalAppliedDifference );
-	
 		BigDecimal verticalAppliedDifference = mainPanel.getVerticalAppliedDifference();
 		BigDecimal horizontalAppliedDifference = mainPanel.getHorizontalAppliedDifference();
 		
@@ -452,7 +418,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 			
 				//Vertikalis felbontas
 				int iSteps = endYPoint.subtract( y ).divide( verticalAppliedDifference, scale, RoundingMode.HALF_UP  ).intValue();
-				//int iSteps = (int)Math.round((endYPoint - y) / verticalAppliedDifference );
 			
 				//Vegig a vertikalis pontokon
 				for( int i = 0; i <= iSteps; i++){
@@ -595,7 +560,45 @@ public class HetramCanvas extends DrawnBlockCanvas{
 
 						//Az aktualis pontban elhelyezkedo Termikus pont
 						ThermicPoint actualThermicPoint = thermicPointMap.get( position );
-					
+/*					
+//
+//Ha egy belso pontrol van szo, akinek minden iranyban van termikus kapcsolata (NEGATIV SAROK)
+//Akkor hozza kell adni az OpenEdge altal kozolt aramot is
+//						
+if( 
+		(actualThermicPoint.getWestThermicConnector() instanceof AThermicPointThermicConnector ) &&
+		(actualThermicPoint.getEastThermicConnector() instanceof AThermicPointThermicConnector ) && 
+		(actualThermicPoint.getNorthThermicConnector() instanceof AThermicPointThermicConnector ) && 
+		(actualThermicPoint.getSouthThermicConnector() instanceof AThermicPointThermicConnector ) ){
+	
+	//Vegig az OpenEdge elemeken, melyek az Epuletszerkezet korul vannak
+	for( OpenEdgeElementWithPosition openEdgeElementWithPosition: openEdgeElementList ){
+
+		//Megfelelo pozicio
+		if( openEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y.compareTo( openEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( openEdgeElementWithPosition.element.getY2() ) <= 0 && x.compareTo( openEdgeElementWithPosition.element.getX1() ) == 0 ){  
+			actualThermicPoint.connectToExtraOpenEdge(Orientation.WEST, openEdgeElementWithPosition.element.getAlphaByPosition( y.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );
+//System.err.println( actualThermicPoint);			
+			//break;
+		}else if( openEdgeElementWithPosition.orientation.equals( Orientation.EAST ) && y.compareTo( openEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( openEdgeElementWithPosition.element.getY2() ) <= 0 && x.compareTo( openEdgeElementWithPosition.element.getX1() ) == 0 ){
+			actualThermicPoint.connectToExtraOpenEdge( Orientation.EAST, openEdgeElementWithPosition.element.getAlphaByPosition( y.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );
+System.err.println( "east " + x.doubleValue() + ", " + y.doubleValue() );			
+			//break;
+		}else if( openEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x.compareTo( openEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( openEdgeElementWithPosition.element.getX2() ) <= 0 && y.compareTo( openEdgeElementWithPosition.element.getY1() ) == 0 ){
+			actualThermicPoint.connectToExtraOpenEdge( Orientation.SOUTH, openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );
+System.err.println( "south " + x.doubleValue() + ", " + y.doubleValue() );		
+			//break;			
+		}else if( openEdgeElementWithPosition.orientation.equals( Orientation.NORTH) && x.compareTo( openEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( openEdgeElementWithPosition.element.getX2() ) <= 0 && y.compareTo( openEdgeElementWithPosition.element.getY1() ) == 0){
+			actualThermicPoint.connectToExtraOpenEdge( Orientation.NORTH, openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );
+//System.err.println( actualThermicPoint);			
+			//break;
+		}			
+	}	
+	
+}
+*/						
+						
+						
+						
 						//----------------------------
 						//
 						// BAL SZELSO PONT WEST irany

@@ -21,11 +21,23 @@ public class ThermicPoint {
 	private IThermicConnector eastThermicConnector;
 	private IThermicConnector southThermicConnector;
 	private IThermicConnector westThermicConnector;
+	
+/*//Be kell vezetni, mert a negativ sarkokban, ha van Open Edge akkor azt nem veszi figyelembe
+private OpenEdgeThermicConnector extraWestOpenEdgeConnector = null;
+private OpenEdgeThermicConnector extraNorthOpenEdgeConnector = null;
+private OpenEdgeThermicConnector extraEastOpenEdgeConnector = null;
+private OpenEdgeThermicConnector extraSouthOpenEdgeConnector = null;
+*/	
 	private Double northCurrent;
 	private Double eastCurrent;
 	private Double southCurrent;
 	private Double westCurrent;
 	
+/*private Double extraNorthCurrent;	
+private Double extraEastCurrent;
+private Double extraSouthCurrent;
+private Double extraWestCurrent;
+*/	
 	private double northDeltaNormal;
 	private double southDeltaNormal;
 	private double eastDeltaNormal;
@@ -75,6 +87,25 @@ public class ThermicPoint {
 		
 	}
 	
+/**
+ * Egy extra OpenEdge kapcsolat a negativ sarokban alhelyezkedo pontnak
+ * @param alpha
+ * @param airTemperature
+ */
+/*	
+public void connectToExtraOpenEdge( Orientation orientation, double alpha, double airTemperature ){
+	OpenEdgeThermicConnector connector = new OpenEdgeThermicConnector( alpha, airTemperature );
+	if( orientation.equals( Orientation.NORTH ) ){
+		extraNorthOpenEdgeConnector = connector;
+	}else if( orientation.equals( Orientation.EAST ) ){
+		extraEastOpenEdgeConnector = connector;
+	}else if( orientation.equals( Orientation.SOUTH ) ){
+		extraSouthOpenEdgeConnector = connector;
+	}else if( orientation.equals( Orientation.WEST ) ){
+		extraWestOpenEdgeConnector = connector;
+	}	
+}
+*/	
 	/**
 	 * Termikus Pont szabad feluleti pontkent valo megjelolese
 	 * 
@@ -199,6 +230,48 @@ public class ThermicPoint {
 		this.westDeltaNormal = westDeltaNormal;
 	}
 
+/*	
+public Double getExtraNorthCurrent(){
+	return extraNorthCurrent;
+}
+public Double getExtraEastCurrent(){
+	return extraEastCurrent;
+}
+public Double getExtraSouthCurrent(){
+	return extraSouthCurrent;
+}
+public Double getExtraWestCurrent(){
+	return extraWestCurrent;
+}
+public void setExtraNorthCurrent(Double extraNorthCurrent) {
+	this.extraNorthCurrent = extraNorthCurrent;
+}
+
+public void setExtraEastCurrent(Double extraEastCurrent) {
+	this.extraEastCurrent = extraEastCurrent;
+}
+
+public void setExtraSouthCurrent(Double extraSouthCurrent) {
+	this.extraSouthCurrent = extraSouthCurrent;
+}
+
+public void setExtraWestCurrent(Double extraWestCurrent) {
+	this.extraWestCurrent = extraWestCurrent;
+}
+*/
+public void addExtraNorthCurrent( Double extraNorthCurrent) {
+	this.northCurrent += extraNorthCurrent;
+}
+public void addExtraEastCurrent( Double extraEastCurrent) {
+	this.eastCurrent += extraEastCurrent;
+}
+public void addExtraSouthCurrent( Double extraSouthCurrent) {
+	this.southCurrent += extraSouthCurrent;
+}
+public void addExtraWestCurrent( Double extraWestCurrent) {
+	this.westCurrent += extraWestCurrent;
+}
+	
 	public Double getNorthCurrent() {
 		return northCurrent;
 	}
@@ -231,6 +304,22 @@ public class ThermicPoint {
 		this.westCurrent = westCurrent;
 	}
 
+	
+	
+/*	
+public OpenEdgeThermicConnector getExtraNorthOpenEdgeConnector(){
+	return extraNorthOpenEdgeConnector;
+}
+public OpenEdgeThermicConnector getExtraEastOpenEdgeConnector(){
+	return extraEastOpenEdgeConnector;
+}
+public OpenEdgeThermicConnector getExtraSouthOpenEdgeConnector(){
+	return extraSouthOpenEdgeConnector;
+}
+public OpenEdgeThermicConnector getExtraWestOpenEdgeConnector(){
+	return extraWestOpenEdgeConnector;
+}
+*/
 	public IThermicConnector getNorthThermicConnector() {
 		return northThermicConnector;
 	}
@@ -391,7 +480,7 @@ public class ThermicPoint {
 		if( tc instanceof YThermicPointThermicConnector ){
 			back += "(λ=" + ((AThermicPointThermicConnector)tc).getLambda() + " ";
 			back += "δ=" + deltaFormat.format( ((AThermicPointThermicConnector)tc).getDelta() ) + " ";
-			back += getSouthPair().getPosition() + ")";
+			back += getSouthPair().getPosition() + ") ";
 			back += "q=" + this.getSouthCurrent() + " ";
 		}else if( tc instanceof OpenEdgeThermicConnector ){
 			back += "(α=" + ((OpenEdgeThermicConnector)tc).getAlpha() + " ";
@@ -413,6 +502,10 @@ public class ThermicPoint {
 		}else if( tc instanceof SymmetricEdgeThermicConnector ){
 			back += "|";
 		}
+		
+		
+		
+		//TODO az extra open edge connector-ok kijelzese
 		
 		return back;
 	}
