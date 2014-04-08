@@ -304,7 +304,7 @@ public class MainPanel extends JFrame {
 		fileMainMenu.add(fileSaveMenuItem);
 
 		// File-Save As
-		fileSaveAsMenuItem = new JMenuItem("Mentés as ...", KeyEvent.VK_S); // Mnemonic Akkor ervenyes ha lathato a menu elem
+		fileSaveAsMenuItem = new JMenuItem("Mentés mint ...", KeyEvent.VK_S); // Mnemonic Akkor ervenyes ha lathato a menu elem
 		// fileSaveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 		// ActionEvent.CTRL_MASK)); // Mindegy hogy lathato-e a menu vagy sem
 		fileSaveAsMenuItem.addActionListener(new SaveAsActionListener());
