@@ -124,6 +124,7 @@ public class HetramMouseListener extends DrawnBlockMouseListener{
 				//if( canvas.isEnabledDrawn() ){
 				if( canvas.getMainPanel().getMode().equals(Mode.DRAWING) ){
 				
+					//Akkor a kivalasztott elem tulajdonsagait betolti a mezokbe
 					selectedElement = element;
 					selectedElement.setStatus(Status.SELECTED);
 					
@@ -171,7 +172,7 @@ public class HetramMouseListener extends DrawnBlockMouseListener{
 					canvas.getMainPanel().setQShow( QShow.OPENEDGE );
 					
 //Az OPENEDGE vonalában a hőmérsékletek megjelenítése
-//??Táblázat/grafikon??					
+//??Táblázat/grafikon/file??					
 canvas.getMainPanel().showThermicGraph( (OpenEdgeElement) selectedElement );	
 					
 					//Jelzem, hogy szukseges az ujrarajzolas

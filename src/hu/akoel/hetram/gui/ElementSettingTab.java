@@ -975,7 +975,11 @@ public class ElementSettingTab extends JPanel{
 	}
 	
 	public void setStructureElementLambda( double lambda ){
+		//Csak ezzel a jatekkal lehet elerni, hogy a setText() metodussal a JTextField-be irt adatra lefusson a verifikacio es igy az ertek valtozoba irasa
+		//lambdaField.setFocusable(true);
+		lambdaField.requestFocusInWindow();
 		lambdaField.setText( String.valueOf( lambda ) );
+		mainPanel.getCanvas().requestFocusInWindow();
 	}
 	
 	public void setStructureElementLineColor( Color color ){
@@ -1007,11 +1011,18 @@ public class ElementSettingTab extends JPanel{
 	}
 	
 	public void setOpenEdgeAlphaBegin( double alpha ){
+		//Csak ezzel a jatekkal lehet elerni, hogy a setText() metodussal a JTextField-be irt adatra lefusson a verifikacio es igy az ertek valtozoba irasa
+		openEdgeAlphaBeginField.requestFocusInWindow();
 		openEdgeAlphaBeginField.setText( String.valueOf( alpha ));
+		mainPanel.getCanvas().requestFocusInWindow();
 	}
 
 	public void setOpenEdgeAlphaEnd( double alpha ){
+		//Csak ezzel a jatekkal lehet elerni, hogy a setText() metodussal a JTextField-be irt adatra lefusson a verifikacio es igy az ertek valtozoba irasa
+		openEdgeAlphaEndField.requestFocusInWindow();
 		openEdgeAlphaEndField.setText( String.valueOf( alpha ) );
+		mainPanel.getCanvas().requestFocusInWindow();
+
 	}
 	
 	public void setOpenEdgeTemperature( double temperature ){

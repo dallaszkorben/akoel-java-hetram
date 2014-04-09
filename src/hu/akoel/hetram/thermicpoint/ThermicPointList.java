@@ -901,7 +901,7 @@ public class ThermicPointList {
 			ThermicPointList.this.get(position).setNorthCurrent(dXNormal * (ntc.getLambda() / ntc.getDelta().doubleValue()) * (ThermicPointList.this.get(position).getActualTemperature() - ntc.getNorthThermicPoint().getActualTemperature()));
 
 if( null != xN ){		
-	ThermicPointList.this.get(position).addExtraNorthCurrent( dXNormal * xN.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - xN.getAirTemperature()) );
+	ThermicPointList.this.get(position).setExtraNorthCurrent( dXNormal * xN.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - xN.getAirTemperature()) );
 }
 		
 			// Termikus Pont - Szabad felszin
@@ -947,7 +947,7 @@ if( null != xN ){
 			ThermicPointList.this.get(position).setSouthCurrent(dXNormal * (stc.getLambda() / stc.getDelta().doubleValue()) * (ThermicPointList.this.get(position).getActualTemperature() - stc.getSouthThermicPoint().getActualTemperature()));
 
 if( null != xS ){		
-	ThermicPointList.this.get(position).addExtraSouthCurrent( dXNormal * xS.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - xS.getAirTemperature()) );
+	ThermicPointList.this.get(position).setExtraSouthCurrent( dXNormal * xS.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - xS.getAirTemperature()) );
 }
 			
 			// Termikus Pont - Szabad felszin
@@ -989,7 +989,7 @@ if( null != xS ){
 			ThermicPointList.this.get(position).setEastCurrent(dYNormal * (etc.getLambda() / etc.getDelta().doubleValue()) * (ThermicPointList.this.get(position).getActualTemperature() - etc.getEastThermicPoint().getActualTemperature()));
 
 if( null != xE ){
-	ThermicPointList.this.get(position).addExtraEastCurrent( dYNormal * xE.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - xE.getAirTemperature()));
+	ThermicPointList.this.get(position).setExtraEastCurrent( dYNormal * xE.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - xE.getAirTemperature()));
 }
 			
 			// Termikus Pont - Szabad felszin
@@ -1031,7 +1031,7 @@ if( null != xE ){
 			ThermicPointList.this.get(position).setWestCurrent(dYNormal * (wtc.getLambda() / wtc.getDelta().doubleValue()) * (ThermicPointList.this.get(position).getActualTemperature() - wtc.getWestThermicPoint().getActualTemperature()));
 
 if( null != xW ){
-	ThermicPointList.this.get(position).addExtraWestCurrent( dYNormal * xW.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - xW.getAirTemperature() ) );
+	ThermicPointList.this.get(position).setExtraWestCurrent( dYNormal * xW.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - xW.getAirTemperature() ) );
 }
 			
 			// Termikus Pont - Szabad felszin

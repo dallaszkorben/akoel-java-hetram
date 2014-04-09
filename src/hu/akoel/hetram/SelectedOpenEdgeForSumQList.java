@@ -64,6 +64,8 @@ public class SelectedOpenEdgeForSumQList {
 				
 				IThermicConnector cE;
 				IThermicConnector cW;
+				OpenEdgeThermicConnector xE;
+				OpenEdgeThermicConnector xW;
 				
 				for( int i = 0;  i < thermicPointList.getSize(); i++ ){
 					tp = thermicPointList.get( i );
@@ -85,6 +87,16 @@ public class SelectedOpenEdgeForSumQList {
 							westCurrent += tp.getWestCurrent(); 
 						}
 						
+						xE = tp.getExtraEastOpenEdgeConnector();
+						if( null != xE ){
+							eastCurrent += tp.getExtraEastCurrent();
+						}
+
+						xW = tp.getExtraWestOpenEdgeConnector();
+						if( null != xW ){
+							westCurrent += tp.getExtraWestCurrent();
+						}
+
 					}
 						
 				}
@@ -103,6 +115,8 @@ public class SelectedOpenEdgeForSumQList {
 				
 				IThermicConnector cN;
 				IThermicConnector cS;
+				OpenEdgeThermicConnector xN;
+				OpenEdgeThermicConnector xS;
 				
 				for( int i = 0;  i < thermicPointList.getSize(); i++ ){
 					tp = thermicPointList.get( i );
@@ -121,9 +135,19 @@ public class SelectedOpenEdgeForSumQList {
 						//D fele OpenEdge - tehat innen jon az aram
 						cS = tp.getSouthThermicConnector();
 						if( cS instanceof OpenEdgeThermicConnector ){
-							southCurrent += tp.getSouthCurrent(); 						
+							southCurrent += tp.getSouthCurrent();							
 						}
 						
+						xN = tp.getExtraNorthOpenEdgeConnector();
+						if( null != xN ){
+							northCurrent += tp.getExtraNorthCurrent();
+						}
+
+						xS = tp.getExtraSouthOpenEdgeConnector();
+						if( null != xS ){
+							southCurrent += tp.getExtraSouthCurrent();
+						}
+
 					}
 						
 				}
