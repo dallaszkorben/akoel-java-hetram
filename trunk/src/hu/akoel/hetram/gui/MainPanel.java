@@ -156,7 +156,7 @@ public class MainPanel extends JFrame {
 	// Rajzi elemek - ElementSettings
 	//
 	private DRAWING_ELEMENT drawingElement = DRAWING_ELEMENT.BUILDINGELEMENT;
-	private double buildingStructureLambda = 0.02;
+	private double buildingStructureLambda = 0.3;
 	private Color elementLineColor = Color.blue;
 	private Color elementBackgroundColor = Color.black;
 	private PATTERN_TYPE patternType = PATTERN_TYPE.COLOR;

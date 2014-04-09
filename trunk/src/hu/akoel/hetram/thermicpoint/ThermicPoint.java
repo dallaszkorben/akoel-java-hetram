@@ -260,7 +260,7 @@ public void setExtraWestCurrent(Double extraWestCurrent) {
 }
 
 
-
+/*
 public void addExtraNorthCurrent( Double extraNorthCurrent) {
 	this.northCurrent += extraNorthCurrent;
 }
@@ -273,9 +273,10 @@ public void addExtraSouthCurrent( Double extraSouthCurrent) {
 public void addExtraWestCurrent( Double extraWestCurrent) {
 	this.westCurrent += extraWestCurrent;
 }
-	
+*/
+
 	public Double getNorthCurrent() {
-		return northCurrent;
+		return northCurrent + ( null == extraNorthCurrent ? 0 : extraNorthCurrent);
 	}
 
 	public void setNorthCurrent(Double northCurrent) {
@@ -283,7 +284,7 @@ public void addExtraWestCurrent( Double extraWestCurrent) {
 	}
 
 	public Double getEastCurrent() {
-		return eastCurrent;
+		return eastCurrent  + ( null == extraEastCurrent ? 0 : extraEastCurrent);
 	}
 
 	public void setEastCurrent(Double eastCurrent) {
@@ -291,7 +292,7 @@ public void addExtraWestCurrent( Double extraWestCurrent) {
 	}
 
 	public Double getSouthCurrent() {
-		return southCurrent;
+		return southCurrent  + ( null == extraSouthCurrent ? 0 : extraSouthCurrent);
 	}
 
 	public void setSouthCurrent(Double southCurrent) {
@@ -299,7 +300,7 @@ public void addExtraWestCurrent( Double extraWestCurrent) {
 	}
 
 	public Double getWestCurrent() {
-		return westCurrent;
+		return westCurrent  + ( null == extraNorthCurrent ? 0 : extraWestCurrent);
 	}
 
 	public void setWestCurrent(Double westCurrent) {

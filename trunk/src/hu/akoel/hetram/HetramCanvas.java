@@ -577,19 +577,19 @@ if(
 		//Megfelelo pozicio
 		if( openEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y.compareTo( openEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( openEdgeElementWithPosition.element.getY2() ) <= 0 && x.compareTo( openEdgeElementWithPosition.element.getX1() ) == 0 ){  
 			actualThermicPoint.connectToExtraOpenEdge(Orientation.WEST, openEdgeElementWithPosition.element.getAlphaByPosition( y.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );
-System.err.println( "west " + x.doubleValue() + ", " + y.doubleValue() );			
+//System.err.println( "west " + x.doubleValue() + ", " + y.doubleValue() );			
 			//break;
 		}else if( openEdgeElementWithPosition.orientation.equals( Orientation.EAST ) && y.compareTo( openEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( openEdgeElementWithPosition.element.getY2() ) <= 0 && x.compareTo( openEdgeElementWithPosition.element.getX1() ) == 0 ){
 			actualThermicPoint.connectToExtraOpenEdge( Orientation.EAST, openEdgeElementWithPosition.element.getAlphaByPosition( y.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );
-System.err.println( "east " + x.doubleValue() + ", " + y.doubleValue() );			
+//System.err.println( "east " + x.doubleValue() + ", " + y.doubleValue() );			
 			//break;
 		}else if( openEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x.compareTo( openEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( openEdgeElementWithPosition.element.getX2() ) <= 0 && y.compareTo( openEdgeElementWithPosition.element.getY1() ) == 0 ){
 			actualThermicPoint.connectToExtraOpenEdge( Orientation.SOUTH, openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );
-System.err.println( "south " + x.doubleValue() + ", " + y.doubleValue() );		
+//System.err.println( "south " + x.doubleValue() + ", " + y.doubleValue() );		
 			//break;			
 		}else if( openEdgeElementWithPosition.orientation.equals( Orientation.NORTH) && x.compareTo( openEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( openEdgeElementWithPosition.element.getX2() ) <= 0 && y.compareTo( openEdgeElementWithPosition.element.getY1() ) == 0){
 			actualThermicPoint.connectToExtraOpenEdge( Orientation.NORTH, openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );
-System.err.println( "north " + x.doubleValue() + ", " + y.doubleValue() );				
+//System.err.println( "north " + x.doubleValue() + ", " + y.doubleValue() );				
 			//break;
 		}			
 	}	
