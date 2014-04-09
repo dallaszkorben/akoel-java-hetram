@@ -89,8 +89,6 @@ public class ThermicPointList {
 	 * @return
 	 */
 	public ThermicPoint getThermicPointByPosition(double x, double y) {
-		// public ThermicPoint getThermicPointByPosition( BigDecimal x,
-		// BigDecimal y ){
 
 		if (this.getSize() > 0) {
 
@@ -157,17 +155,6 @@ public class ThermicPointList {
 		return null;
 	}
 
-	/*
-	 * public Double getTemperatureByPosition( double x, double y ){
-	 * 
-	 * ThermicPoint tp = getThermicPointByPosition(x, y); if( null == tp ){
-	 * return null; }else{ return tp.getActualTemperature(); } }
-	 */
-
-	/*
-	 * public void setCalculationListener(CalculationListener
-	 * calculationListener) { this.calculationListener = calculationListener; }
-	 */
 	/**
 	 * Egy kitoltott korrel reprezentalja az egyes ThermicPoint-okat
 	 * 
@@ -486,12 +473,6 @@ public class ThermicPointList {
 					Path2D.Double trajektoriaPath = new Path2D.Double();
 					trajektoriaPath.moveTo(position.getX() - vector.x / 2, position.getY() - vector.y / 2);
 					trajektoriaPath.lineTo(position.getX() + vector.x / 2, position.getY() + vector.y / 2);
-					// trajektoriaPath.moveTo( position.getX() - ( vX -
-					// position.getX() ) / 2, position.getY() - ( vY -
-					// position.getY() ) / 2 );
-					// trajektoriaPath.lineTo( position.getX() + ( vX -
-					// position.getX() ) / 2, position.getY() + ( vY -
-					// position.getY() ) / 2 );
 
 					AffineTransform trajektoriaAT = new AffineTransform();
 
@@ -858,12 +839,12 @@ public class ThermicPointList {
 		IThermicConnector cE = list[position].getEastThermicConnector();
 		IThermicConnector cS = list[position].getSouthThermicConnector();
 		IThermicConnector cW = list[position].getWestThermicConnector();
-/*		
-		OpenEdgeThermicConnector oeN = list[position].getExtraNorthOpenEdgeConnector();
-		OpenEdgeThermicConnector oeE = list[position].getExtraEastOpenEdgeConnector();
-		OpenEdgeThermicConnector oeS = list[position].getExtraSouthOpenEdgeConnector();
-		OpenEdgeThermicConnector oeW = list[position].getExtraWestOpenEdgeConnector();
-*/
+	
+		OpenEdgeThermicConnector xN = list[position].getExtraNorthOpenEdgeConnector();
+		OpenEdgeThermicConnector xE = list[position].getExtraEastOpenEdgeConnector();
+		OpenEdgeThermicConnector xS = list[position].getExtraSouthOpenEdgeConnector();
+		OpenEdgeThermicConnector xW = list[position].getExtraWestOpenEdgeConnector();
+
 		double dYNormal = 0; // Meroleges
 		double dXNormal = 0; // Meroleges
 
@@ -918,11 +899,11 @@ public class ThermicPointList {
 			dXNormal = Math.min(dNX, dX);
 
 			ThermicPointList.this.get(position).setNorthCurrent(dXNormal * (ntc.getLambda() / ntc.getDelta().doubleValue()) * (ThermicPointList.this.get(position).getActualTemperature() - ntc.getNorthThermicPoint().getActualTemperature()));
-/*
-if( null != oeN ){		
-	ThermicPointList.this.get(position).addExtraNorthCurrent( dX * oeN.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - oeN.getAirTemperature()) );
+
+if( null != xN ){		
+	ThermicPointList.this.get(position).addExtraNorthCurrent( dXNormal * xN.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - xN.getAirTemperature()) );
 }
-*/			
+		
 			// Termikus Pont - Szabad felszin
 		} else if (cN instanceof OpenEdgeThermicConnector) {
 
@@ -964,11 +945,11 @@ if( null != oeN ){
 			// dYDirection = stc.getDelta().doubleValue();
 
 			ThermicPointList.this.get(position).setSouthCurrent(dXNormal * (stc.getLambda() / stc.getDelta().doubleValue()) * (ThermicPointList.this.get(position).getActualTemperature() - stc.getSouthThermicPoint().getActualTemperature()));
-/*
-if( null != oeS ){		
-	ThermicPointList.this.get(position).addExtraSouthCurrent( dX * oeS.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - oeS.getAirTemperature()) );
+
+if( null != xS ){		
+	ThermicPointList.this.get(position).addExtraSouthCurrent( dXNormal * xS.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - xS.getAirTemperature()) );
 }
-*/			
+			
 			// Termikus Pont - Szabad felszin
 		} else if (cS instanceof OpenEdgeThermicConnector) {
 
@@ -1006,11 +987,11 @@ if( null != oeS ){
 			dYNormal = Math.min(dEY, dY);
 
 			ThermicPointList.this.get(position).setEastCurrent(dYNormal * (etc.getLambda() / etc.getDelta().doubleValue()) * (ThermicPointList.this.get(position).getActualTemperature() - etc.getEastThermicPoint().getActualTemperature()));
-/*
-if( null != oeE ){
-	ThermicPointList.this.get(position).addExtraEastCurrent( dY * oeE.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - oeE.getAirTemperature()));
+
+if( null != xE ){
+	ThermicPointList.this.get(position).addExtraEastCurrent( dYNormal * xE.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - xE.getAirTemperature()));
 }
-*/			
+			
 			// Termikus Pont - Szabad felszin
 		} else if (cE instanceof OpenEdgeThermicConnector) {
 
@@ -1048,11 +1029,11 @@ if( null != oeE ){
 			dYNormal = Math.min(dWY, dY);
 
 			ThermicPointList.this.get(position).setWestCurrent(dYNormal * (wtc.getLambda() / wtc.getDelta().doubleValue()) * (ThermicPointList.this.get(position).getActualTemperature() - wtc.getWestThermicPoint().getActualTemperature()));
-/*
-if( null != oeW ){
-	ThermicPointList.this.get(position).addExtraEastCurrent( dY * oeW.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - oeW.getAirTemperature()));
+
+if( null != xW ){
+	ThermicPointList.this.get(position).addExtraWestCurrent( dYNormal * xW.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - xW.getAirTemperature() ) );
 }
-*/			
+			
 			// Termikus Pont - Szabad felszin
 		} else if (cW instanceof OpenEdgeThermicConnector) {
 
@@ -1089,10 +1070,10 @@ if( null != oeW ){
 		IThermicConnector cS;
 		IThermicConnector cW;
 
-OpenEdgeThermicConnector oeN;
-OpenEdgeThermicConnector oeE;
-OpenEdgeThermicConnector oeS;
-OpenEdgeThermicConnector oeW;
+OpenEdgeThermicConnector xN;
+OpenEdgeThermicConnector xE;
+OpenEdgeThermicConnector xS;
+OpenEdgeThermicConnector xW;
 		
 		for (int i = 0; i < position; i++) {
 
@@ -1103,12 +1084,12 @@ OpenEdgeThermicConnector oeW;
 			cE = list[i].getEastThermicConnector();
 			cS = list[i].getSouthThermicConnector();
 			cW = list[i].getWestThermicConnector();
-/*
-oeN = list[i].getExtraNorthOpenEdgeConnector();
-oeE = list[i].getExtraEastOpenEdgeConnector();
-oeS = list[i].getExtraSouthOpenEdgeConnector();
-oeW = list[i].getExtraWestOpenEdgeConnector();
-*/			
+
+xN = list[i].getExtraNorthOpenEdgeConnector();
+xE = list[i].getExtraEastOpenEdgeConnector();
+xS = list[i].getExtraSouthOpenEdgeConnector();
+xW = list[i].getExtraWestOpenEdgeConnector();
+		
 			// ---------
 			//
 			// NORTH
@@ -1124,6 +1105,12 @@ oeW = list[i].getExtraWestOpenEdgeConnector();
 				szamlalo += deltalabda * ntc.getNorthThermicPoint().getActualTemperature();
 				nevezo += deltalabda;
 
+if( null != xN ){
+	double alphadelta = xN.getAlpha() * list[i].getNorthDeltaNormal();
+	szamlalo += alphadelta * xN.getAirTemperature();
+	nevezo += alphadelta;
+}
+
 			// Termikus Pont - Szabad felszin
 			} else if (cN instanceof OpenEdgeThermicConnector) {
 
@@ -1132,13 +1119,8 @@ oeW = list[i].getExtraWestOpenEdgeConnector();
 				nevezo += alphadelta;
 
 			}
-/*
-if( null != oeN ){
-	double alphadelta = oeN.getAlpha() * list[i].getNorthDeltaNormal();
-	szamlalo += alphadelta * oeN.getAirTemperature();
-	nevezo += alphadelta;
-}
-*/
+
+
 			
 			// ---------
 			//
@@ -1155,7 +1137,13 @@ if( null != oeN ){
 				szamlalo += deltalabda * stc.getSouthThermicPoint().getActualTemperature();
 				nevezo += deltalabda;
 
-				// Termikus Pont - Szabad felszin
+if( null != xS ){
+	double alphadelta = xS.getAlpha() * list[i].getSouthDeltaNormal();
+	szamlalo += alphadelta * xS.getAirTemperature();
+	nevezo += alphadelta;
+}
+
+			// Termikus Pont - Szabad felszin
 			} else if (cS instanceof OpenEdgeThermicConnector) {
 
 				double alphadelta = ((OpenEdgeThermicConnector) cS).getAlpha() * list[i].getSouthDeltaNormal();
@@ -1163,13 +1151,8 @@ if( null != oeN ){
 				nevezo += alphadelta;
 
 			}
-/*
-if( null != oeS ){
-	double alphadelta = oeS.getAlpha() * list[i].getSouthDeltaNormal();
-	szamlalo += alphadelta * oeS.getAirTemperature();
-	nevezo += alphadelta;
-}
-*/
+
+
 			
 			// ---------
 			//
@@ -1186,6 +1169,12 @@ if( null != oeS ){
 				szamlalo += deltalabda * etc.getEastThermicPoint().getActualTemperature();
 				nevezo += deltalabda;
 
+if( null != xE ){
+	double alphadelta = xE.getAlpha() * list[i].getEastDeltaNormal();
+	szamlalo += alphadelta * xE.getAirTemperature();
+	nevezo += alphadelta;
+}
+				
 			// Termikus Pont - Szabad felszin
 			} else if (cE instanceof OpenEdgeThermicConnector) {
 
@@ -1194,13 +1183,9 @@ if( null != oeS ){
 				nevezo += alphadelta;
 
 			}
-/*
-if( null != oeE ){
-	double alphadelta = oeE.getAlpha() * list[i].getEastDeltaNormal();
-	szamlalo += alphadelta * oeE.getAirTemperature();
-	nevezo += alphadelta;
-}
-*/
+
+
+
 			// ---------
 			//
 			// WEST
@@ -1216,6 +1201,11 @@ if( null != oeE ){
 				szamlalo += deltalabda * wtc.getWestThermicPoint().getActualTemperature();
 				nevezo += deltalabda;
 
+if( null != xW ){
+	double alphadelta = xW.getAlpha() * list[i].getWestDeltaNormal();
+	szamlalo += alphadelta * xW.getAirTemperature();
+	nevezo += alphadelta;
+}				
 				// Termikus Pont - Szabad felszin
 			} else if (cW instanceof OpenEdgeThermicConnector) {
 
@@ -1224,13 +1214,9 @@ if( null != oeE ){
 				nevezo += alphadelta;
 
 			}
-/*			
-if( null != oeW ){
-	double alphadelta = oeW.getAlpha() * list[i].getWestDeltaNormal();
-	szamlalo += alphadelta * oeW.getAirTemperature();
-	nevezo += alphadelta;
-}
-*/
+		
+
+
 			list[i].setActualTemperature(szamlalo / nevezo);
 
 		}

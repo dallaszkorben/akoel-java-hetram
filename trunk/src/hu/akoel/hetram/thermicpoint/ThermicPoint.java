@@ -22,22 +22,22 @@ public class ThermicPoint {
 	private IThermicConnector southThermicConnector;
 	private IThermicConnector westThermicConnector;
 	
-/*//Be kell vezetni, mert a negativ sarkokban, ha van Open Edge akkor azt nem veszi figyelembe
+//Be kell vezetni, mert a negativ sarkokban, ha van Open Edge akkor azt nem veszi figyelembe
 private OpenEdgeThermicConnector extraWestOpenEdgeConnector = null;
 private OpenEdgeThermicConnector extraNorthOpenEdgeConnector = null;
 private OpenEdgeThermicConnector extraEastOpenEdgeConnector = null;
 private OpenEdgeThermicConnector extraSouthOpenEdgeConnector = null;
-*/	
+	
 	private Double northCurrent;
 	private Double eastCurrent;
 	private Double southCurrent;
 	private Double westCurrent;
 	
-/*private Double extraNorthCurrent;	
+private Double extraNorthCurrent;	
 private Double extraEastCurrent;
 private Double extraSouthCurrent;
 private Double extraWestCurrent;
-*/	
+	
 	private double northDeltaNormal;
 	private double southDeltaNormal;
 	private double eastDeltaNormal;
@@ -92,7 +92,7 @@ private Double extraWestCurrent;
  * @param alpha
  * @param airTemperature
  */
-/*	
+
 public void connectToExtraOpenEdge( Orientation orientation, double alpha, double airTemperature ){
 	OpenEdgeThermicConnector connector = new OpenEdgeThermicConnector( alpha, airTemperature );
 	if( orientation.equals( Orientation.NORTH ) ){
@@ -105,7 +105,7 @@ public void connectToExtraOpenEdge( Orientation orientation, double alpha, doubl
 		extraWestOpenEdgeConnector = connector;
 	}	
 }
-*/	
+	
 	/**
 	 * Termikus Pont szabad feluleti pontkent valo megjelolese
 	 * 
@@ -230,7 +230,7 @@ public void connectToExtraOpenEdge( Orientation orientation, double alpha, doubl
 		this.westDeltaNormal = westDeltaNormal;
 	}
 
-/*	
+	
 public Double getExtraNorthCurrent(){
 	return extraNorthCurrent;
 }
@@ -258,7 +258,9 @@ public void setExtraSouthCurrent(Double extraSouthCurrent) {
 public void setExtraWestCurrent(Double extraWestCurrent) {
 	this.extraWestCurrent = extraWestCurrent;
 }
-*/
+
+
+
 public void addExtraNorthCurrent( Double extraNorthCurrent) {
 	this.northCurrent += extraNorthCurrent;
 }
@@ -306,7 +308,7 @@ public void addExtraWestCurrent( Double extraWestCurrent) {
 
 	
 	
-/*	
+
 public OpenEdgeThermicConnector getExtraNorthOpenEdgeConnector(){
 	return extraNorthOpenEdgeConnector;
 }
@@ -319,7 +321,9 @@ public OpenEdgeThermicConnector getExtraSouthOpenEdgeConnector(){
 public OpenEdgeThermicConnector getExtraWestOpenEdgeConnector(){
 	return extraWestOpenEdgeConnector;
 }
-*/
+
+
+
 	public IThermicConnector getNorthThermicConnector() {
 		return northThermicConnector;
 	}
