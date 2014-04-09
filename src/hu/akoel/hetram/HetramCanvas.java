@@ -560,7 +560,7 @@ public class HetramCanvas extends DrawnBlockCanvas{
 
 						//Az aktualis pontban elhelyezkedo Termikus pont
 						ThermicPoint actualThermicPoint = thermicPointMap.get( position );
-/*					
+					
 //
 //Ha egy belso pontrol van szo, akinek minden iranyban van termikus kapcsolata (NEGATIV SAROK)
 //Akkor hozza kell adni az OpenEdge altal kozolt aramot is
@@ -577,7 +577,7 @@ if(
 		//Megfelelo pozicio
 		if( openEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y.compareTo( openEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( openEdgeElementWithPosition.element.getY2() ) <= 0 && x.compareTo( openEdgeElementWithPosition.element.getX1() ) == 0 ){  
 			actualThermicPoint.connectToExtraOpenEdge(Orientation.WEST, openEdgeElementWithPosition.element.getAlphaByPosition( y.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );
-//System.err.println( actualThermicPoint);			
+System.err.println( "west " + x.doubleValue() + ", " + y.doubleValue() );			
 			//break;
 		}else if( openEdgeElementWithPosition.orientation.equals( Orientation.EAST ) && y.compareTo( openEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( openEdgeElementWithPosition.element.getY2() ) <= 0 && x.compareTo( openEdgeElementWithPosition.element.getX1() ) == 0 ){
 			actualThermicPoint.connectToExtraOpenEdge( Orientation.EAST, openEdgeElementWithPosition.element.getAlphaByPosition( y.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );
@@ -589,13 +589,13 @@ System.err.println( "south " + x.doubleValue() + ", " + y.doubleValue() );
 			//break;			
 		}else if( openEdgeElementWithPosition.orientation.equals( Orientation.NORTH) && x.compareTo( openEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( openEdgeElementWithPosition.element.getX2() ) <= 0 && y.compareTo( openEdgeElementWithPosition.element.getY1() ) == 0){
 			actualThermicPoint.connectToExtraOpenEdge( Orientation.NORTH, openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );
-//System.err.println( actualThermicPoint);			
+System.err.println( "north " + x.doubleValue() + ", " + y.doubleValue() );				
 			//break;
 		}			
 	}	
 	
 }
-*/						
+					
 						
 						
 						
