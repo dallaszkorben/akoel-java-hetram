@@ -8,6 +8,7 @@ import hu.akoel.hetram.connectors.SymmetricEdgeThermicConnector;
 import hu.akoel.hetram.connectors.IThermicConnector;
 import hu.akoel.hetram.connectors.XThermicPointThermicConnector;
 import hu.akoel.hetram.connectors.YThermicPointThermicConnector;
+import hu.akoel.hetram.gui.drawingelements.OpenEdgeElement;
 
 import java.text.DecimalFormat;
 
@@ -22,23 +23,12 @@ public class ThermicPoint {
 	private IThermicConnector southThermicConnector;
 	private IThermicConnector westThermicConnector;
 	
-//Be kell vezetni, mert a negativ sarkokban, ha van Open Edge akkor azt nem veszi figyelembe
-private OpenEdgeThermicConnector extraWestOpenEdgeConnector = null;
-private OpenEdgeThermicConnector extraNorthOpenEdgeConnector = null;
-private OpenEdgeThermicConnector extraEastOpenEdgeConnector = null;
-private OpenEdgeThermicConnector extraSouthOpenEdgeConnector = null;
-	
 	private Double northCurrent;
 	private Double eastCurrent;
 	private Double southCurrent;
 	private Double westCurrent;
 	
-private Double extraNorthCurrent;	
-private Double extraEastCurrent;
-private Double extraSouthCurrent;
-private Double extraWestCurrent;
-	
-	private double northDeltaNormal;
+/*	private double northDeltaNormal;
 	private double southDeltaNormal;
 	private double eastDeltaNormal;
 	private double westDeltaNormal;
@@ -47,7 +37,7 @@ private Double extraWestCurrent;
 	private double southDelta;
 	private double eastDelta;
 	private double westDelta;
-	
+*/	
 	/**
 	 * Egy Termikus Pont letrehozasa
 	 * 
@@ -92,7 +82,7 @@ private Double extraWestCurrent;
  * @param alpha
  * @param airTemperature
  */
-
+/*
 public void connectToExtraOpenEdge( Orientation orientation, double alpha, double airTemperature ){
 	OpenEdgeThermicConnector connector = new OpenEdgeThermicConnector( alpha, airTemperature );
 	if( orientation.equals( Orientation.NORTH ) ){
@@ -105,7 +95,7 @@ public void connectToExtraOpenEdge( Orientation orientation, double alpha, doubl
 		extraWestOpenEdgeConnector = connector;
 	}	
 }
-	
+*/	
 	/**
 	 * Termikus Pont szabad feluleti pontkent valo megjelolese
 	 * 
@@ -113,9 +103,9 @@ public void connectToExtraOpenEdge( Orientation orientation, double alpha, doubl
 	 * @param alpha
 	 * @param airTemperature
 	 */
-	public void connectToOpenEdge( Orientation orientation, double alpha, double airTemperature ){
+	public void connectToOpenEdge( Orientation orientation, double alpha, double airTemperature, OpenEdgeElement openEdgeElement ){
 	
-		 OpenEdgeThermicConnector connector = new OpenEdgeThermicConnector( alpha, airTemperature );
+		 OpenEdgeThermicConnector connector = new OpenEdgeThermicConnector( alpha, airTemperature, openEdgeElement );
 		
 		if( orientation.equals( Orientation.NORTH ) ){
 			northThermicConnector = connector;
@@ -164,119 +154,8 @@ public void connectToExtraOpenEdge( Orientation orientation, double alpha, doubl
 		}
 	}
 	
-	
-	
-	public double getNorthDelta() {
-		return northDelta;
-	}
-
-	public void setNorthDelta(double northDelta) {
-		this.northDelta = northDelta;
-	}
-
-	public double getSouthDelta() {
-		return southDelta;
-	}
-
-	public void setSouthDelta(double southDelta) {
-		this.southDelta = southDelta;
-	}
-
-	public double getEastDelta() {
-		return eastDelta;
-	}
-
-	public void setEastDelta(double eastDelta) {
-		this.eastDelta = eastDelta;
-	}
-
-	public double getWestDelta() {
-		return westDelta;
-	}
-
-	public void setWestDelta(double westDelta) {
-		this.westDelta = westDelta;
-	}
-
-	public double getNorthDeltaNormal() {
-		return northDeltaNormal;
-	}
-
-	public void setNorthDeltaNormal(double northDeltaNormal) {
-		this.northDeltaNormal = northDeltaNormal;
-	}
-
-	public double getSouthDeltaNormal() {
-		return southDeltaNormal;
-	}
-
-	public void setSouthDeltaNormal(double southDeltaNormal) {
-		this.southDeltaNormal = southDeltaNormal;
-	}
-
-	public double getEastDeltaNormal() {
-		return eastDeltaNormal;
-	}
-
-	public void setEastDeltaNormal(double eastDeltaNormal) {
-		this.eastDeltaNormal = eastDeltaNormal;
-	}
-
-	public double getWestDeltaNormal() {
-		return westDeltaNormal;
-	}
-
-	public void setWestDeltaNormal(double westDeltaNormal) {
-		this.westDeltaNormal = westDeltaNormal;
-	}
-
-	
-public Double getExtraNorthCurrent(){
-	return extraNorthCurrent;
-}
-public Double getExtraEastCurrent(){
-	return extraEastCurrent;
-}
-public Double getExtraSouthCurrent(){
-	return extraSouthCurrent;
-}
-public Double getExtraWestCurrent(){
-	return extraWestCurrent;
-}
-public void setExtraNorthCurrent(Double extraNorthCurrent) {
-	this.extraNorthCurrent = extraNorthCurrent;
-}
-
-public void setExtraEastCurrent(Double extraEastCurrent) {
-	this.extraEastCurrent = extraEastCurrent;
-}
-
-public void setExtraSouthCurrent(Double extraSouthCurrent) {
-	this.extraSouthCurrent = extraSouthCurrent;
-}
-
-public void setExtraWestCurrent(Double extraWestCurrent) {
-	this.extraWestCurrent = extraWestCurrent;
-}
-
-
-/*
-public void addExtraNorthCurrent( Double extraNorthCurrent) {
-	this.northCurrent += extraNorthCurrent;
-}
-public void addExtraEastCurrent( Double extraEastCurrent) {
-	this.eastCurrent += extraEastCurrent;
-}
-public void addExtraSouthCurrent( Double extraSouthCurrent) {
-	this.southCurrent += extraSouthCurrent;
-}
-public void addExtraWestCurrent( Double extraWestCurrent) {
-	this.westCurrent += extraWestCurrent;
-}
-*/
-
 	public Double getNorthCurrent() {
-		return northCurrent + ( null == extraNorthCurrent ? 0 : extraNorthCurrent);
+		return northCurrent;// + ( null == extraNorthCurrent ? 0 : extraNorthCurrent);
 	}
 
 	public void setNorthCurrent(Double northCurrent) {
@@ -284,7 +163,7 @@ public void addExtraWestCurrent( Double extraWestCurrent) {
 	}
 
 	public Double getEastCurrent() {
-		return eastCurrent  + ( null == extraEastCurrent ? 0 : extraEastCurrent);
+		return eastCurrent; //  + ( null == extraEastCurrent ? 0 : extraEastCurrent);
 	}
 
 	public void setEastCurrent(Double eastCurrent) {
@@ -292,7 +171,7 @@ public void addExtraWestCurrent( Double extraWestCurrent) {
 	}
 
 	public Double getSouthCurrent() {
-		return southCurrent  + ( null == extraSouthCurrent ? 0 : extraSouthCurrent);
+		return southCurrent; //  + ( null == extraSouthCurrent ? 0 : extraSouthCurrent);
 	}
 
 	public void setSouthCurrent(Double southCurrent) {
@@ -300,7 +179,7 @@ public void addExtraWestCurrent( Double extraWestCurrent) {
 	}
 
 	public Double getWestCurrent() {
-		return westCurrent  + ( null == extraNorthCurrent ? 0 : extraWestCurrent);
+		return westCurrent; //  + ( null == extraNorthCurrent ? 0 : extraWestCurrent);
 	}
 
 	public void setWestCurrent(Double westCurrent) {
@@ -309,7 +188,7 @@ public void addExtraWestCurrent( Double extraWestCurrent) {
 
 	
 	
-
+/*
 public OpenEdgeThermicConnector getExtraNorthOpenEdgeConnector(){
 	return extraNorthOpenEdgeConnector;
 }
@@ -322,7 +201,7 @@ public OpenEdgeThermicConnector getExtraSouthOpenEdgeConnector(){
 public OpenEdgeThermicConnector getExtraWestOpenEdgeConnector(){
 	return extraWestOpenEdgeConnector;
 }
-
+*/
 
 
 	public IThermicConnector getNorthThermicConnector() {
@@ -456,7 +335,7 @@ public OpenEdgeThermicConnector getExtraWestOpenEdgeConnector(){
 		tc = getNorthThermicConnector();
 		if( tc instanceof YThermicPointThermicConnector ){
 			back += "(λ=" + ((AThermicPointThermicConnector)tc).getLambda() + " ";
-			back += "δ=" + deltaFormat.format( ((AThermicPointThermicConnector)tc).getDelta() ) + " ";
+			//back += "δ=" + deltaFormat.format( ((AThermicPointThermicConnector)tc).getDelta() ) + " ";
 			back += "q=" + this.getNorthCurrent() + " ";
 			back += getNorthPair().getPosition() + ")";
 		}else if( tc instanceof OpenEdgeThermicConnector ){
@@ -470,7 +349,7 @@ public OpenEdgeThermicConnector getExtraWestOpenEdgeConnector(){
 		tc = getEastThermicConnector();
 		if( tc instanceof XThermicPointThermicConnector ){
 			back += "(λ=" + ((AThermicPointThermicConnector)tc).getLambda() + " ";
-			back += "δ=" + deltaFormat.format( ((AThermicPointThermicConnector)tc).getDelta() ) + " ";
+			//back += "δ=" + deltaFormat.format( ((AThermicPointThermicConnector)tc).getDelta() ) + " ";
 			back += "q=" + this.getEastCurrent() + " ";
 			back += getEastPair().getPosition() + ")";
 		}else if( tc instanceof OpenEdgeThermicConnector ){
@@ -484,7 +363,7 @@ public OpenEdgeThermicConnector getExtraWestOpenEdgeConnector(){
 		tc = getSouthThermicConnector();
 		if( tc instanceof YThermicPointThermicConnector ){
 			back += "(λ=" + ((AThermicPointThermicConnector)tc).getLambda() + " ";
-			back += "δ=" + deltaFormat.format( ((AThermicPointThermicConnector)tc).getDelta() ) + " ";
+			//ack += "δ=" + deltaFormat.format( ((AThermicPointThermicConnector)tc).getDelta() ) + " ";
 			back += getSouthPair().getPosition() + ") ";
 			back += "q=" + this.getSouthCurrent() + " ";
 		}else if( tc instanceof OpenEdgeThermicConnector ){
@@ -498,7 +377,7 @@ public OpenEdgeThermicConnector getExtraWestOpenEdgeConnector(){
 		tc = getWestThermicConnector();
 		if( tc instanceof XThermicPointThermicConnector ){
 			back += "(λ=" + ((AThermicPointThermicConnector)tc).getLambda() + " ";
-			back += "δ=" + deltaFormat.format( ((AThermicPointThermicConnector)tc).getDelta() ) + " ";
+			//back += "δ=" + deltaFormat.format( ((AThermicPointThermicConnector)tc).getDelta() ) + " ";
 			back += "q=" + this.getWestCurrent() + " ";
 			back += getWestPair().getPosition() + ")";
 		}else if( tc instanceof OpenEdgeThermicConnector ){

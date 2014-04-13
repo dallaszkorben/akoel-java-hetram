@@ -14,7 +14,8 @@ public class YThermicPointThermicConnector extends AThermicPointThermicConnector
 	private ThermicPoint southThermicPoint;
 	
 	public YThermicPointThermicConnector( ThermicPoint northThermicPoint, ThermicPoint southThermicPoint, double lambda) {
-		super( northThermicPoint.getPosition().getY().subtract( southThermicPoint.getPosition().getY() ).abs(), lambda );
+		//super( northThermicPoint.getPosition().getY().subtract( southThermicPoint.getPosition().getY() ).abs(), lambda );
+		super( lambda );
 		//super( Math.abs( northThermicPoint.getPosition().getY() - southThermicPoint.getPosition().getY() ), lambda );
 		
 		this.northThermicPoint = northThermicPoint;
