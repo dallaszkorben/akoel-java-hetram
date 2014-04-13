@@ -6,6 +6,7 @@ import hu.akoel.hetram.Hetram;
 import hu.akoel.hetram.SelectedOpenEdgeForSumQList;
 import hu.akoel.hetram.accessories.BigDecimalPosition;
 import hu.akoel.hetram.connectors.IThermicConnector;
+import hu.akoel.hetram.connectors.OpenEdgeThermicConnector;
 import hu.akoel.hetram.gui.ElementSettingTab.DRAWING_ELEMENT;
 import hu.akoel.hetram.gui.ElementSettingTab.HOMOGENEOUS_PATTERN;
 import hu.akoel.hetram.gui.ElementSettingTab.PATTERN_TYPE;
@@ -117,7 +118,7 @@ public class MainPanel extends JFrame {
 	private static final int DEFAULT_HEIGHT = 800;
 	private static final int DEFAULT_SETTINGTABBEDPANEL = 310;
 
-	private static final Precision precision = Precision.per_1000;
+	private static final Precision precision = Precision.per_10000;
 
 	private String version;
 	private File usedDirectory = null;
@@ -591,19 +592,36 @@ public class MainPanel extends JFrame {
 		// -----------
 		if (x1.equals(x2)) {
 
-			IThermicConnector cE;
-			IThermicConnector cW;
-
 			for (int i = 0; i < thermicPointList.getSize(); i++) {
 				tp = thermicPointList.get(i);
 
 				position = tp.getPosition();
-
-				// Azok a termikus pontok, akik az OpenEdge vonallal egybe esnek
-				if (x1.equals(position.getX()) && position.getY().compareTo(y1) >= 0 && position.getY().compareTo(y2) <= 0) {
-
-					thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getY(), tp.getActualTemperature()));
-
+				IThermicConnector tc;
+				
+				//
+				// EAST
+				//
+				tc = tp.getEastThermicConnector();
+				if( tc instanceof OpenEdgeThermicConnector ){
+					OpenEdgeThermicConnector oetc = (OpenEdgeThermicConnector)tc;
+					
+					//Ez a termikus pont kapcsolodik EAST fele a kivalasztott OPENEDGEELEMENT-hez
+					if( openEdgeElement.equals( oetc.getOpenEdgeElement() ) ){
+						thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getY(), tp.getActualTemperature()));
+					}					
+				}
+				
+				//
+				// WEST
+				//
+				tc = tp.getWestThermicConnector();
+				if( tc instanceof OpenEdgeThermicConnector ){
+					OpenEdgeThermicConnector oetc = (OpenEdgeThermicConnector)tc;
+					
+					//Ez a termikus pont kapcsolodik WEST fele a kivalasztott OPENEDGEELEMENT-hez
+					if( openEdgeElement.equals( oetc.getOpenEdgeElement() ) ){
+						thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getY(), tp.getActualTemperature()));
+					}					
 				}
 
 			}
@@ -615,22 +633,42 @@ public class MainPanel extends JFrame {
 			// -------------
 		} else if (y1.equals(y2)) {
 
-			IThermicConnector cN;
-			IThermicConnector cS;
-
 			for (int i = 0; i < thermicPointList.getSize(); i++) {
 				tp = thermicPointList.get(i);
 
 				position = tp.getPosition();
 
-				// Azok a termikus pontok, akik az OpenEdge vonallal egybe esnek
-				if (y1.equals(position.getY()) && position.getX().compareTo(x1) >= 0 && position.getX().compareTo(x2) <= 0) {
-
-					thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getX(), tp.getActualTemperature()));
-
+				IThermicConnector tc;
+				
+				//
+				// NORTH
+				//
+				tc = tp.getNorthThermicConnector();
+				if( tc instanceof OpenEdgeThermicConnector ){
+					OpenEdgeThermicConnector oetc = (OpenEdgeThermicConnector)tc;
+					
+					//Ez a termikus pont kapcsolodik NORTH fele a kivalasztott OPENEDGEELEMENT-hez
+					if( openEdgeElement.equals( oetc.getOpenEdgeElement() ) ){
+						thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getX(), tp.getActualTemperature()));
+					}
+					
 				}
-
+				
+				//
+				// SOUTH
+				//
+				tc = tp.getSouthThermicConnector();
+				if( tc instanceof OpenEdgeThermicConnector ){
+					OpenEdgeThermicConnector oetc = (OpenEdgeThermicConnector)tc;
+					
+					//Ez a termikus pont kapcsolodik SOUTH fele a kivalasztott OPENEDGEELEMENT-hez
+					if( openEdgeElement.equals( oetc.getOpenEdgeElement() ) ){
+						thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getX(), tp.getActualTemperature()));
+					}
+					
+				}
 			}
+
 		}
 
 		Collections.sort(thermicListForGraph, new TemperatureForGraphComparator());
@@ -659,8 +697,8 @@ public class MainPanel extends JFrame {
 				listener.getWorldPosition(secondaryCursor.getX().doubleValue(), secondaryCursor.getY().doubleValue());
 			}
 
-			// Ha a kivalasztott OPENEDGE eredo aramanak megjelenitesere van
-			// szukseg
+		// Ha a kivalasztott OPENEDGE eredo aramanak megjelenitesere van
+		// szukseg
 		} else if (qShow.equals(QShow.OPENEDGE)) {
 
 			// Akkor kiirja az osszesitett aramot
@@ -747,17 +785,6 @@ public class MainPanel extends JFrame {
 		this.horizontalDifferenceDivider = horizontalDifferenceDivider;
 	}
 
-	/*
-	 * public void doGenerateMaximumDifference() {
-	 * myCanvas.doGenerateMaximumDifference(); //
-	 * System.err.println(getHorizontalMaximumDifference() + ", " + //
-	 * getVerticalMaximumDifference()); }
-	 */
-	/*
-	 * public void setEnableCalculateButton( boolean enable ){
-	 * settingTabbedPanel.controlSettingTab.setEnableCalculateButton( enable );
-	 * }
-	 */
 	public JProgressBar getProgressBar() {
 		return settingTabbedPanel.controlSettingTab.getProgressBar();
 	}
@@ -988,8 +1015,7 @@ public class MainPanel extends JFrame {
 	 */
 	public void doCalculate(double precision) {
 
-		// Ha rajz vagy analizis modban vagyok, akkor a szamitas ujra
-		// elvegezendo
+		// Ha rajz vagy analizis modban vagyok, akkor a szamitas ujra elvegezendo
 		if (getMode().equals(Mode.DRAWING) || getMode().equals(Mode.ANALYSIS)) {
 
 			// Mukodesi mod valtas - Calculation
@@ -1025,13 +1051,11 @@ public class MainPanel extends JFrame {
 
 			needToStopCalculation = false;
 
-			// Termikus pontok legyartasa, kozottuk levo kapcsolatok
-			// megteremtese (nics szamolas meg)
-			myCanvas.generateThermicPointList()
+			// Termikus pontok legyartasa, kozottuk levo kapcsolatok megteremtese (nics szamolas meg)	
+			ThermicPointList termicPointList = myCanvas.generateThermicPointList();
 
-			// Sokismeretlenes egyenletrendszer megoldasa, eredmenye: a termikus
-			// pontok homerseklete
-					.solve(this, precision);
+			// Sokismeretlenes egyenletrendszer megoldasa, eredmenye: a termikus pontok homerseklete
+			termicPointList.solve(this, precision);
 
 			// Ha viszont eppen szamitas tortenik, akkor le kell allitani azt
 		} else if (getMode().equals(Mode.CALCULATION)) {
@@ -1345,6 +1369,8 @@ public class MainPanel extends JFrame {
 
 	};
 
+
+	
 	public void setTitle(String title) {
 		super.setTitle("Hetram " + version + title);
 	}

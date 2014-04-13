@@ -64,40 +64,40 @@ public class SelectedOpenEdgeForSumQList {
 				
 				IThermicConnector cE;
 				IThermicConnector cW;
-				OpenEdgeThermicConnector xE;
-				OpenEdgeThermicConnector xW;
-				
+
 				for( int i = 0;  i < thermicPointList.getSize(); i++ ){
 					tp = thermicPointList.get( i );
 					
 					position = tp.getPosition();
+					IThermicConnector tc;
 					
-					//Azok a termikus pontok, akik az OpenEdge vonallal egybe esnek
-					if( x1.equals( position.getX() ) && position.getY().compareTo(y1) >= 0 && position.getY().compareTo(y2) <= 0 ){
-					
-						//K fele OpenEdge - tehat innen jon az aram
-						cE = tp.getEastThermicConnector();
-						if( cE instanceof OpenEdgeThermicConnector ){
-							eastCurrent += tp.getEastCurrent(); 
+					//
+					// EAST
+					//
+					tc = tp.getEastThermicConnector();
+					if( tc instanceof OpenEdgeThermicConnector ){
+						OpenEdgeThermicConnector oetc = (OpenEdgeThermicConnector)tc;
+						
+						//Ez a termikus pont kapcsolodik EAST fele a kivalasztott OPENEDGEELEMENT-hez
+						if( openEdgeElement.equals( oetc.getOpenEdgeElement() ) ){
+							eastCurrent += tp.getEastCurrent();
 						}
 						
-						//NY fele OpenEdge - tehat innen jon az aram
-						cW = tp.getWestThermicConnector();
-						if( cW instanceof OpenEdgeThermicConnector ){
-							westCurrent += tp.getWestCurrent(); 
-						}
-						
-						xE = tp.getExtraEastOpenEdgeConnector();
-						if( null != xE ){
-							eastCurrent += tp.getExtraEastCurrent();
-						}
-
-						xW = tp.getExtraWestOpenEdgeConnector();
-						if( null != xW ){
-							westCurrent += tp.getExtraWestCurrent();
-						}
-
 					}
+					
+					//
+					// WEST
+					//
+					tc = tp.getWestThermicConnector();
+					if( tc instanceof OpenEdgeThermicConnector ){
+						OpenEdgeThermicConnector oetc = (OpenEdgeThermicConnector)tc;
+						
+						//Ez a termikus pont kapcsolodik WEST fele a kivalasztott OPENEDGEELEMENT-hez
+						if( openEdgeElement.equals( oetc.getOpenEdgeElement() ) ){
+							westCurrent += tp.getWestCurrent();
+						}
+						
+					}					
 						
 				}
 
@@ -112,44 +112,41 @@ public class SelectedOpenEdgeForSumQList {
 			
 				double northCurrent = 0;
 				double southCurrent = 0;
-				
-				IThermicConnector cN;
-				IThermicConnector cS;
-				OpenEdgeThermicConnector xN;
-				OpenEdgeThermicConnector xS;
-				
+
 				for( int i = 0;  i < thermicPointList.getSize(); i++ ){
 					tp = thermicPointList.get( i );
 					
 					position = tp.getPosition();
+					IThermicConnector tc;
 					
-					//Azok a termikus pontok, akik az OpenEdge vonallal egybe esnek
-					if( y1.equals( position.getY() ) && position.getX().compareTo(x1) >= 0 && position.getX().compareTo(x2) <= 0 ){
-
-						//E fele OpenEdge - tehat innen jon az aram
-						cN = tp.getNorthThermicConnector();
-						if( cN instanceof OpenEdgeThermicConnector ){
-							northCurrent += tp.getNorthCurrent(); 					
+					//
+					// NORTH
+					//
+					tc = tp.getNorthThermicConnector();
+					if( tc instanceof OpenEdgeThermicConnector ){
+						OpenEdgeThermicConnector oetc = (OpenEdgeThermicConnector)tc;
+						
+						//Ez a termikus pont kapcsolodik NORTH fele a kivalasztott OPENEDGEELEMENT-hez
+						if( openEdgeElement.equals( oetc.getOpenEdgeElement() ) ){
+							northCurrent += tp.getNorthCurrent();
 						}
 						
-						//D fele OpenEdge - tehat innen jon az aram
-						cS = tp.getSouthThermicConnector();
-						if( cS instanceof OpenEdgeThermicConnector ){
-							southCurrent += tp.getSouthCurrent();							
-						}
-						
-						xN = tp.getExtraNorthOpenEdgeConnector();
-						if( null != xN ){
-							northCurrent += tp.getExtraNorthCurrent();
-						}
-
-						xS = tp.getExtraSouthOpenEdgeConnector();
-						if( null != xS ){
-							southCurrent += tp.getExtraSouthCurrent();
-						}
-
 					}
+					
+					//
+					// SOUTH
+					//
+					tc = tp.getSouthThermicConnector();
+					if( tc instanceof OpenEdgeThermicConnector ){
+						OpenEdgeThermicConnector oetc = (OpenEdgeThermicConnector)tc;
 						
+						//Ez a termikus pont kapcsolodik SOUTH fele a kivalasztott OPENEDGEELEMENT-hez
+						if( openEdgeElement.equals( oetc.getOpenEdgeElement() ) ){
+							southCurrent += tp.getSouthCurrent();
+						}
+						
+					}
+							
 				}
 
 				statusLine.setHorizontalOpenEdgeSumQ( northCurrent, southCurrent );

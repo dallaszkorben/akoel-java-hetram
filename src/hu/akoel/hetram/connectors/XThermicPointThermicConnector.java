@@ -13,7 +13,8 @@ public class XThermicPointThermicConnector extends AThermicPointThermicConnector
 	private ThermicPoint eastThermicPoint;
 	
 	public XThermicPointThermicConnector( ThermicPoint westThermicPoint, ThermicPoint eastThermicPoint, double lambda) {
-		super( westThermicPoint.getPosition().getX().subtract(eastThermicPoint.getPosition().getX()).abs(), lambda );
+		//super( westThermicPoint.getPosition().getX().subtract(eastThermicPoint.getPosition().getX()).abs(), lambda );
+		super( lambda );
 		//super( Math.abs( westThermicPoint.getPosition().getX() - eastThermicPoint.getPosition().getX() ), lambda );
 		
 		this.westThermicPoint = westThermicPoint;

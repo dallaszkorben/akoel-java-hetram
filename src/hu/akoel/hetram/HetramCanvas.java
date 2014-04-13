@@ -15,9 +15,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.border.Border;
 
+import hu.akoel.hetram.HetramCanvas.TemporaryThermicPoint;
 import hu.akoel.hetram.accessories.BigDecimalPosition;
 import hu.akoel.hetram.accessories.Orientation;
 import hu.akoel.hetram.connectors.AThermicPointThermicConnector;
@@ -171,794 +174,26 @@ public class HetramCanvas extends DrawnBlockCanvas{
 		doGenerateMaximumDifference();
 	}
 	
-/*	
-	public double getVerticalAppliedDifference() {
-		return verticalAppliedDifference;
-	}
-
-	public double getHorizontalAppliedDifference() {
-		return horizontalAppliedDifference;
-	}
-	
-	public double getVerticalMaximumDifference(){
-		return verticalMaximumDifference;
-	}
-	
-	public double getHorizontalMaximumDifference(){
-		return horizontalMaximumDifference;
-	}
-	
-	public int getVerticalDifferenceDivider() {
-		return verticalDifferenceDivider;
-	}
-
-	public void setVerticalDifferenceDivider(int verticalDifferenceDivider) {
-		this.verticalDifferenceDivider = verticalDifferenceDivider;
-	}
-
-	public int getHorizontalDifferenceDivider() {
-		return horizontalDifferenceDivider;
-	}
-
-	public void setHorizontalDifferenceDivider(int horizontalDifferenceDivider) {
-		this.horizontalDifferenceDivider = horizontalDifferenceDivider;
-	}
-*/
-	
-	class OpenEdgeElementWithPosition{
+	class OpenEdgeElementWithOrientation{
 		Orientation orientation;
 		OpenEdgeElement element;
 	
-		public OpenEdgeElementWithPosition( OpenEdgeElement element, Orientation orientation ){
+		public OpenEdgeElementWithOrientation( OpenEdgeElement element, Orientation orientation ){
 			
 			this.element = element;
 			this.orientation = orientation;
 		}
 	}
 	
-	class SymmetricEdgeElementWithPosition{
+	class SymmetricEdgeElementWithOrientation{
 		Orientation orientation;
 		SymmetricEdgeElement element;
 	
-		public SymmetricEdgeElementWithPosition( SymmetricEdgeElement element, Orientation orientation ){
+		public SymmetricEdgeElementWithOrientation( SymmetricEdgeElement element, Orientation orientation ){
 			
 			this.element = element;
 			this.orientation = orientation;
 		}
-	}
-	
-	/**
-	 * A parameterkent megadott BuildingStructureElement szamara osszegyujti a hozzakotott
-	 * osszes OpenEdgeElement-et
-	 * 
-	 * @param buildingStructureElement
-	 * @return
-	 */
-	public HashSet<OpenEdgeElementWithPosition> getOpenEdgeElements( HetramBuildingStructureElement buildingStructureElement ){
-		HashSet<OpenEdgeElementWithPosition> openEdgeElementList = new HashSet<OpenEdgeElementWithPosition>();
-		
-		Iterator<HetramDrawnElement> it = this.iterator();
-		while( it.hasNext() ){
-			HetramDrawnElement e = it.next();
-			
-			if( e instanceof OpenEdgeElement ){
-				
-				OpenEdgeElement openEdgeElement = (OpenEdgeElement)e;
-				
-				//HORTH
-				if( openEdgeElement.getWidth().compareTo( new BigDecimal("0") ) != 0 && buildingStructureElement.getY2().compareTo( openEdgeElement.getY1() ) == 0 ){
-					BigDecimal dx1 = openEdgeElement.getX1().max( buildingStructureElement.getX1() );
-					BigDecimal dx2 = openEdgeElement.getX2().min( buildingStructureElement.getX2() );
-					if( dx2.subtract( dx1 ).compareTo(new BigDecimal("0")) > 0 ){
-						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.NORTH ) );
-					}
-					
-				//SOUTH
-				}else if( openEdgeElement.getWidth().compareTo( new BigDecimal("0") ) != 0 && buildingStructureElement.getY1().compareTo( openEdgeElement.getY1() ) == 0 ){
-					BigDecimal dx1 = openEdgeElement.getX1().max( buildingStructureElement.getX1() );
-					BigDecimal dx2 = openEdgeElement.getX2().min( buildingStructureElement.getX2() );
-					if( dx2.subtract( dx1 ).compareTo( new BigDecimal( "0" ) ) > 0 ){
-						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.SOUTH ) );
-					}							
-					
-				//EAST
-				}else if( openEdgeElement.getHeight().compareTo( new BigDecimal( "0" ) ) != 0 && buildingStructureElement.getX2().compareTo( openEdgeElement.getX1() ) == 0 ){
-					BigDecimal dy1 = openEdgeElement.getY1().max( buildingStructureElement.getY1() );
-					BigDecimal dy2 = openEdgeElement.getY2().min( buildingStructureElement.getY2() );
-					if( dy2.subtract( dy1 ).compareTo( new BigDecimal("0") ) > 0 ){
-						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.EAST ) );
-					}
-					
-				//WEST
-				}else if( openEdgeElement.getHeight().compareTo( new BigDecimal("0")) != 0 && buildingStructureElement.getX1().compareTo( openEdgeElement.getX1() ) == 0 ){
-					BigDecimal dy1 = openEdgeElement.getY1().max( buildingStructureElement.getY1() );
-					BigDecimal dy2 = openEdgeElement.getY2().min( buildingStructureElement.getY2() );
-					if( dy2.subtract( dy1 ).compareTo( new BigDecimal("0") ) > 0 ){
-						openEdgeElementList.add( new OpenEdgeElementWithPosition( openEdgeElement, Orientation.WEST ) );
-					}	
-		
-				}
-			}
-		}
-		
-		return openEdgeElementList;
-	}
-
-	/**
- 	 * A parameterkent megadott BuildingStructureElement szamara osszegyujti a hozzakotott
-	 * osszes SymmetricEdgeElement-et
-	 * 
-	 * @param buildingStructureElement
-	 * @return
-	 */
-	public HashSet<SymmetricEdgeElementWithPosition> getSymmetricEdgeElements( HetramBuildingStructureElement buildingStructureElement ){
-		HashSet<SymmetricEdgeElementWithPosition> symmetricEdgeElementList = new HashSet<SymmetricEdgeElementWithPosition>();
-		
-		Iterator<HetramDrawnElement> it = this.iterator();
-		while( it.hasNext() ){
-			HetramDrawnElement e = it.next();
-			
-			if( e instanceof SymmetricEdgeElement ){
-				
-				SymmetricEdgeElement symmetricEdgeElement = (SymmetricEdgeElement)e;
-				
-				//HORTH
-				if( symmetricEdgeElement.getWidth().compareTo( new BigDecimal("0") ) != 0 && buildingStructureElement.getY2().compareTo( symmetricEdgeElement.getY1() ) == 0 ){
-					BigDecimal dx1 = symmetricEdgeElement.getX1().max( buildingStructureElement.getX1() );
-					BigDecimal dx2 = symmetricEdgeElement.getX2().min( buildingStructureElement.getX2() );
-					if( dx2.subtract( dx1 ).compareTo(new BigDecimal("0")) > 0 ){
-						symmetricEdgeElementList.add( new SymmetricEdgeElementWithPosition( symmetricEdgeElement, Orientation.NORTH ) );
-					}			
-			
-//				if( symmetricEdgeElement.getWidth() != 0 && buildingStructureElement.getY2() == symmetricEdgeElement.getY() ){
-//					double dx1 = Math.max(symmetricEdgeElement.getX1(), buildingStructureElement.getX1() );
-//					double dx2 = Math.min(symmetricEdgeElement.getX2(), buildingStructureElement.getX2() );
-//					if( dx2 - dx1 > 0 ){
-//						symmetricEdgeElementList.add( new SymmetricEdgeElementWithPosition( symmetricEdgeElement, Orientation.NORTH ) );
-//					}
-					
-				//SOUTH
-				}else if( symmetricEdgeElement.getWidth().compareTo( new BigDecimal("0") ) != 0 && buildingStructureElement.getY1().compareTo( symmetricEdgeElement.getY1() ) == 0 ){
-					BigDecimal dx1 = symmetricEdgeElement.getX1().max( buildingStructureElement.getX1() );
-					BigDecimal dx2 = symmetricEdgeElement.getX2().min( buildingStructureElement.getX2() );
-					if( dx2.subtract( dx1 ).compareTo( new BigDecimal( "0" ) ) > 0 ){
-						symmetricEdgeElementList.add( new SymmetricEdgeElementWithPosition( symmetricEdgeElement, Orientation.SOUTH ) );
-					}						
-//				}else if( symmetricEdgeElement.getWidth() != 0 && buildingStructureElement.getY1() == symmetricEdgeElement.getY() ){
-//					double dx1 = Math.max(symmetricEdgeElement.getX1(), buildingStructureElement.getX1() );
-//					double dx2 = Math.min(symmetricEdgeElement.getX2(), buildingStructureElement.getX2() );
-//					if( dx2 - dx1 > 0 ){
-//						symmetricEdgeElementList.add( new SymmetricEdgeElementWithPosition( symmetricEdgeElement, Orientation.SOUTH ) );
-//					}				
-
-				//EAST
-				}else if( symmetricEdgeElement.getHeight().compareTo( new BigDecimal( "0" ) ) != 0 && buildingStructureElement.getX2().compareTo( symmetricEdgeElement.getX1() ) == 0 ){
-					BigDecimal dy1 = symmetricEdgeElement.getY1().max( buildingStructureElement.getY1() );
-					BigDecimal dy2 = symmetricEdgeElement.getY2().min( buildingStructureElement.getY2() );
-					if( dy2.subtract( dy1 ).compareTo( new BigDecimal("0") ) > 0 ){
-						symmetricEdgeElementList.add( new SymmetricEdgeElementWithPosition( symmetricEdgeElement, Orientation.EAST ) );
-					}
-					
-//				}else if( symmetricEdgeElement.getHeight() != 0 && buildingStructureElement.getX2() == symmetricEdgeElement.getX() ){
-//					double dy1 = Math.max(symmetricEdgeElement.getY1(), buildingStructureElement.getY1() );
-//					double dy2 = Math.min(symmetricEdgeElement.getY2(), buildingStructureElement.getY2() );
-//					if( dy2 - dy1 > 0 ){
-//						symmetricEdgeElementList.add( new SymmetricEdgeElementWithPosition( symmetricEdgeElement, Orientation.EAST ) );
-//					}
-					
-				//WEST
-				}else if( symmetricEdgeElement.getHeight().compareTo( new BigDecimal("0")) != 0 && buildingStructureElement.getX1().compareTo( symmetricEdgeElement.getX1() ) == 0 ){
-					BigDecimal dy1 = symmetricEdgeElement.getY1().max( buildingStructureElement.getY1() );
-					BigDecimal dy2 = symmetricEdgeElement.getY2().min( buildingStructureElement.getY2() );
-					if( dy2.subtract( dy1 ).compareTo( new BigDecimal("0") ) > 0 ){
-						symmetricEdgeElementList.add( new SymmetricEdgeElementWithPosition( symmetricEdgeElement, Orientation.WEST ) );
-					}	
-					
-//				}else if( symmetricEdgeElement.getHeight() != 0 && buildingStructureElement.getX1() == symmetricEdgeElement.getX() ){
-//					double dy1 = Math.max(symmetricEdgeElement.getY1(), buildingStructureElement.getY1() );
-//					double dy2 = Math.min(symmetricEdgeElement.getY2(), buildingStructureElement.getY2() );
-//					if( dy2 - dy1 > 0 ){
-//						symmetricEdgeElementList.add( new SymmetricEdgeElementWithPosition( symmetricEdgeElement, Orientation.WEST ) );
-//					}					
-				}
-			}
-		}
-		
-		return symmetricEdgeElementList;
-	}
-
-	/**
-	 * Automatikusan felbontja kis differencialis negyzetekre az osszes elemet,
-	 * legyartja a termikus pontokat es megteremti kozottuk a kapcsolatot
-	 * !!! Szamitas nem tortenik !!!
-	 * 
-	 * @param askedHorizontalDifference
-	 * @param askedVerticalDifference
-	 * @return
-	 */
-
-	
-//TODO at kell helyezni a mainPanel-be  !!!mit keres itt?????	
-	
-	public ThermicPointList generateThermicPointList( ){
-		int scale = getPrecision().getScale();
-		
-		HetramBuildingStructureElement element;
-		
-		BigDecimal verticalAppliedDifference = mainPanel.getVerticalAppliedDifference();
-		BigDecimal horizontalAppliedDifference = mainPanel.getHorizontalAppliedDifference();
-		
-		HashMap<BigDecimalPosition, ThermicPoint> thermicPointMap = new HashMap<>();
-		
-		//----------------------------------------------
-		//
-		// Elso korben a Termikus Pont-ok legyartasa es
-		// a DThermicConnector-ok kiosztasa
-		//
-		//----------------------------------------------
-		
-		//Minden elemen vegig megyek
-		for( HetramDrawnElement e: getDrawnBlockList() ){
-			
-			//Ha igazi Epuletszerkezetrol van szo es nem lezaro elemrol
-			if( e instanceof HetramBuildingStructureElement ){
-			
-				element = (HetramBuildingStructureElement)e;
-				
-				//Veszem az elem kezdo es veg pozicioit
-				BigDecimal startXPoint = element.getX1();
-				BigDecimal startYPoint = element.getY1();
-				BigDecimal endXPoint = element.getX2();
-				BigDecimal endYPoint = element.getY2();
-			
-				double lambda;	
-
-				//Mindig a kezdo vertikalis pontbol indulok
-				BigDecimal y = startYPoint;
-			
-				//Vertikalis felbontas
-				int iSteps = endYPoint.subtract( y ).divide( verticalAppliedDifference, scale, RoundingMode.HALF_UP  ).intValue();
-			
-				//Vegig a vertikalis pontokon
-				for( int i = 0; i <= iSteps; i++){
-				
-					//Az aktualis vertikalis point
-					y = (new BigDecimal(String.valueOf(i)).multiply(verticalAppliedDifference )).add( startYPoint ).setScale( scale, RoundingMode.HALF_UP );					
-				
-					//Elindul a kezdo horizontalis pontbol
-					BigDecimal x = startXPoint;			
-				
-					//Horizontalis felbontas
-					int jSteps = endXPoint.subtract( x ).divide(horizontalAppliedDifference, scale, RoundingMode.HALF_UP ).intValue();
-				
-					//Vegig a horizontalis pontokon
-					for( int j = 0; j <= jSteps; j++ ){
-				
-						//Az aktualis horizontalis pont
-						x = (new BigDecimal(String.valueOf(j)).multiply(horizontalAppliedDifference )).add( startXPoint ).setScale( scale, RoundingMode.HALF_UP );		
-
-						//Az aktualis pont pozicioja
-						BigDecimalPosition position = new BigDecimalPosition(x, y);
-
-						//Rakeresek a taroloban, hatha letezett mar ez elott is
-						ThermicPoint tp = thermicPointMap.get( position );
-					
-						//Ha ez a pont meg nem letezett
-						if( null == tp ){
-						
-							//akkor letrehozom
-							tp = new ThermicPoint( position );
-						
-							//Es el is mentem
-							thermicPointMap.put( position, tp );
-						}
-					
-						//Az elem lambda-ja
-						lambda = element.getLambda();	
-					
-						//Ha nem az elso elem balrol, de fuggolegesen lehet barmelyik
-						if( j != 0 ){
-						
-							//Akkor elkerem a regi WEST kapcsolatat, hatha letezik  
-							AThermicPointThermicConnector oldWestConnector = (AThermicPointThermicConnector)tp.getWestThermicConnector();
-						
-							//Akkor letezik ha legalso vagy legfelso Point-rol van szo es kapcsolodik egy masik, mar lehelyezett Element-hez
-							if( null != oldWestConnector ){
-						
-								//Akkor a 2 lambda atlagat szamoljuk
-								lambda = (lambda + oldWestConnector.getLambda()) / 2;
-							}
-
-							//Veszem a baloldali kozvetlen kapcsolatat, ami bizonyosan letezik, mivel belso pont						
-							BigDecimal previousX = new BigDecimal( String.valueOf( j - 1 ) ).multiply( horizontalAppliedDifference ).add( startXPoint ).setScale( scale, RoundingMode.HALF_UP);						
-
-							//Es osszekottetest letesitek vele
-							tp.connectToThermicPoint(thermicPointMap.get(new BigDecimalPosition( previousX, y ) ), Orientation.WEST, lambda );
-					
-						}
-					
-						lambda = element.getLambda();	
-					
-						//Ha nem az elso elem lentrol, de vizszintesen lehet barmelyik
-						if( i != 0 ){
-						
-							//Akkor elkerem a regi SOUTH kapcsolatat, hatha letezik  
-							AThermicPointThermicConnector oldSouthConnector = (AThermicPointThermicConnector)tp.getSouthThermicConnector();
-						
-							//Akkor letezik ha jobb vagy baloldali Point-rol van szo es kapcsolodik egy masik, mar lehelyezett Element-hez
-							if( null != oldSouthConnector ){
-						
-								//Akkor a 2 lambda atlagat szamoljuk
-								lambda = (lambda + oldSouthConnector.getLambda()) / 2;
-							}
-
-							//Veszem az alatta levo kozvetlen kapcsolatat, ami bizonyosan letezik, mivel belso pont
-							BigDecimal previousY = new BigDecimal( String.valueOf( i - 1 ) ).multiply( verticalAppliedDifference ).add( startYPoint ).setScale( scale, RoundingMode.HALF_UP);		
-							
-							//Es osszekottetest letesitek vele
-							tp.connectToThermicPoint(thermicPointMap.get(new BigDecimalPosition( x, previousY ) ), Orientation.SOUTH, lambda );
-							
-						}					
-					}
-				}
-			}
-		}
-		
-		
-		
-		//--------------------------------------------------
-		//
-		// Masodik korben a kimaradt adatkapcsolatok potlasa
-		// -A kulso korvonalat lezaro Connectorok 
-		// -Szimmetria lezarast biztosito konnektor
-		//
-		//--------------------------------------------------
-		
-		//Minden elemen vegig megyek megegyszer
-		for( HetramDrawnElement e: getDrawnBlockList() ){
-					
-			//Ha igazi Epuletszerkezetrol van szo es nem lezaro elemrol
-			if( e instanceof HetramBuildingStructureElement ){
-					
-				element = (HetramBuildingStructureElement)e;
-		
-				HashSet<OpenEdgeElementWithPosition> openEdgeElementList = getOpenEdgeElements( element );
-				HashSet<SymmetricEdgeElementWithPosition> symmetricEdgeElementList = getSymmetricEdgeElements( element );
-			
-				//Veszem az elem kezdo es veg pozicioit
-				BigDecimal startXPoint = element.getX1();
-				BigDecimal startYPoint = element.getY1();
-				BigDecimal endXPoint = element.getX2();
-				BigDecimal endYPoint = element.getY2();
-			
-				//Kezdo vertikalis pontbol indulok
-				BigDecimal y = startYPoint;
-			
-				//Vertikalis felbontas
-				int iSteps = endYPoint.subtract( y ).divide( verticalAppliedDifference , scale, RoundingMode.HALF_UP  ).intValue();
-			
-				//Vegig a vertikalis pontokon
-				for( int i = 0; i <= iSteps; i++){
-
-					//Az aktualis vertikalis pont
-					y = (new BigDecimal(String.valueOf(i)).multiply(verticalAppliedDifference )).add( startYPoint ).setScale( scale, RoundingMode.HALF_UP );				
-				
-					//Kezdo horizontalis pontbol indulok
-					BigDecimal x = startXPoint;		
-				
-					//Horizontalis felbontas
-					int jSteps = endXPoint.subtract( x ).divide(horizontalAppliedDifference, scale, RoundingMode.HALF_UP ).intValue();
-				
-					//Vegig a horizontalis pontokon
-					for( int j = 0; j <= jSteps; j++ ){
-					
-						//Az aktualis horizontalis pont
-						x = (new BigDecimal(String.valueOf(j)).multiply(horizontalAppliedDifference )).add( startXPoint ).setScale( scale, RoundingMode.HALF_UP );		
-					
-						//Az aktualis pont pozicioja
-						BigDecimalPosition position = new BigDecimalPosition(x, y);
-
-						//Az aktualis pontban elhelyezkedo Termikus pont
-						ThermicPoint actualThermicPoint = thermicPointMap.get( position );
-					
-//
-//Ha egy belso pontrol van szo, akinek minden iranyban van termikus kapcsolata (NEGATIV SAROK)
-//Akkor hozza kell adni az OpenEdge altal kozolt aramot is
-//						
-if( 
-		(actualThermicPoint.getWestThermicConnector() instanceof AThermicPointThermicConnector ) &&
-		(actualThermicPoint.getEastThermicConnector() instanceof AThermicPointThermicConnector ) && 
-		(actualThermicPoint.getNorthThermicConnector() instanceof AThermicPointThermicConnector ) && 
-		(actualThermicPoint.getSouthThermicConnector() instanceof AThermicPointThermicConnector ) ){
-	
-	//Vegig az OpenEdge elemeken, melyek az Epuletszerkezet korul vannak
-	for( OpenEdgeElementWithPosition openEdgeElementWithPosition: openEdgeElementList ){
-
-		//Megfelelo pozicio
-		if( openEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y.compareTo( openEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( openEdgeElementWithPosition.element.getY2() ) <= 0 && x.compareTo( openEdgeElementWithPosition.element.getX1() ) == 0 ){  
-			actualThermicPoint.connectToExtraOpenEdge(Orientation.WEST, openEdgeElementWithPosition.element.getAlphaByPosition( y.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );
-//System.err.println( "west " + x.doubleValue() + ", " + y.doubleValue() );			
-			//break;
-		}else if( openEdgeElementWithPosition.orientation.equals( Orientation.EAST ) && y.compareTo( openEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( openEdgeElementWithPosition.element.getY2() ) <= 0 && x.compareTo( openEdgeElementWithPosition.element.getX1() ) == 0 ){
-			actualThermicPoint.connectToExtraOpenEdge( Orientation.EAST, openEdgeElementWithPosition.element.getAlphaByPosition( y.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );
-//System.err.println( "east " + x.doubleValue() + ", " + y.doubleValue() );			
-			//break;
-		}else if( openEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x.compareTo( openEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( openEdgeElementWithPosition.element.getX2() ) <= 0 && y.compareTo( openEdgeElementWithPosition.element.getY1() ) == 0 ){
-			actualThermicPoint.connectToExtraOpenEdge( Orientation.SOUTH, openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );
-//System.err.println( "south " + x.doubleValue() + ", " + y.doubleValue() );		
-			//break;			
-		}else if( openEdgeElementWithPosition.orientation.equals( Orientation.NORTH) && x.compareTo( openEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( openEdgeElementWithPosition.element.getX2() ) <= 0 && y.compareTo( openEdgeElementWithPosition.element.getY1() ) == 0){
-			actualThermicPoint.connectToExtraOpenEdge( Orientation.NORTH, openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );
-//System.err.println( "north " + x.doubleValue() + ", " + y.doubleValue() );				
-			//break;
-		}			
-	}	
-	
-}
-					
-						
-						
-						
-						//----------------------------
-						//
-						// BAL SZELSO PONT WEST irany
-						//
-						//----------------------------
-					
-						//
-						//Ha bal-szelso Pont es a Pont-nak nincs WEST iranyu DThermicConnector-a
-						//
-						if( j == 0 && null == actualThermicPoint.getWestThermicConnector() ){
-
-							//
-							// OpenEdge
-							//							
-							//Vegig az OpenEdge elemeken, melyek az Epuletszerkezet korul vannak
-							for( OpenEdgeElementWithPosition openEdgeElementWithPosition: openEdgeElementList ){
-
-								//Megfelelo pozicio
-								if( openEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y.compareTo( openEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( openEdgeElementWithPosition.element.getY2() ) <= 0 ){
-									
-									//Alfa es homerseklet kapcsolasa
-									actualThermicPoint.connectToOpenEdge( Orientation.WEST, openEdgeElementWithPosition.element.getAlphaByPosition( y.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );		
-									break;
-								
-								}
-							}
-							
-							//
-							// SymmetricEdge 
-							// 
-							// TODO valojaban teljesen felesleges, mert ha kimarad egy kapcsolat az automatikusan SymmetricEdge-re allitom a vegen
-							//							
-							//Vegig az OpenEdge elemeken, melyek az Epuletszerkezet korul vannak
-							for( SymmetricEdgeElementWithPosition symmetricEdgeElementWithPosition: symmetricEdgeElementList ){
-
-								//Megfelelo pozicio
-								if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.WEST ) && y.compareTo( symmetricEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( symmetricEdgeElementWithPosition.element.getY2() ) <= 0 ){
-
-									actualThermicPoint.connectToSymmetricEdge( Orientation.WEST );
-									break;		
-																		
-								}
-							}
-						}
-					
-						//Ha esetleg meg mindig nincs lezarva a bal-szelso pont WEST iranyban
-						//Ha nincs definialva semmilyen lezaras, akkor az SZIMMERTIA pont lesz mindenkeppen
-						if( j == 0 && null == actualThermicPoint.getWestThermicConnector() ){
-							actualThermicPoint.connectToSymmetricEdge( Orientation.WEST );
-						}						
-					
-						//-----------------------------
-						//
-						// JOBB SZELSO PONT EAST irany
-						//
-						//-----------------------------
-					
-						//Ha jobb-szelso Pont es a Pont-nak nincs EAST iranyu DThermicConnector-a
-						if( j == jSteps && null == actualThermicPoint.getEastThermicConnector() ){
-
-							//
-							// OpenEdge
-							//							
-							//Vegig az OpenEdge elemeken, melyek az Epuletszerkezet korul vannak
-							for( OpenEdgeElementWithPosition openEdgeElementWithPosition: openEdgeElementList ){
-						
-								//Megfelelo pozicio
-								if( openEdgeElementWithPosition.orientation.equals( Orientation.EAST ) && y.compareTo( openEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( openEdgeElementWithPosition.element.getY2() ) <= 0 ){
-							
-									//Alfa es homerseklet kapcsolasa
-									actualThermicPoint.connectToOpenEdge( Orientation.EAST, openEdgeElementWithPosition.element.getAlphaByPosition( y.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );		
-									
-								}
-							}
-						
-							//
-							// SymmetricEdge 
-							// 
-							// TODO valojaban teljesen felesleges, mert ha kimarad egy kapcsolat az automatikusan SymmetricEdge-re allitom a vegen
-							//							
-							//Vegig az OpenEdge elemeken, melyek az Epuletszerkezet korul vannak
-							for( SymmetricEdgeElementWithPosition symmetricEdgeElementWithPosition: symmetricEdgeElementList ){
-
-								//Megfelelo pozicio
-								if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.EAST ) && y.compareTo( symmetricEdgeElementWithPosition.element.getY1() ) >= 0 && y.compareTo( symmetricEdgeElementWithPosition.element.getY2() ) <= 0 ){
-
-									actualThermicPoint.connectToSymmetricEdge( Orientation.EAST );
-									break;																	
-								}
-							}
-						}
-											
-						//Ha esetleg meg mindig nincs lezarva a jobb-szelso pont EAST iranyban
-						//Ha nincs definialva semmilyen lezaras, akkor az szimmetria pont lesz
-						if( j == jSteps && null == actualThermicPoint.getEastThermicConnector() ){
-							actualThermicPoint.connectToSymmetricEdge( Orientation.EAST );
-						}	
-					
-						//------------------------------
-						//
-						// ALSO SZELSO PONT SOUTH irany
-						//
-						//------------------------------
-
-						//Ha also-szelso Pont es a Pont-nak nincs SOUTH iranyu DThermicConnector-a
-						if( i == 0 && null == actualThermicPoint.getSouthThermicConnector()){
-							
-							//
-							// OpenEdge
-							//							
-							//Vegig az OpenEdge elemeken, melyek az Epuletszerkezet korul vannak
-							for( OpenEdgeElementWithPosition openEdgeElementWithPosition: openEdgeElementList ){
-						
-								//Megfelelo pozicio
-								if( openEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x.compareTo( openEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( openEdgeElementWithPosition.element.getX2() ) <= 0 ){
-						
-									//Alfa es homerseklet kapcsolasa
-									actualThermicPoint.connectToOpenEdge( Orientation.SOUTH, openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );		
-									
-								}
-							}
-							
-							//
-							// SymmetricEdge 
-							// 
-							// TODO valojaban teljesen felesleges, mert ha kimarad egy kapcsolat az automatikusan SymmetricEdge-re allitom a vegen
-							//							
-							//Vegig az OpenEdge elemeken, melyek az Epuletszerkezet korul vannak
-							for( SymmetricEdgeElementWithPosition symmetricEdgeElementWithPosition: symmetricEdgeElementList ){
-
-								//Megfelelo pozicio
-								if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.SOUTH ) && x.compareTo( symmetricEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( symmetricEdgeElementWithPosition.element.getX2() ) <= 0 ){
-
-									actualThermicPoint.connectToSymmetricEdge( Orientation.SOUTH );
-									break;																	
-								}
-							}						
-						}
-					
-						//Ha esetleg meg mindig nincs lezarva az also-szelso pont SOUTH iranyban
-						//Ha nincs definialva semmilyen lezaras, akkor az szimmetria pont lesz
-						if( i == 0 && null == actualThermicPoint.getSouthThermicConnector() ){
-							actualThermicPoint.connectToSymmetricEdge(  Orientation.SOUTH );
-						}	
-					
-						//------------------------------
-						//
-						// FELSO SZELSO PONT NORTH irany
-						//
-						//------------------------------
-
-						//Ha felso-szelso Pont es a Pont-nak nincs NORTH iranyu DThermicConnector-a
-						if( i == iSteps && null == actualThermicPoint.getNorthThermicConnector() ){
-						
-							//
-							// OpenEdge
-							//							
-							//Vegig az OpenEdge elemeken, melyek az Epuletszerkezet korul vannak
-							for( OpenEdgeElementWithPosition openEdgeElementWithPosition: openEdgeElementList ){
-						
-								//Megfelelo pozicio
-								if( openEdgeElementWithPosition.orientation.equals( Orientation.NORTH) && x.compareTo( openEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( openEdgeElementWithPosition.element.getX2() ) <= 0 ){
-									
-									//Alfa es homerseklet kapcsolasa
-									actualThermicPoint.connectToOpenEdge( Orientation.NORTH, openEdgeElementWithPosition.element.getAlphaByPosition( x.doubleValue() ), openEdgeElementWithPosition.element.getTemperature() );		
-									
-								}
-							}
-							
-							//
-							// SymmetricEdge 
-							// 
-							// TODO valojaban teljesen felesleges, mert ha kimarad egy kapcsolat az automatikusan SymmetricEdge-re allitom a vegen
-							//							
-							//Vegig az OpenEdge elemeken, melyek az Epuletszerkezet korul vannak
-							for( SymmetricEdgeElementWithPosition symmetricEdgeElementWithPosition: symmetricEdgeElementList ){
-
-								//Megfelelo pozicio
-								if( symmetricEdgeElementWithPosition.orientation.equals( Orientation.NORTH ) && x.compareTo( symmetricEdgeElementWithPosition.element.getX1() ) >= 0 && x.compareTo( symmetricEdgeElementWithPosition.element.getX2() ) <= 0 ){
-
-									actualThermicPoint.connectToSymmetricEdge( Orientation.NORTH );
-									break;																	
-								}
-							}
-											
-						}
-					
-						//Ha esetleg meg mindig nincs lezarva a felso-szelso pont NORTH iranyban
-						//Ha nincs definialva semmilyen lezaras, akkor az szimmetria pont lesz
-						if( i == iSteps && null == actualThermicPoint.getNorthThermicConnector() ){
-							actualThermicPoint.connectToSymmetricEdge(  Orientation.NORTH );
-						}	
-					}
-				}			
-			}
-		}
-		
-		//--------------------------------------------------
-		//
-		// Most mar minden termikus pont es kapcsolata meg van
-		// Vegul a Calculation miatt extra informaciok 
-		// hozzaadasa hogy ne kelljen mindig ujra szamolni 
-		//
-		//--------------------------------------------------
-		
-		Collection<ThermicPoint> tpl = thermicPointMap.values();
-
-		IThermicConnector cN;
-		IThermicConnector cE;
-		IThermicConnector cS;
-		IThermicConnector cW;
-		
-		double dX = 0; // Az vizsgalt pontban szamolt szelesseg
-		double dY = 0; // Az vizsgalt pontban szamolt magassag
-		
-		double dNX = 0; // A vizsgalt ponttol E-ra levo pont szelessege
-		double dSX = 0; // A vizsgalt ponttol D-re levo pont szelessege
-		double dEY = 0; // A vizsgalt ponttol K-re levo pont szelessege
-		double dWY = 0; // A vizsgalt ponttol NY-ra levo pont szelessege
-		
-		//double northDeltaNormal; //E-i iranyban a ra meroleges delta
-		//double southDeltaNormal; //D-i iranyban a ra meroleges delta
-		//double eastDeltaNormal; //K-i iranyban a ra meroleges delta
-		//double westDeltaNormal; //NY-i iranyban a ra meroleges delta
-		
-		//double northDelta; //E-i iranyban a delta
-		//double southDelta; //D-i iranyban a delta
-		//double eastDelta; //K-i iranyban a delta
-		//double westDelta; //W-i iranyban a delta
-		
-		//Minden elemen vegig megyek megegyszer utoljara
-		for( ThermicPoint tp : tpl ){
-
-			cN = tp.getNorthThermicConnector();
-			cE = tp.getEastThermicConnector();
-			cS = tp.getSouthThermicConnector();
-			cW = tp.getWestThermicConnector();
-
-			//Az adott pont horizontalis delta
-			if (cE instanceof XThermicPointThermicConnector && cW instanceof XThermicPointThermicConnector) {
-				dX = ((XThermicPointThermicConnector) cE).getDelta().doubleValue();
-			} else if (cE instanceof XThermicPointThermicConnector) {
-				dX = ((XThermicPointThermicConnector) cE).getDelta().doubleValue() / 2;
-			} else if (cW instanceof XThermicPointThermicConnector) {
-				dX = ((XThermicPointThermicConnector) cW).getDelta().doubleValue() / 2;
-			}
-			
-			//Az adott pont vertikalis delta
-			if (cN instanceof YThermicPointThermicConnector && cS instanceof YThermicPointThermicConnector) {
-				dY = ((YThermicPointThermicConnector) cN).getDelta().doubleValue();
-			} else if (cN instanceof YThermicPointThermicConnector) {
-				dY = ((YThermicPointThermicConnector) cN).getDelta().doubleValue() / 2;
-			} else if (cS instanceof YThermicPointThermicConnector) {
-				dY = ((YThermicPointThermicConnector) cS).getDelta().doubleValue() / 2;
-			}
-			
-			//
-			// E-i Termikus Pont-Termikus Pont
-			//
-			if (cN instanceof YThermicPointThermicConnector) {
-
-				YThermicPointThermicConnector ntc = (YThermicPointThermicConnector) cN;
-
-				//E-i szomszed horizontalis delta 
-				IThermicConnector etc = ntc.getNorthThermicPoint().getEastThermicConnector();
-				IThermicConnector wtc = ntc.getNorthThermicPoint().getWestThermicConnector();
-				if (etc instanceof XThermicPointThermicConnector && wtc instanceof XThermicPointThermicConnector) {
-					dNX = ((XThermicPointThermicConnector) etc).getDelta().doubleValue();
-				} else if (etc instanceof XThermicPointThermicConnector) {
-					dNX = ((XThermicPointThermicConnector) etc).getDelta().doubleValue() / 2;
-				} else if (wtc instanceof XThermicPointThermicConnector) {
-					dNX = ((XThermicPointThermicConnector) wtc).getDelta().doubleValue() / 2;
-				}
-
-				tp.setNorthDeltaNormal(Math.min(dNX, dX));
-				tp.setNorthDelta(ntc.getDelta().doubleValue());
-				//northDeltaNormal = Math.min(dNX, dX);
-				//northDelta = ntc.getDelta().doubleValue();
-			
-			// Termikus Pont - Szabad felszin
-			} else if (cN instanceof OpenEdgeThermicConnector) {
-				tp.setNorthDeltaNormal( dX );
-			}
-			
-			//
-			// D-i Termikus Pont-Termikus Pont
-			//
-			if (cS instanceof YThermicPointThermicConnector) {
-
-				YThermicPointThermicConnector stc = (YThermicPointThermicConnector) cS;
-
-				IThermicConnector etc = stc.getSouthThermicPoint().getEastThermicConnector();
-				IThermicConnector wtc = stc.getSouthThermicPoint().getWestThermicConnector();
-				if (etc instanceof XThermicPointThermicConnector && wtc instanceof XThermicPointThermicConnector) {
-					dSX = ((XThermicPointThermicConnector) etc).getDelta().doubleValue();
-				} else if (etc instanceof XThermicPointThermicConnector) {
-					dSX = ((XThermicPointThermicConnector) etc).getDelta().doubleValue() / 2;
-				} else if (wtc instanceof XThermicPointThermicConnector) {
-					dSX = ((XThermicPointThermicConnector) wtc).getDelta().doubleValue() / 2;
-				}
-
-				tp.setSouthDeltaNormal(Math.min(dSX, dX));
-				tp.setSouthDelta(stc.getDelta().doubleValue());
-				//southDeltaNormal = Math.min(dSX, dX);
-				//southDelta = stc.getDelta().doubleValue();
-			
-			} else if (cS instanceof OpenEdgeThermicConnector) {
-				tp.setSouthDeltaNormal(dX);
-			}
-			
-			//
-			// K-i Termikus Pont-Termikus Pont
-			//
-			if (cE instanceof XThermicPointThermicConnector) {
-
-				XThermicPointThermicConnector etc = (XThermicPointThermicConnector) cE;
-
-				IThermicConnector ntc = etc.getEastThermicPoint().getNorthThermicConnector();
-				IThermicConnector stc = etc.getEastThermicPoint().getSouthThermicConnector();
-				if (ntc instanceof YThermicPointThermicConnector && stc instanceof YThermicPointThermicConnector) {
-					dEY = ((YThermicPointThermicConnector) ntc).getDelta().doubleValue();
-				} else if (ntc instanceof YThermicPointThermicConnector) {
-					dEY = ((YThermicPointThermicConnector) ntc).getDelta().doubleValue() / 2;
-				} else if (stc instanceof YThermicPointThermicConnector) {
-					dEY = ((YThermicPointThermicConnector) stc).getDelta().doubleValue() / 2;
-				}
-
-				tp.setEastDeltaNormal(Math.min(dEY, dY));
-				tp.setEastDelta(etc.getDelta().doubleValue());
-			
-			}else if (cE instanceof OpenEdgeThermicConnector) {
-				tp.setEastDeltaNormal(dY);
-			}
-
-			//
-			// NY-i Termikus Pont-Termikus Pont
-			if (cW instanceof XThermicPointThermicConnector) {
-
-				XThermicPointThermicConnector wtc = (XThermicPointThermicConnector) cW;
-
-				IThermicConnector ntc = wtc.getWestThermicPoint().getNorthThermicConnector();
-				IThermicConnector stc = wtc.getWestThermicPoint().getSouthThermicConnector();
-				if (ntc instanceof YThermicPointThermicConnector && stc instanceof YThermicPointThermicConnector) {
-					dWY = ((YThermicPointThermicConnector) ntc).getDelta().doubleValue();
-				} else if (ntc instanceof YThermicPointThermicConnector) {
-					dWY = ((YThermicPointThermicConnector) ntc).getDelta().doubleValue() / 2;
-				} else if (stc instanceof YThermicPointThermicConnector) {
-					dWY = ((YThermicPointThermicConnector) stc).getDelta().doubleValue() / 2;
-				}
-
-				tp.setWestDeltaNormal( Math.min(dWY, dY) );
-				tp.setWestDelta(wtc.getDelta().doubleValue());
-			
-			}else if (cW instanceof OpenEdgeThermicConnector) {
-				tp.setWestDeltaNormal( dY );
-			}
-		}	
-		
-		return new ThermicPointList( tpl );
-		
 	}
 	
 	/**
@@ -1038,6 +273,420 @@ if(
 //		mainPanel.setHorizontalAppliedDifference(new BigDecimal("1"));
 		
 	}
+	
+	/**
+	 * Automatikusan felbontja kis differencialis negyzetekre az osszes elemet,
+	 * legyartja a termikus pontokat es megteremti kozottuk a kapcsolatot
+	 * !!! Szamitas nem tortenik !!!
+	 * 
+	 * @param askedHorizontalDifference
+	 * @param askedVerticalDifference
+	 * @return
+	 */
+
+	
+//TODO at kell helyezni a mainPanel-be  !!!mit keres itt?????	
+	
+	class TemporaryThermicPoint{
+		double lambda;
+	
+		public TemporaryThermicPoint( double lambda ){
+			this.lambda = lambda;
+		}
+	}
+	
+	class TemporaryOpenEdge{
+		double alphaStart;
+		double alphaEnd;
+		double temperature;
+		public TemporaryOpenEdge( double alphaStart, double alphaEnd, double temperature ){
+			this.alphaEnd = alphaEnd;
+			this.alphaStart = alphaStart;
+			this.temperature = temperature;
+		}		
+	}
+	
+	public ThermicPointList generateThermicPointList( ){
+		int scale = getPrecision().getScale();	
+		
+//		BigDecimal verticalAppliedDifference = mainPanel.getVerticalAppliedDifference().setScale( scale, RoundingMode.HALF_UP );
+//		BigDecimal horizontalAppliedDifference = mainPanel.getHorizontalAppliedDifference().setScale( scale, RoundingMode.HALF_UP );
+		
+//		BigDecimal halfVerticalAppliedDifference = verticalAppliedDifference.divide( new BigDecimal("2"), scale, RoundingMode.HALF_UP);
+//		BigDecimal halfHorizontalAppliedDifference = horizontalAppliedDifference.divide( new BigDecimal("2"), scale, RoundingMode.HALF_UP);
+		
+		BigDecimal halfVerticalAppliedDifference = mainPanel.getVerticalAppliedDifference().divide( new BigDecimal("2"), RoundingMode.HALF_UP);
+		BigDecimal halfHorizontalAppliedDifference = mainPanel.getHorizontalAppliedDifference().divide( new BigDecimal("2"), RoundingMode.HALF_UP);
+		
+		HashMap<BigDecimalPosition, ThermicPoint> thermicPointMap = new HashMap<>();
+		HashMap<BigDecimalPosition, TemporaryThermicPoint> temporaryThermicPointMap = new HashMap<>();
+		
+		/**
+		 * STEP 1
+		 * 
+		 * Csak a termikus pontok osszegyujtese egy MAP-ba a koordinatakkal es lambdakkal
+		 */
+		for( HetramDrawnElement e: getDrawnBlockList() ){
+			
+			HetramBuildingStructureElement element;
+			
+			//Ha igazi Epuletszerkezetrol van szo es nem lezaro elemrol
+			if( e instanceof HetramBuildingStructureElement ){
+			
+				element = (HetramBuildingStructureElement)e;
+				
+				//Veszem az elem kezdo es veg pozicioit
+				BigDecimal startXPoint = element.getX1();
+				BigDecimal startYPoint = element.getY1();
+				BigDecimal endXPoint = element.getX2();
+				BigDecimal endYPoint = element.getY2();
+				BigDecimal halfY = element.getY1().add( halfVerticalAppliedDifference );
+				BigDecimal halfX = element.getX1().add( halfHorizontalAppliedDifference );
+			
+				//Mindig a kezdo vertikalis pontbol indulok
+				BigDecimal y = startYPoint;
+			
+				//Vertikalis felbontas
+				int iSteps = endYPoint.subtract( y ).divide( mainPanel.getVerticalAppliedDifference(), scale, RoundingMode.HALF_UP  ).intValue();
+			
+				//Vegig a vertikalis pontokon
+				for( int i = 0; i < iSteps; i++){
+				
+					//Az aktualis vertikalis point
+					//y = (new BigDecimal(String.valueOf(i)).multiply(verticalAppliedDifference )).add( startYPoint ).setScale( scale, RoundingMode.HALF_UP );					
+					y = (new BigDecimal(String.valueOf(i)).multiply(mainPanel.getVerticalAppliedDifference() ) ).add( halfY ).setScale( scale, RoundingMode.HALF_UP );
+				
+					//Elindul a kezdo horizontalis pontbol
+					BigDecimal x = startXPoint;			
+				
+					//Horizontalis felbontas
+					int jSteps = endXPoint.subtract( x ).divide( mainPanel.getHorizontalAppliedDifference(), scale, RoundingMode.HALF_UP ).intValue();
+				
+					//Vegig a horizontalis pontokon
+					for( int j = 0; j < jSteps; j++ ){
+				
+						//Az aktualis horizontalis pont
+						//x = (new BigDecimal(String.valueOf(j)).multiply(horizontalAppliedDifference )).add( startXPoint ).setScale( scale, RoundingMode.HALF_UP ).add(halfX);		
+						x = (new BigDecimal(String.valueOf(j) ).multiply( mainPanel.getHorizontalAppliedDifference() ) ).add( halfX ).setScale( scale, RoundingMode.HALF_UP );
+
+						//Az aktualis pont pozicioja
+						BigDecimalPosition position = new BigDecimalPosition(x, y);
+
+						//Rakeresek a taroloban, hatha letezett mar ez elott is
+						TemporaryThermicPoint tp = temporaryThermicPointMap.get( position );
+					
+						//Ha ez a pont meg nem letezett
+						if( null == tp ){
+						
+							//akkor letrehozom
+							tp = new TemporaryThermicPoint( element.getLambda() );
+						
+							//Es el is mentem
+							temporaryThermicPointMap.put( position, tp );
+					
+						}					
+					}
+				}
+			}
+		}
+		
+
+		/**
+		 * STEP 2
+		 * 
+		 * Az osszes termikus pont-termikus pont kapcsolatanak felepitese
+		 */
+		TemporaryThermicPoint actualTemporaryThermicPoint;
+		BigDecimalPosition westPosition;
+		BigDecimalPosition southPosition;
+		BigDecimalPosition eastPosition;
+		BigDecimalPosition northPosition;
+		TemporaryThermicPoint westNeighbourTemporaryTermicPoint;
+		TemporaryThermicPoint eastNeighbourTemporaryTermicPoint;
+		TemporaryThermicPoint northNeighbourTemporaryTermicPoint;
+		TemporaryThermicPoint southNeighbourTemporaryTermicPoint;
+		
+		for (Map.Entry<BigDecimalPosition, TemporaryThermicPoint> ttpm : temporaryThermicPointMap.entrySet() ) {
+			BigDecimalPosition actualPosition = ttpm.getKey();
+			actualTemporaryThermicPoint = ttpm.getValue();
+
+			//Eloszor is legyartom ezt a termikus pontot
+			ThermicPoint tp = new ThermicPoint( actualPosition );
+			
+			//Es el is mentem
+			thermicPointMap.put( actualPosition, tp );
+			
+			//Lehetseges WEST iranyu kapcsolat pozicioja
+			westPosition = new BigDecimalPosition( actualPosition.getX().subtract( mainPanel.getHorizontalAppliedDifference().setScale(scale, RoundingMode.HALF_UP) ), actualPosition.getY() );
+
+			//Lehetseges SOUTH iranyu kapcsolat pozicioja
+			southPosition = new BigDecimalPosition(  actualPosition.getX(), actualPosition.getY().subtract( mainPanel.getVerticalAppliedDifference().setScale(scale, RoundingMode.HALF_UP) ) );
+			
+			//Lehetseges EAST iranyu kapcsolat pozicioja
+			eastPosition = new BigDecimalPosition( actualPosition.getX().add( mainPanel.getHorizontalAppliedDifference().setScale(scale, RoundingMode.HALF_UP) ), actualPosition.getY() );
+			
+			//Lehetseges NORH iranyu kapcsolat pozicioja
+			northPosition = new BigDecimalPosition(  actualPosition.getX(), actualPosition.getY().add( mainPanel.getVerticalAppliedDifference().setScale(scale, RoundingMode.HALF_UP) ) );
+			
+			//Lehetseges WEST iranyu kapcsolat
+			westNeighbourTemporaryTermicPoint = temporaryThermicPointMap.get( westPosition );
+			
+			//Lehetseges EAST iranyu kapcsolat
+			eastNeighbourTemporaryTermicPoint = temporaryThermicPointMap.get( eastPosition );
+			
+			//Lehetseges NORTH iranyu kapcsolat
+			northNeighbourTemporaryTermicPoint = temporaryThermicPointMap.get( northPosition );
+			
+			//Lehetseges SOUTH iranyu kapcsolat
+			southNeighbourTemporaryTermicPoint = temporaryThermicPointMap.get( southPosition );
+			
+			//Van WEST iranyu kapcsolata
+			if( null != westNeighbourTemporaryTermicPoint ){
+				
+				//A WEST iranyu kapcsolat termikus pontja
+				ThermicPoint wtp = thermicPointMap.get( westPosition );
+				
+				//Ha ez a pont meg nem letezett
+				if( null == wtp ){
+				
+					//akkor letrehozom
+					wtp = new ThermicPoint( westPosition );
+				
+					//Es el is mentem
+					thermicPointMap.put( westPosition, wtp );
+				}
+				
+				double lambda = ( actualTemporaryThermicPoint.lambda + westNeighbourTemporaryTermicPoint.lambda ) / 2;
+				
+				//Letrehozom a WEST kapcsolatot
+				tp.connectToThermicPoint( wtp, Orientation.WEST, lambda );
+			
+			}
+			
+			//Van EAST iranyu kapcsolata
+			if( null != eastNeighbourTemporaryTermicPoint ){
+				
+				//A EAST iranyu kapcsolat termikus pontja
+				ThermicPoint etp = thermicPointMap.get( eastPosition );
+				
+				//Ha ez a pont meg nem letezett
+				if( null == etp ){
+				
+					//akkor letrehozom
+					etp = new ThermicPoint( eastPosition );
+				
+					//Es el is mentem
+					thermicPointMap.put( eastPosition, etp );
+				}
+				
+				double lambda = ( actualTemporaryThermicPoint.lambda + eastNeighbourTemporaryTermicPoint.lambda ) / 2;
+				
+				//Letrehozom a EAST kapcsolatot
+				tp.connectToThermicPoint( etp, Orientation.EAST, lambda );
+			
+			}
+			
+			//Van NORTH iranyu kapcsolata
+			if( null != northNeighbourTemporaryTermicPoint ){
+				
+				//A NORTH iranyu kapcsolat termikus pontja
+				ThermicPoint ntp = thermicPointMap.get( northPosition );
+				
+				//Ha ez a pont meg nem letezett
+				if( null == ntp ){
+				
+					//akkor letrehozom
+					ntp = new ThermicPoint( northPosition );
+				
+					//Es el is mentem
+					thermicPointMap.put( northPosition, ntp );
+				}
+				
+				double lambda = ( actualTemporaryThermicPoint.lambda + northNeighbourTemporaryTermicPoint.lambda ) / 2;
+				
+				//Letrehozom a SOUTH kapcsolatot
+				tp.connectToThermicPoint( ntp, Orientation.NORTH, lambda );
+			}
+			
+			//Van SOUTH iranyu kapcsolata
+			if( null != southNeighbourTemporaryTermicPoint ){
+				
+				//A SOUTH iranyu kapcsolat termikus pontja
+				ThermicPoint stp = thermicPointMap.get( southPosition );
+				
+				//Ha ez a pont meg nem letezett
+				if( null == stp ){
+				
+					//akkor letrehozom
+					stp = new ThermicPoint( southPosition );
+				
+					//Es el is mentem
+					thermicPointMap.put( southPosition, stp );
+				}
+				
+				double lambda = ( actualTemporaryThermicPoint.lambda + southNeighbourTemporaryTermicPoint.lambda ) / 2;
+				
+				//Letrehozom a SOUTH kapcsolatot
+				tp.connectToThermicPoint( stp, Orientation.SOUTH, lambda );
+			}
+		}
+
+		/**
+		 * STEP 3
+		 * 
+		 * OPENEDGE kapcsolatok kiepitese
+		 */		
+		
+		//Mar nincs szuksegem erre a MAP-re
+		temporaryThermicPointMap.clear();
+		//Minden elemen vegig megyek megegyszer
+		Collection<ThermicPoint> tplCollection = thermicPointMap.values();
+		for( ThermicPoint actualThermicPoint : tplCollection ){				
+			
+			BigDecimalPosition actualPosition = actualThermicPoint.getPosition();
+		
+			//Ha nincs WEST kapcsolata, akkor lehet hogy van OPENEDGE
+			if( null == actualThermicPoint.getWestPair() ){
+
+				//Lehetseges WEST iranyu kapcsolat pozicioja
+				westPosition = new BigDecimalPosition( actualPosition.getX().subtract( halfHorizontalAppliedDifference ).setScale(scale, RoundingMode.HALF_UP), actualPosition.getY() );
+		
+				//
+				// OpenEdge
+				//							
+				//Vegig az OpenEdge elemeken
+				for( HetramDrawnElement e: getDrawnBlockList() ){
+					
+					OpenEdgeElement openEdgeElement;
+					
+					//Ha igazi OpenEdgeElemt-rol van szo
+					if( e instanceof OpenEdgeElement ){
+					
+						openEdgeElement = (OpenEdgeElement)e;
+						
+						if( openEdgeElement.getX1().equals(openEdgeElement.getX2() ) && openEdgeElement.getX1().equals(westPosition.getX() ) && openEdgeElement.getY1().compareTo( westPosition.getY() ) <= 0 && openEdgeElement.getY2().compareTo( westPosition.getY() ) >= 0 ){
+							actualThermicPoint.connectToOpenEdge( Orientation.WEST, openEdgeElement.getAlphaByPosition( actualThermicPoint.getPosition().getY().doubleValue() ), openEdgeElement.getTemperature(), openEdgeElement );
+						}												
+					}
+				}
+			}
+			
+			//Ha nincs EAST kapcsolata, akkor lehet hogy van OPENEDGE
+			if( null == actualThermicPoint.getEastPair() ){
+				
+				//Lehetseges EAST iranyu kapcsolat pozicioja
+				eastPosition = new BigDecimalPosition( actualPosition.getX().add( halfHorizontalAppliedDifference ).setScale(scale, RoundingMode.HALF_UP), actualPosition.getY() );
+	
+				//
+				// OpenEdge
+				//							
+				//Vegig az OpenEdge elemeken
+				for( HetramDrawnElement e: getDrawnBlockList() ){
+					
+					OpenEdgeElement openEdgeElement;
+					
+					//Ha igazi OpenEdgeElemt-rol van szo
+					if( e instanceof OpenEdgeElement ){
+					
+						openEdgeElement = (OpenEdgeElement)e;
+						
+						if( openEdgeElement.getX1().equals(openEdgeElement.getX2() ) && openEdgeElement.getX1().equals(eastPosition.getX() ) && openEdgeElement.getY1().compareTo( eastPosition.getY() ) <= 0 && openEdgeElement.getY2().compareTo( eastPosition.getY() ) >= 0 ){
+							actualThermicPoint.connectToOpenEdge( Orientation.EAST, openEdgeElement.getAlphaByPosition( actualThermicPoint.getPosition().getY().doubleValue() ), openEdgeElement.getTemperature(), openEdgeElement );
+						}												
+					}
+				}
+			}
+			
+			//Ha nincs NORTH kapcsolata, akkor lehet hogy van OPENEDGE
+			if( null == actualThermicPoint.getNorthPair() ){
+
+				//Lehetseges NORH iranyu kapcsolat pozicioja
+				northPosition = new BigDecimalPosition(  actualPosition.getX(), actualPosition.getY().add( halfVerticalAppliedDifference ).setScale(scale, RoundingMode.HALF_UP) );
+				
+				//
+				// OpenEdge
+				//							
+				//Vegig az OpenEdge elemeken
+				for( HetramDrawnElement e: getDrawnBlockList() ){
+					
+					OpenEdgeElement openEdgeElement;
+					
+					//Ha igazi OpenEdgeElemt-rol van szo
+					if( e instanceof OpenEdgeElement ){
+					
+						openEdgeElement = (OpenEdgeElement)e;
+						
+						if( openEdgeElement.getY1().equals(openEdgeElement.getY2() ) && openEdgeElement.getY1().equals(northPosition.getY() ) && openEdgeElement.getX1().compareTo( northPosition.getX() ) <= 0 && openEdgeElement.getX2().compareTo( northPosition.getX()) >= 0 ){
+							actualThermicPoint.connectToOpenEdge( Orientation.NORTH, openEdgeElement.getAlphaByPosition( actualThermicPoint.getPosition().getX().doubleValue() ), openEdgeElement.getTemperature(), openEdgeElement );
+						}												
+					}
+				}
+			}
+			
+			//Ha nincs SOUTH kapcsolata, akkor lehet hogy van OPENEDGE
+			if( null == actualThermicPoint.getSouthPair() ){				
+			
+				//Lehetseges SOUTH iranyu kapcsolat pozicioja
+				southPosition = new BigDecimalPosition(  actualPosition.getX(), actualPosition.getY().subtract( halfVerticalAppliedDifference ).setScale(scale, RoundingMode.HALF_UP) );
+			
+				//
+				// OpenEdge
+				//							
+				//Vegig az OpenEdge elemeken
+				for( HetramDrawnElement e: getDrawnBlockList() ){
+					
+					OpenEdgeElement openEdgeElement;
+					
+					//Ha igazi OpenEdgeElemt-rol van szo
+					if( e instanceof OpenEdgeElement ){
+					
+						openEdgeElement = (OpenEdgeElement)e;
+						
+						if( openEdgeElement.getY1().equals(openEdgeElement.getY2() ) && openEdgeElement.getY1().equals(southPosition.getY() ) && openEdgeElement.getX1().compareTo( southPosition.getX() ) <= 0 && openEdgeElement.getX2().compareTo( southPosition.getX()) >= 0 ){
+							actualThermicPoint.connectToOpenEdge( Orientation.SOUTH, openEdgeElement.getAlphaByPosition( actualThermicPoint.getPosition().getX().doubleValue() ), openEdgeElement.getTemperature(), openEdgeElement );
+						}												
+					}
+				}				
+			}
+		}		
+	
+		/**
+		 * STEP 4
+		 * 
+		 * SYMMETRIC kapcsolatok kiepitese
+		 */		
+		
+		//Minden elemen vegig megyek megegyszer utoljara
+		tplCollection = thermicPointMap.values();
+		for( ThermicPoint actualThermicPoint : tplCollection ){				
+				
+			//BigDecimalPosition actualPosition = actualThermicPoint.getPosition();
+				
+			//Ha nincs WEST kapcsolata, akkor az SYMMETRIC lesz
+			if( null == actualThermicPoint.getWestThermicConnector() ){
+				actualThermicPoint.connectToSymmetricEdge( Orientation.WEST );
+			}
+				
+			//Ha nincs EAST kapcsolata, akkor az SYMMETRIC lesz
+			if( null == actualThermicPoint.getEastThermicConnector() ){
+				actualThermicPoint.connectToSymmetricEdge( Orientation.EAST );
+			}
+				
+			//Ha nincs NORTH kapcsolata, akkor az SYMMETRIC lesz
+			if( null == actualThermicPoint.getNorthThermicConnector() ){
+				actualThermicPoint.connectToSymmetricEdge( Orientation.NORTH );					
+			}
+				
+			//Ha nincs SOUTH kapcsolata, akkor az SYMMETRIC lesz
+			if( null == actualThermicPoint.getSouthThermicConnector() ){				
+				actualThermicPoint.connectToSymmetricEdge( Orientation.SOUTH );								
+			}
+
+		}				
+		
+		return new ThermicPointList( tplCollection, mainPanel.getHorizontalAppliedDifference(), mainPanel.getVerticalAppliedDifference() );
+	
+	} 
 	
 	/**
 	 * Legnagyobb kozos osztot adja vissza

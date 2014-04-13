@@ -7,14 +7,18 @@ public class BigDecimalPosition {
 	BigDecimal x;
 	BigDecimal y;
 	
-	public BigDecimalPosition( BigDecimal x, BigDecimal y ) {
+	public BigDecimalPosition( BigDecimal x, BigDecimal y){//, int scale ) {
 		this.x = x;
 		this.y = y;
+		//this.x.setScale( scale);
+		//this.y.setScale( scale);
 	}
 	
-	public BigDecimalPosition( BigDecimalPosition position ){
+	public BigDecimalPosition( BigDecimalPosition position){//, int scale ){
 		this.x = position.x;
 		this.y = position.y;
+		//this.x.setScale( scale);
+		//this.y.setScale( scale);
 	}
 	
 	public BigDecimal getX(){

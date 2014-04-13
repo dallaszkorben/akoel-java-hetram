@@ -15,19 +15,20 @@ import java.math.BigDecimal;
 public abstract class AThermicPointThermicConnector implements IThermicConnector{
 
 	private double lambda;
-	private BigDecimal delta;
+//	private BigDecimal delta;
 	
-	public AThermicPointThermicConnector( BigDecimal delta, double lambda ){
-		this.delta = delta;
+//	public AThermicPointThermicConnector( BigDecimal delta, double lambda ){
+	public AThermicPointThermicConnector( double lambda ){
+//		this.delta = delta;
 		this.lambda = lambda;
 	}
 	
 	public double getLambda() {
 		return lambda;
 	}
-	
+/*	
 	public BigDecimal getDelta() {
 		return delta;
 	}
-
+*/
 }

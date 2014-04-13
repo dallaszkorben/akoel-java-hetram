@@ -1,5 +1,7 @@
 package hu.akoel.hetram.connectors;
 
+import hu.akoel.hetram.gui.drawingelements.OpenEdgeElement;
+
 /**
  * Szabad feluletet biztosito konnektor
  * 
@@ -10,10 +12,12 @@ public class OpenEdgeThermicConnector implements IThermicConnector{
 
 	private double alpha;
 	private double airTemperature;
+	private OpenEdgeElement openEdgeElement;
 	
-	public OpenEdgeThermicConnector( double alpha, double airTemperature ){
+	public OpenEdgeThermicConnector( double alpha, double airTemperature, OpenEdgeElement openEdgeElement ){
 		this.alpha = alpha;
 		this.airTemperature = airTemperature;
+		this.openEdgeElement = openEdgeElement;
 	}
 	
 	public double getAlpha() {
@@ -28,4 +32,16 @@ public class OpenEdgeThermicConnector implements IThermicConnector{
 	public void setTemperature(double temperature) {
 		this.airTemperature = temperature;
 	}
+	public void setAirTemperature(double airTemperature) {
+		this.airTemperature = airTemperature;
+	}
+	
+	public OpenEdgeElement getOpenEdgeElement() {
+		return openEdgeElement;
+	}
+
+	public void setOpenEdgeElement(OpenEdgeElement openEdgeElement) {
+		this.openEdgeElement = openEdgeElement;
+	}
+	
 }
