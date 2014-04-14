@@ -11,23 +11,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.swing.border.Border;
 
-import hu.akoel.hetram.HetramCanvas.TemporaryThermicPoint;
 import hu.akoel.hetram.accessories.BigDecimalPosition;
 import hu.akoel.hetram.accessories.Orientation;
-import hu.akoel.hetram.connectors.AThermicPointThermicConnector;
-import hu.akoel.hetram.connectors.IThermicConnector;
-import hu.akoel.hetram.connectors.OpenEdgeThermicConnector;
-import hu.akoel.hetram.connectors.XThermicPointThermicConnector;
-import hu.akoel.hetram.connectors.YThermicPointThermicConnector;
 import hu.akoel.hetram.gui.MainPanel;
 import hu.akoel.hetram.gui.drawingelements.HetramBuildingStructureElement;
 import hu.akoel.hetram.gui.drawingelements.HetramDrawnElement;
@@ -307,7 +298,9 @@ public class HetramCanvas extends DrawnBlockCanvas{
 	}
 	
 	public ThermicPointList generateThermicPointList( ){
-		int scale = getPrecision().getScale();	
+
+		//Egyel nagyobb pontossag kell a ThermicPoint-ok poziciojanak, mivel a rajzolasi pontossagot megfelezi
+		int scale = getPrecision().getScale() + 1;	
 		
 //		BigDecimal verticalAppliedDifference = mainPanel.getVerticalAppliedDifference().setScale( scale, RoundingMode.HALF_UP );
 //		BigDecimal horizontalAppliedDifference = mainPanel.getHorizontalAppliedDifference().setScale( scale, RoundingMode.HALF_UP );
@@ -353,7 +346,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 				for( int i = 0; i < iSteps; i++){
 				
 					//Az aktualis vertikalis point
-					//y = (new BigDecimal(String.valueOf(i)).multiply(verticalAppliedDifference )).add( startYPoint ).setScale( scale, RoundingMode.HALF_UP );					
 					y = (new BigDecimal(String.valueOf(i)).multiply(mainPanel.getVerticalAppliedDifference() ) ).add( halfY ).setScale( scale, RoundingMode.HALF_UP );
 				
 					//Elindul a kezdo horizontalis pontbol
@@ -366,7 +358,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 					for( int j = 0; j < jSteps; j++ ){
 				
 						//Az aktualis horizontalis pont
-						//x = (new BigDecimal(String.valueOf(j)).multiply(horizontalAppliedDifference )).add( startXPoint ).setScale( scale, RoundingMode.HALF_UP ).add(halfX);		
 						x = (new BigDecimal(String.valueOf(j) ).multiply( mainPanel.getHorizontalAppliedDifference() ) ).add( halfX ).setScale( scale, RoundingMode.HALF_UP );
 
 						//Az aktualis pont pozicioja
@@ -564,7 +555,12 @@ public class HetramCanvas extends DrawnBlockCanvas{
 					
 						openEdgeElement = (OpenEdgeElement)e;
 						
-						if( openEdgeElement.getX1().equals(openEdgeElement.getX2() ) && openEdgeElement.getX1().equals(westPosition.getX() ) && openEdgeElement.getY1().compareTo( westPosition.getY() ) <= 0 && openEdgeElement.getY2().compareTo( westPosition.getY() ) >= 0 ){
+						//A megnovelt pontossagot kell hasznalni osszehasonlitashoz
+						BigDecimal oX1 = openEdgeElement.getX1().setScale(scale);
+						BigDecimal oY1 = openEdgeElement.getY1().setScale(scale);
+						BigDecimal oY2 = openEdgeElement.getY2().setScale(scale);						
+						
+						if( openEdgeElement.getX1().equals(openEdgeElement.getX2() ) && oX1.equals(westPosition.getX() ) && oY1.compareTo( westPosition.getY() ) <= 0 && oY2.compareTo( westPosition.getY() ) >= 0 ){
 							actualThermicPoint.connectToOpenEdge( Orientation.WEST, openEdgeElement.getAlphaByPosition( actualThermicPoint.getPosition().getY().doubleValue() ), openEdgeElement.getTemperature(), openEdgeElement );
 						}												
 					}
@@ -590,7 +586,12 @@ public class HetramCanvas extends DrawnBlockCanvas{
 					
 						openEdgeElement = (OpenEdgeElement)e;
 						
-						if( openEdgeElement.getX1().equals(openEdgeElement.getX2() ) && openEdgeElement.getX1().equals(eastPosition.getX() ) && openEdgeElement.getY1().compareTo( eastPosition.getY() ) <= 0 && openEdgeElement.getY2().compareTo( eastPosition.getY() ) >= 0 ){
+						//A megnovelt pontossagot kell hasznalni osszehasonlitashoz
+						BigDecimal oX1 = openEdgeElement.getX1().setScale(scale);
+						BigDecimal oY1 = openEdgeElement.getY1().setScale(scale);
+						BigDecimal oY2 = openEdgeElement.getY2().setScale(scale);		
+						
+						if( openEdgeElement.getX1().equals(openEdgeElement.getX2() ) && oX1.equals(eastPosition.getX() ) && oY1.compareTo( eastPosition.getY() ) <= 0 && oY2.compareTo( eastPosition.getY() ) >= 0 ){
 							actualThermicPoint.connectToOpenEdge( Orientation.EAST, openEdgeElement.getAlphaByPosition( actualThermicPoint.getPosition().getY().doubleValue() ), openEdgeElement.getTemperature(), openEdgeElement );
 						}												
 					}
@@ -616,7 +617,12 @@ public class HetramCanvas extends DrawnBlockCanvas{
 					
 						openEdgeElement = (OpenEdgeElement)e;
 						
-						if( openEdgeElement.getY1().equals(openEdgeElement.getY2() ) && openEdgeElement.getY1().equals(northPosition.getY() ) && openEdgeElement.getX1().compareTo( northPosition.getX() ) <= 0 && openEdgeElement.getX2().compareTo( northPosition.getX()) >= 0 ){
+						//A megnovelt pontossagot kell hasznalni osszehasonlitashoz
+						BigDecimal oY1 = openEdgeElement.getY1().setScale(scale);
+						BigDecimal oX1 = openEdgeElement.getX1().setScale(scale);
+						BigDecimal oX2 = openEdgeElement.getX2().setScale(scale);	
+						
+						if( openEdgeElement.getY1().equals(openEdgeElement.getY2() ) && oY1.equals(northPosition.getY() ) && oX1.compareTo( northPosition.getX() ) <= 0 && oX2.compareTo( northPosition.getX()) >= 0 ){
 							actualThermicPoint.connectToOpenEdge( Orientation.NORTH, openEdgeElement.getAlphaByPosition( actualThermicPoint.getPosition().getX().doubleValue() ), openEdgeElement.getTemperature(), openEdgeElement );
 						}												
 					}
@@ -642,7 +648,12 @@ public class HetramCanvas extends DrawnBlockCanvas{
 					
 						openEdgeElement = (OpenEdgeElement)e;
 						
-						if( openEdgeElement.getY1().equals(openEdgeElement.getY2() ) && openEdgeElement.getY1().equals(southPosition.getY() ) && openEdgeElement.getX1().compareTo( southPosition.getX() ) <= 0 && openEdgeElement.getX2().compareTo( southPosition.getX()) >= 0 ){
+						//A megnovelt pontossagot kell hasznalni osszehasonlitashoz
+						BigDecimal oY1 = openEdgeElement.getY1().setScale(scale);
+						BigDecimal oX1 = openEdgeElement.getX1().setScale(scale);
+						BigDecimal oX2 = openEdgeElement.getX2().setScale(scale);	
+						
+						if( openEdgeElement.getY1().equals(openEdgeElement.getY2() ) && oY1.equals(southPosition.getY() ) && oX1.compareTo( southPosition.getX() ) <= 0 && oX2.compareTo( southPosition.getX()) >= 0 ){
 							actualThermicPoint.connectToOpenEdge( Orientation.SOUTH, openEdgeElement.getAlphaByPosition( actualThermicPoint.getPosition().getX().doubleValue() ), openEdgeElement.getTemperature(), openEdgeElement );
 						}												
 					}

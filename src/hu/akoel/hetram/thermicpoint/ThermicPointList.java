@@ -5,7 +5,6 @@ import hu.akoel.hetram.accessories.ColorTransient;
 import hu.akoel.hetram.accessories.CommonOperations;
 import hu.akoel.hetram.accessories.Position;
 import hu.akoel.hetram.connectors.OpenEdgeThermicConnector;
-import hu.akoel.hetram.connectors.AThermicPointThermicConnector;
 import hu.akoel.hetram.connectors.SymmetricEdgeThermicConnector;
 import hu.akoel.hetram.connectors.IThermicConnector;
 import hu.akoel.hetram.connectors.XThermicPointThermicConnector;
@@ -174,7 +173,7 @@ public class ThermicPointList {
 				FontRenderContext frc = g2.getFontRenderContext();
 
 				g2.setColor(Color.white);
-				TextLayout textLayout = new TextLayout(String.valueOf( CommonOperations.get2Decimals(this.get(j).getActualTemperature()) ), font, frc);
+				TextLayout textLayout = new TextLayout(String.valueOf( CommonOperations.get3Decimals(this.get(j).getActualTemperature()) ), font, frc);
 				// TextLayout textLayout = new TextLayout(String.valueOf(
 				// CommonOperations.get2Decimals( this.get( j
 				// ).getActualTemperature() ) ), font, frc );

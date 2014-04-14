@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import hu.akoel.hetram.HetramCanvas;
+import hu.akoel.hetram.accessories.BigDecimalPosition;
 import hu.akoel.hetram.gui.MainPanel.Mode;
 import hu.akoel.hetram.gui.MainPanel.QShow;
 import hu.akoel.hetram.gui.drawingelements.ColoredPatternBuildingSturcturalElement;
@@ -14,6 +15,8 @@ import hu.akoel.hetram.gui.drawingelements.HomogeneousPatternBuildingStructuralE
 import hu.akoel.hetram.gui.drawingelements.OpenEdgeElement;
 import hu.akoel.hetram.gui.drawingelements.RowPatternBuildingStructuralElement;
 import hu.akoel.hetram.gui.drawingelements.SymmetricEdgeElement;
+import hu.akoel.hetram.thermicpoint.ThermicPoint;
+import hu.akoel.hetram.thermicpoint.ThermicPointList;
 import hu.akoel.mgu.CursorPositionChangeListener;
 import hu.akoel.mgu.drawnblock.Block;
 import hu.akoel.mgu.drawnblock.SecondaryCursor;
@@ -201,6 +204,46 @@ canvas.getMainPanel().showThermicGraph( (OpenEdgeElement) selectedElement );
 			canvas.revalidateAndRepaintCoreCanvas();
 		}
 		
+	}
+	
+	/**
+	 * Meghatarozza a masodlagos kurzor aktualis erteket
+	 * Azt vizsgalja, hogy a pont pozicionalhato-e egyaltalan
+	 * az adott helyre
+	 * 
+	 * @param e
+	 */
+	public void findOutCursorPosition( MouseEvent e ){
+		super.findOutCursorPosition(e);
+		
+		BigDecimal x = canvas.getRoundedBigDecimalWithPrecision( canvas.getWorldXByPixel( e.getX() ) );
+		BigDecimal y = canvas.getRoundedBigDecimalWithPrecision( canvas.getWorldYByPixel( e.getY() ) );
+		
+		//Analizis modban csak termikus pont lehetseges vagy OPENEDGE
+		if( canvas.getMainPanel().getMode().equals(Mode.ANALYSIS)){
+			
+			ThermicPointList tpl = canvas.getMainPanel().getTermicPointList();
+			int size = tpl.getSize();
+			
+			double tmpDist;
+			double distance = 1000;
+			int pos = 0;
+			for( int i = 0; i < size; i++ ){
+				ThermicPoint tp = tpl.get(i);
+				
+				tmpDist = Math.abs(tp.getPosition().getX().doubleValue() - x.doubleValue() )  + Math.abs( tp.getPosition().getY().doubleValue() - y.doubleValue() );
+			
+				if( tmpDist < distance ){
+					distance = tmpDist;
+					pos = i;
+				}				
+			}
+			
+			BigDecimalPosition position = tpl.get(pos).getPosition();
+			SecondaryCursor sc = canvas.getSecondaryCursor();
+			sc.setPosition( position.getX(), position.getY());
+			
+		}
 	}
 
 }
