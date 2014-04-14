@@ -118,7 +118,7 @@ public class MainPanel extends JFrame {
 	private static final int DEFAULT_HEIGHT = 800;
 	private static final int DEFAULT_SETTINGTABBEDPANEL = 310;
 
-	private static final Precision precision = Precision.per_10000;
+	private static final Precision precision = Precision.per_1000;
 
 	private String version;
 	private File usedDirectory = null;
@@ -140,6 +140,8 @@ public class MainPanel extends JFrame {
 
 	private CalculationListener calculationListener = null;
 
+	private ThermicPointList termicPointList;
+	
 	// ------------------------
 	//
 	// Kiindulasi parameterek
@@ -1008,6 +1010,14 @@ public class MainPanel extends JFrame {
 		this.myCanvas.setDrawnBlockFactory(dbf);
 	}
 
+	public ThermicPointList getTermicPointList() {
+		return termicPointList;
+	}
+
+	public void setTermicPointList(ThermicPointList termicPointList) {
+		this.termicPointList = termicPointList;
+	}
+
 	/**
 	 * Termikus pontok letrehozasa es homersekleteik kiszamitasa
 	 * 
@@ -1052,7 +1062,7 @@ public class MainPanel extends JFrame {
 			needToStopCalculation = false;
 
 			// Termikus pontok legyartasa, kozottuk levo kapcsolatok megteremtese (nics szamolas meg)	
-			ThermicPointList termicPointList = myCanvas.generateThermicPointList();
+			termicPointList = myCanvas.generateThermicPointList();
 
 			// Sokismeretlenes egyenletrendszer megoldasa, eredmenye: a termikus pontok homerseklete
 			termicPointList.solve(this, precision);
