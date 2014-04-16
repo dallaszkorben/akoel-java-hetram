@@ -7,10 +7,6 @@ import hu.akoel.hetram.SelectedOpenEdgeForSumQList;
 import hu.akoel.hetram.accessories.BigDecimalPosition;
 import hu.akoel.hetram.connectors.IThermicConnector;
 import hu.akoel.hetram.connectors.OpenEdgeThermicConnector;
-import hu.akoel.hetram.gui.ElementSettingTab.DRAWING_ELEMENT;
-import hu.akoel.hetram.gui.ElementSettingTab.HOMOGENEOUS_PATTERN;
-import hu.akoel.hetram.gui.ElementSettingTab.PATTERN_TYPE;
-import hu.akoel.hetram.gui.ElementSettingTab.ROW_PATTERN;
 import hu.akoel.hetram.gui.drawingelements.ColoredPatternBuildingSturcturalElement;
 import hu.akoel.hetram.gui.drawingelements.DotFullPatternAdapter;
 import hu.akoel.hetram.gui.drawingelements.HatchFullPatternAdapter;
@@ -23,6 +19,11 @@ import hu.akoel.hetram.gui.drawingelements.RowPatternBuildingStructuralElement;
 import hu.akoel.hetram.gui.drawingelements.RowPatternFactory;
 import hu.akoel.hetram.gui.drawingelements.SymmetricEdgeElement;
 import hu.akoel.hetram.gui.drawingelements.ZigZagRowPatternAdapter;
+import hu.akoel.hetram.gui.tabs.ElementSettingTab;
+import hu.akoel.hetram.gui.tabs.ElementSettingTab.DRAWING_ELEMENT;
+import hu.akoel.hetram.gui.tabs.ElementSettingTab.HOMOGENEOUS_PATTERN;
+import hu.akoel.hetram.gui.tabs.ElementSettingTab.PATTERN_TYPE;
+import hu.akoel.hetram.gui.tabs.ElementSettingTab.ROW_PATTERN;
 import hu.akoel.hetram.listeners.CalculationListener;
 import hu.akoel.hetram.thermicpoint.ThermicPoint;
 import hu.akoel.hetram.thermicpoint.ThermicPointList;
@@ -385,14 +386,14 @@ public class MainPanel extends JFrame {
 
 		}, Level.UNDER);
 
-		myGrid = new Grid(myCanvas, gridType, gridColor, gridWidth, gridPosition, gridDelta);
+		myGrid = new Grid(myCanvas, gridType, gridColor, gridWidth, gridPosition, gridDelta, needDrawGrid );
 
-		myCrossLine = new CrossLine(myCanvas, crossLinePosition, crossLineColor, crossLineWidthInPixel, crossLineLength, crossLinePainterPosition);
+		myCrossLine = new CrossLine(myCanvas, crossLinePosition, crossLineColor, crossLineWidthInPixel, crossLineLength, crossLinePainterPosition, needDrawCrossline );
 
 		myScale = new Scale(myCanvas, pixelPerCm, unit, startScale, rate);
-
-		myAxis = new Axis(myCanvas, axisPosition, axisColor, axisWidthInPixel, painterPosition);
-
+		
+		myAxis = new Axis(myCanvas, axisPosition, axisColor, axisWidthInPixel, painterPosition, needDrawAxis );	
+			
 		// Meretarany valtozas kijelzese
 		myScale.addScaleChangeListener(new ScaleChangeListener() {
 			@Override
@@ -1282,16 +1283,12 @@ public class MainPanel extends JFrame {
 			fc.setAcceptAllFileFilterUsed(false);
 
 			int returnVal = fc.showOpenDialog(MainPanel.this);
-
-			// HetramDrawnElement hetramDrawnElement;
-
-			// Az eredeti rajzolatot torlom
-			// ArrayList<HetramDrawnElement> ahetramDrawnElementList =
-			// MainPanel.this.myCanvas.getDrawnBlockList();
-			// hetramDrawnElementList.clear();
-			MainPanel.this.myCanvas.getDrawnBlockList().clear();
-
+			
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+				// HetramDrawnElement hetramDrawnElement;
+				MainPanel.this.myCanvas.getDrawnBlockList().clear();
+				
 				File file = fc.getSelectedFile();
 
 				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

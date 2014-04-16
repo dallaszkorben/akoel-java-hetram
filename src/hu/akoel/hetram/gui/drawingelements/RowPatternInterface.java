@@ -1,7 +1,7 @@
 package hu.akoel.hetram.gui.drawingelements;
 
 import hu.akoel.hetram.accessories.Displacement;
-import hu.akoel.hetram.gui.ElementSettingTab.ROW_PATTERN;
+import hu.akoel.hetram.gui.tabs.ElementSettingTab.ROW_PATTERN;
 
 import java.awt.Graphics2D;
 

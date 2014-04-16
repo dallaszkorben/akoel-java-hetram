@@ -2,6 +2,10 @@ package hu.akoel.hetram.gui;
 
 import hu.akoel.hetram.accessories.CompositeIcon;
 import hu.akoel.hetram.accessories.VTextIcon;
+import hu.akoel.hetram.gui.tabs.CanvasSettingTab;
+import hu.akoel.hetram.gui.tabs.ControlSettingTab;
+import hu.akoel.hetram.gui.tabs.ElementSettingTab;
+import hu.akoel.hetram.gui.tabs.VisibilitySettingTab;
 
 import javax.swing.Icon;
 import javax.swing.JTabbedPane;
