@@ -1,5 +1,6 @@
-package hu.akoel.hetram.gui;
+package hu.akoel.hetram.gui.tabs;
 
+import hu.akoel.hetram.gui.MainPanel;
 import hu.akoel.hetram.thermicpoint.ThermicPointList;
 import hu.akoel.hetram.thermicpoint.ThermicPointList.CURRENT_TYPE;
 import java.awt.Color;

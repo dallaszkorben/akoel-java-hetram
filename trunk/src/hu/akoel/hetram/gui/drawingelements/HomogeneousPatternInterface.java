@@ -1,6 +1,6 @@
 package hu.akoel.hetram.gui.drawingelements;
 
-import hu.akoel.hetram.gui.ElementSettingTab.HOMOGENEOUS_PATTERN;
+import hu.akoel.hetram.gui.tabs.ElementSettingTab.HOMOGENEOUS_PATTERN;
 
 import java.awt.Graphics2D;
 

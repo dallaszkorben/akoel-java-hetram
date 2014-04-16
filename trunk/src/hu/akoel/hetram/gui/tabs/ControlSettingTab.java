@@ -1,4 +1,6 @@
-package hu.akoel.hetram.gui;
+package hu.akoel.hetram.gui.tabs;
+
+import hu.akoel.hetram.gui.MainPanel;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;

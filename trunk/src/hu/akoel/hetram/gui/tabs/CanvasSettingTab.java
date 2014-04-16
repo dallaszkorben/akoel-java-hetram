@@ -1,5 +1,6 @@
-package hu.akoel.hetram.gui;
+package hu.akoel.hetram.gui.tabs;
 
+import hu.akoel.hetram.gui.MainPanel;
 import hu.akoel.mgu.MControlPanel;
 import hu.akoel.mgu.axis.Axis;
 import hu.akoel.mgu.crossline.CrossLine;

@@ -1,6 +1,9 @@
-package hu.akoel.hetram.gui;
+package hu.akoel.hetram.gui.tabs;
 
 import hu.akoel.hetram.HetramDrawnElementFactory;
+import hu.akoel.hetram.gui.MainPanel;
+import hu.akoel.hetram.gui.PatternSelector;
+import hu.akoel.hetram.gui.RawPatternSelectorItem;
 import hu.akoel.hetram.gui.drawingelements.ColoredPatternBuildingSturcturalElement;
 import hu.akoel.hetram.gui.drawingelements.DotFullPatternAdapter;
 import hu.akoel.hetram.gui.drawingelements.HomogeneousPatternBuildingStructuralElement;
@@ -1026,7 +1029,10 @@ public class ElementSettingTab extends JPanel{
 	}
 	
 	public void setOpenEdgeTemperature( double temperature ){
+		//Csak ezzel a jatekkal lehet elerni, hogy a setText() metodussal a JTextField-be irt adatra lefusson a verifikacio es igy az ertek valtozoba irasa
+		openEdgeTemperatureField.requestFocusInWindow();
 		openEdgeTemperatureField.setText( String.valueOf( temperature ));
+		mainPanel.getCanvas().requestFocusInWindow();
 	}
 
 	public void setOpenEdgeColor( Color color ){
