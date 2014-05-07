@@ -7,6 +7,7 @@ public class CommonOperations {
 	private static DecimalFormat df10 = new DecimalFormat("###.##########");
 	private static DecimalFormat df3 = new DecimalFormat("###.###");
 	private static DecimalFormat df2 = new DecimalFormat("###.##");
+	private static DecimalFormat df1 = new DecimalFormat("###.#");
 	
 	public static double get10Decimals( double val ){
 		return Double.valueOf(df10.format(val));
@@ -18,6 +19,10 @@ public class CommonOperations {
 	
 	public static double get2Decimals( double val ){
 		return Double.valueOf( df2.format( val ) );
+	}
+
+	public static double get1Decimals( double val ){
+		return Double.valueOf( df1.format( val ) );
 	}
 
 }

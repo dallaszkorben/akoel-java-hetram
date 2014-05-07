@@ -302,12 +302,6 @@ public class HetramCanvas extends DrawnBlockCanvas{
 		//Egyel nagyobb pontossag kell a ThermicPoint-ok poziciojanak, mivel a rajzolasi pontossagot megfelezi
 		int scale = getPrecision().getScale() + 1;	
 		
-//		BigDecimal verticalAppliedDifference = mainPanel.getVerticalAppliedDifference().setScale( scale, RoundingMode.HALF_UP );
-//		BigDecimal horizontalAppliedDifference = mainPanel.getHorizontalAppliedDifference().setScale( scale, RoundingMode.HALF_UP );
-		
-//		BigDecimal halfVerticalAppliedDifference = verticalAppliedDifference.divide( new BigDecimal("2"), scale, RoundingMode.HALF_UP);
-//		BigDecimal halfHorizontalAppliedDifference = horizontalAppliedDifference.divide( new BigDecimal("2"), scale, RoundingMode.HALF_UP);
-		
 		BigDecimal halfVerticalAppliedDifference = mainPanel.getVerticalAppliedDifference().divide( new BigDecimal("2"), RoundingMode.HALF_UP);
 		BigDecimal halfHorizontalAppliedDifference = mainPanel.getHorizontalAppliedDifference().divide( new BigDecimal("2"), RoundingMode.HALF_UP);
 		
