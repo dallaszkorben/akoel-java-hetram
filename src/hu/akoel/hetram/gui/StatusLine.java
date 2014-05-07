@@ -23,9 +23,7 @@ public class StatusLine extends JPanel{
 	private JTextField yPositionField = new JTextField();
 	private JTextField temperatureField = new JTextField();
 
-/*	private JTextField qVerticalField = new JTextField();
-	private JTextField qHorizontalField = new JTextField();
-*/	private JTextField qNorthField = new JTextField();
+	private JTextField qNorthField = new JTextField();
 	private JTextField qEastField = new JTextField();
 	private JTextField qSouthField = new JTextField();
 	private JTextField qWestField = new JTextField();
@@ -58,17 +56,7 @@ public class StatusLine extends JPanel{
 		temperatureField.setEditable(false);
 		temperatureField.setBackground( Color.yellow );
 		this.add( temperatureField );
-/*		
-		qVerticalField.setColumns( 8 );
-		qVerticalField.setBorder(BorderFactory.createLoweredBevelBorder());
-		qVerticalField.setEditable(false);
-		this.add( qVerticalField);
 
-		qHorizontalField.setColumns( 8 );
-		qHorizontalField.setBorder(BorderFactory.createLoweredBevelBorder());
-		qHorizontalField.setEditable(false);
-		this.add( qHorizontalField);
-*/
 		qNorthField.setColumns( 10 );
 		qNorthField.setBorder(BorderFactory.createLoweredBevelBorder());
 		qNorthField.setEditable(false);

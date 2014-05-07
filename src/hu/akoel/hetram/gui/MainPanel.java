@@ -1051,8 +1051,7 @@ public class MainPanel extends JFrame {
 					getSettingTabbedPanel().getControlSettingTab().getCalculateButton().setBackground(Color.red);
 					getSettingTabbedPanel().getControlSettingTab().getCalculateButton().setText("Stop");
 
-					// Progressbar: Indeterminate tipusu, 0 hosszu, nincs
-					// kijelzes
+					// Progressbar: Indeterminate tipusu, 0 hosszu, nincs kijelzes
 					getProgressBar().setIndeterminate(true);
 					getProgressBar().setStringPainted(false);
 					getProgressBar().setValue(0);
