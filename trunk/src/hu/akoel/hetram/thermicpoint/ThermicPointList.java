@@ -423,7 +423,7 @@ public class ThermicPointList {
 					Vector2D vector = new Vector2D(vX - position.getX(), vY - position.getY());
 
 					// Minden trajektoria vonal egyforma hosszu
-					// vector = vector.getVector( maxLength );
+					vector = vector.getVector( maxLength );
 
 					Path2D.Double trajektoriaPath = new Path2D.Double();
 					trajektoriaPath.moveTo(position.getX() - vector.x / 2, position.getY() - vector.y / 2);
