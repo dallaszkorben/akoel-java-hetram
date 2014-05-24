@@ -7,6 +7,8 @@ import hu.akoel.hetram.SelectedOpenEdgeForSumQList;
 import hu.akoel.hetram.accessories.BigDecimalPosition;
 import hu.akoel.hetram.connectors.IThermicConnector;
 import hu.akoel.hetram.connectors.OpenEdgeThermicConnector;
+import hu.akoel.hetram.connectors.XThermicPointThermicConnector;
+import hu.akoel.hetram.connectors.YThermicPointThermicConnector;
 import hu.akoel.hetram.gui.drawingelements.ColoredPatternBuildingSturcturalElement;
 import hu.akoel.hetram.gui.drawingelements.DotFullPatternAdapter;
 import hu.akoel.hetram.gui.drawingelements.HatchFullPatternAdapter;
@@ -588,6 +590,18 @@ public class MainPanel extends JFrame {
 
 		ArrayList<TemperatureForGraph> thermicListForGraph = new ArrayList<TemperatureForGraph>();
 
+		IThermicConnector cN;
+		IThermicConnector cE;
+		IThermicConnector cS;
+		IThermicConnector cW;
+		
+		YThermicPointThermicConnector ntc;
+		YThermicPointThermicConnector stc;
+		XThermicPointThermicConnector etc;
+		XThermicPointThermicConnector wtc;
+		
+		double tf;
+		
 		// -----------
 		//
 		// Vertikalis
@@ -601,6 +615,9 @@ public class MainPanel extends JFrame {
 				position = tp.getPosition();
 				IThermicConnector tc;
 				
+				cE = tp.getEastThermicConnector();				
+				cW = tp.getWestThermicConnector();
+				
 				//
 				// EAST
 				//
@@ -610,7 +627,22 @@ public class MainPanel extends JFrame {
 					
 					//Ez a termikus pont kapcsolodik EAST fele a kivalasztott OPENEDGEELEMENT-hez
 					if( openEdgeElement.equals( oetc.getOpenEdgeElement() ) ){
-						thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getY(), tp.getActualTemperature()));
+						
+						//Meg kell keresnem a NY-i termikus pontot, ha van
+						if (cW instanceof XThermicPointThermicConnector) {	
+
+							wtc = (XThermicPointThermicConnector) cW;
+							tf = ( 3 * tp.getActualTemperature() - wtc.getWestThermicPoint().getActualTemperature() ) / 2;
+
+						//Ha NY-fele nincs termikus pont - elvileg nem lehet
+						}else{
+							
+							//Akkor ugy veszem mintha lenne, de a homerseklete egyenlo a vizsgalt pont homersekletevel
+							tf = tp.getActualTemperature();
+						}
+											
+						//thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getY(), tp.getActualTemperature()));
+						thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getY(), tf));
 					}					
 				}
 				
@@ -623,7 +655,23 @@ public class MainPanel extends JFrame {
 					
 					//Ez a termikus pont kapcsolodik WEST fele a kivalasztott OPENEDGEELEMENT-hez
 					if( openEdgeElement.equals( oetc.getOpenEdgeElement() ) ){
-						thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getY(), tp.getActualTemperature()));
+						
+						//Meg kell keresnem a K-i termikus pontot, ha van
+						if (cE instanceof XThermicPointThermicConnector) {	
+
+							etc = (XThermicPointThermicConnector) cE;
+							tf = ( 3 * tp.getActualTemperature() - etc.getEastThermicPoint().getActualTemperature() ) / 2;
+
+						//Ha K-fele nincs termikus pont - elvileg nem lehet
+						}else{
+							
+							//Akkor ugy veszem mintha lenne, de a homerseklete egyenlo a vizsgalt pont homersekletevel
+							tf = tp.getActualTemperature();
+						}
+						
+						//thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getY(), tp.getActualTemperature()));
+						thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getY(), tf));
+						
 					}					
 				}
 
@@ -639,6 +687,9 @@ public class MainPanel extends JFrame {
 			for (int i = 0; i < thermicPointList.getSize(); i++) {
 				tp = thermicPointList.get(i);
 
+				cN = tp.getNorthThermicConnector();
+				cS = tp.getSouthThermicConnector();
+
 				position = tp.getPosition();
 
 				IThermicConnector tc;
@@ -652,7 +703,22 @@ public class MainPanel extends JFrame {
 					
 					//Ez a termikus pont kapcsolodik NORTH fele a kivalasztott OPENEDGEELEMENT-hez
 					if( openEdgeElement.equals( oetc.getOpenEdgeElement() ) ){
-						thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getX(), tp.getActualTemperature()));
+						
+						//Meg kell keresnem a D-i termikus pontot, ha van
+						if (cS instanceof YThermicPointThermicConnector) {	
+
+							stc = (YThermicPointThermicConnector) cS;
+							tf = ( 3 * tp.getActualTemperature() - stc.getSouthThermicPoint().getActualTemperature() ) / 2;
+
+						//Ha D-fele nincs termikus pont - elvileg nem lehet
+						}else{
+							
+							//Akkor ugy veszem mintha lenne, de a homerseklete egyenlo a vizsgalt pont homersekletevel
+							tf = tp.getActualTemperature();
+						}						
+						
+						//thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getX(), tp.getActualTemperature()));
+						thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getX(), tf));
 					}
 					
 				}
@@ -666,7 +732,22 @@ public class MainPanel extends JFrame {
 					
 					//Ez a termikus pont kapcsolodik SOUTH fele a kivalasztott OPENEDGEELEMENT-hez
 					if( openEdgeElement.equals( oetc.getOpenEdgeElement() ) ){
-						thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getX(), tp.getActualTemperature()));
+						
+						//Meg kell keresnem a E-i termikus pontot, ha van
+						if (cN instanceof YThermicPointThermicConnector) {	
+
+							ntc = (YThermicPointThermicConnector) cN;
+							tf = ( 3 * tp.getActualTemperature() - ntc.getNorthThermicPoint().getActualTemperature() ) / 2;
+
+						//Ha E-fele nincs termikus pont - elvileg nem lehet
+						}else{
+							
+							//Akkor ugy veszem mintha lenne, de a homerseklete egyenlo a vizsgalt pont homersekletevel
+							tf = tp.getActualTemperature();
+						}
+						
+						//thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getX(), tp.getActualTemperature()));
+						thermicListForGraph.add(new TemperatureForGraph(tp.getPosition().getX(), tf));
 					}
 					
 				}
