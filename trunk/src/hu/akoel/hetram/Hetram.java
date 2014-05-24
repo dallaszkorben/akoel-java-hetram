@@ -10,7 +10,7 @@ public class Hetram{
 
 	public static void main(String[] args) {
 		Locale.setDefault(new Locale("en", "US"));
-		final String version = "3.0.0";
+		final String version = "3.1.0";
 		
 		SwingUtilities.invokeLater( new Runnable(){
 

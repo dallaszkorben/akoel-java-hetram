@@ -648,38 +648,16 @@ public class ThermicPointList {
 		IThermicConnector cS = list[position].getSouthThermicConnector();
 		IThermicConnector cW = list[position].getWestThermicConnector();
 
-/*		double dYNormal = 0; // Meroleges
-		double dXNormal = 0; // Meroleges
-
-		double dX = 0; // Az vizsgalt pontban szamolt szelesseg
-		double dY = 0; // Az vizsgalt pontban szamolt magassag
-		double dNX = 0; // A vizsgalt ponttol E-ra levo pont szelessege
-		double dSX = 0; // A vizsgalt ponttol D-re levo pont szelessege
-		double dEY = 0; // A vizsgalt ponttol K-re levo pont szelessege
-		double dWY = 0; // A vizsgalt ponttol NY-ra levo pont szelessege
-*/
+		YThermicPointThermicConnector ntc;
+		YThermicPointThermicConnector stc;
+		XThermicPointThermicConnector etc;
+		XThermicPointThermicConnector wtc;
+		
+		double tf; //Felszini homerseklet Szabad felszin eseten
 		//
 		// Vertikalis hoaram iranyara meroleges szelessegek megallapitasa
 		//
-/*		if (cE instanceof XThermicPointThermicConnector && cW instanceof XThermicPointThermicConnector ) {
-			dX = ((XThermicPointThermicConnector) cE).getDelta().doubleValue();		
-		}else if (cE instanceof XThermicPointThermicConnector ) {
-			dX = ((XThermicPointThermicConnector) cE).getDelta().doubleValue() / 2;
-		}else if (cW instanceof XThermicPointThermicConnector) {
-			dX = ((XThermicPointThermicConnector) cW).getDelta().doubleValue() / 2;
-		}
 
-		//
-		// Horizontalis hoaram iranyara meroleges szelessegek megallapitasa
-		//
-		if (cN instanceof YThermicPointThermicConnector && cS instanceof YThermicPointThermicConnector) {
-			dY = ((YThermicPointThermicConnector) cN).getDelta().doubleValue();
-		}else if (cN instanceof YThermicPointThermicConnector) {
-			dY = ((YThermicPointThermicConnector) cN).getDelta().doubleValue() / 2;
-		}else if (cS instanceof YThermicPointThermicConnector) {
-			dY = ((YThermicPointThermicConnector) cS).getDelta().doubleValue() / 2;
-		}
-*/
 		// ---------
 		//
 		// NORTH
@@ -689,38 +667,38 @@ public class ThermicPointList {
 		// Termikus Pont-Termikus Pont
 		if (cN instanceof YThermicPointThermicConnector) {
 
-		YThermicPointThermicConnector ntc = (YThermicPointThermicConnector) cN;
-/*	
-			IThermicConnector etc = ntc.getNorthThermicPoint().getEastThermicConnector();
-			IThermicConnector wtc = ntc.getNorthThermicPoint().getWestThermicConnector();
-			if (etc instanceof XThermicPointThermicConnector) {
-				dNX += ((XThermicPointThermicConnector) etc).getDelta().doubleValue() / 2;
-			}
-			if (wtc instanceof XThermicPointThermicConnector) {
-				dNX += ((XThermicPointThermicConnector) wtc).getDelta().doubleValue() / 2;
-			}
-			dXNormal = Math.min(dNX, dX);
-*/
-//			ThermicPointList.this.get(position).setNorthCurrent(dXNormal * (ntc.getLambda() / ntc.getDelta().doubleValue()) * (ThermicPointList.this.get(position).getActualTemperature() - ntc.getNorthThermicPoint().getActualTemperature()));
-	
+			ntc = (YThermicPointThermicConnector) cN;
+
 			ThermicPointList.this.get(position).setNorthCurrent(dxdouble * (ntc.getLambda() / dydouble) * (ThermicPointList.this.get(position).getActualTemperature() - ntc.getNorthThermicPoint().getActualTemperature()));
-/*
-if( null != xN ){		
-	ThermicPointList.this.get(position).setExtraNorthCurrent( dXNormal * xN.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - xN.getAirTemperature()) );
-}
-*/		
+		
 		// Termikus Pont - Szabad felszin
 		} else if (cN instanceof OpenEdgeThermicConnector) {
 
-			//ThermicPointList.this.get(position).setNorthCurrent(dX * ((OpenEdgeThermicConnector) cN).getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - ((OpenEdgeThermicConnector) cN).getAirTemperature()));
-			ThermicPointList.this.get(position).setNorthCurrent(dxdouble * ((OpenEdgeThermicConnector) cN).getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - ((OpenEdgeThermicConnector) cN).getAirTemperature()));
+			//Meg kell keresnem a D-i termikus pontot, ha van
+			if (cS instanceof YThermicPointThermicConnector) {	
 
-			// Termikus Pont - szimmetrikus kapcsolat
+				stc = (YThermicPointThermicConnector) cS;
+				tf = ( 3 * ThermicPointList.this.get(position).getActualTemperature() - stc.getSouthThermicPoint().getActualTemperature() ) / 2;
+
+			//Ha D-fele nincs termikus pont - elvileg nem lehet
+			}else{
+				
+				//Akkor ugy veszem mintha lenne, de a homerseklete egyenlo a vizsgalt pont homersekletevel
+				tf = ThermicPointList.this.get(position).getActualTemperature();
+			}
+			
+			ThermicPointList.this.get(position).setNorthCurrent(
+					dxdouble * 
+					((OpenEdgeThermicConnector) cN).getAlpha() * 
+					(tf - ((OpenEdgeThermicConnector) cN).getAirTemperature())
+			);
+
+		// Termikus Pont - szimmetrikus kapcsolat
 		} else if (cN instanceof SymmetricEdgeThermicConnector) {
 
 			ThermicPointList.this.get(position).setNorthCurrent(0.0);
 
-			// Hiba-Nem lehet, hogy egy pontot nem zar le Connector
+		// Hiba-Nem lehet, hogy egy pontot nem zar le Connector
 		} else {
 			throw new Error("Nem szabad elofordulnia ennek az esetnek.\n North fele nincs kapcsolata a kovetkezo termikus pontnak: " + cN);
 		}
@@ -735,40 +713,38 @@ if( null != xN ){
 		// Termikus Pont-Termikus Pont
 		if (cS instanceof YThermicPointThermicConnector) {
 
-			YThermicPointThermicConnector stc = (YThermicPointThermicConnector) cS;
-/*
-			IThermicConnector etc = stc.getSouthThermicPoint().getEastThermicConnector();
-			IThermicConnector wtc = stc.getSouthThermicPoint().getWestThermicConnector();
-			if (etc instanceof XThermicPointThermicConnector) {
-				dSX += ((XThermicPointThermicConnector) etc).getDelta().doubleValue() / 2;
-			}
-			if (wtc instanceof XThermicPointThermicConnector) {
-				dSX += ((XThermicPointThermicConnector) wtc).getDelta().doubleValue() / 2;
-			}
-			dXNormal = Math.min(dSX, dX);
-*/
-			// //South tavolsaga
-			// dYDirection = stc.getDelta().doubleValue();
+			stc = (YThermicPointThermicConnector) cS;
 
 			ThermicPointList.this.get(position).setSouthCurrent(dxdouble * (stc.getLambda() / dydouble) * (ThermicPointList.this.get(position).getActualTemperature() - stc.getSouthThermicPoint().getActualTemperature()));
-			//ThermicPointList.this.get(position).setSouthCurrent(dXNormal * (stc.getLambda() / stc.getDelta().doubleValue()) * (ThermicPointList.this.get(position).getActualTemperature() - stc.getSouthThermicPoint().getActualTemperature()));
-/*
-if( null != xS ){		
-	ThermicPointList.this.get(position).setExtraSouthCurrent( dXNormal * xS.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - xS.getAirTemperature()) );
-}
-*/			
-			// Termikus Pont - Szabad felszin
+			
+		// Termikus Pont - Szabad felszin
 		} else if (cS instanceof OpenEdgeThermicConnector) {
 
-			//ThermicPointList.this.get(position).setSouthCurrent(dX * ((OpenEdgeThermicConnector) cS).getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - ((OpenEdgeThermicConnector) cS).getAirTemperature()));
-			ThermicPointList.this.get(position).setSouthCurrent(dxdouble * ((OpenEdgeThermicConnector) cS).getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - ((OpenEdgeThermicConnector) cS).getAirTemperature()));
+			//Meg kell keresnem a E-i termikus pontot, ha van
+			if (cN instanceof YThermicPointThermicConnector) {	
 
-			// Termikus Pont - szimmetrikus kapcsolat
+				ntc = (YThermicPointThermicConnector) cN;
+				tf = ( 3 * ThermicPointList.this.get(position).getActualTemperature() - ntc.getNorthThermicPoint().getActualTemperature() ) / 2;
+
+			//Ha E-fele nincs termikus pont - elvileg nem lehet
+			}else{
+				
+				//Akkor ugy veszem mintha lenne, de a homerseklete egyenlo a vizsgalt pont homersekletevel
+				tf = ThermicPointList.this.get(position).getActualTemperature();
+			}
+			
+			ThermicPointList.this.get(position).setSouthCurrent(
+					dxdouble * 
+					((OpenEdgeThermicConnector) cS).getAlpha() * 
+					(tf - ((OpenEdgeThermicConnector) cS).getAirTemperature())
+			);
+
+		// Termikus Pont - szimmetrikus kapcsolat
 		} else if (cS instanceof SymmetricEdgeThermicConnector) {
 
 			ThermicPointList.this.get(position).setSouthCurrent(0.0);
 
-			// Hiba-Nem lehet, hogy egy pontot nem zar le Connector
+		// Hiba-Nem lehet, hogy egy pontot nem zar le Connector
 		} else {
 			throw new Error("Nem szabad elofordulnia ennek az esetnek.\n South fele nincs kapcsolata a kovetkezo termikus pontnak: " + cS);
 		}
@@ -782,36 +758,38 @@ if( null != xS ){
 		// Termikus Pont-Termikus Pont
 		if (cE instanceof XThermicPointThermicConnector) {
 
-			XThermicPointThermicConnector etc = (XThermicPointThermicConnector) cE;
-/*
-			IThermicConnector ntc = etc.getEastThermicPoint().getNorthThermicConnector();
-			IThermicConnector stc = etc.getEastThermicPoint().getSouthThermicConnector();
-			if (ntc instanceof YThermicPointThermicConnector) {
-				dEY += ((YThermicPointThermicConnector) ntc).getDelta().doubleValue() / 2;
-			}
-			if (stc instanceof YThermicPointThermicConnector) {
-				dEY += ((YThermicPointThermicConnector) stc).getDelta().doubleValue() / 2;
-			}
-			dYNormal = Math.min(dEY, dY);
-*/
-			//ThermicPointList.this.get(position).setEastCurrent(dYNormal * (etc.getLambda() / etc.getDelta().doubleValue()) * (ThermicPointList.this.get(position).getActualTemperature() - etc.getEastThermicPoint().getActualTemperature()));
+			etc = (XThermicPointThermicConnector) cE;
+
 			ThermicPointList.this.get(position).setEastCurrent(dydouble * (etc.getLambda() / dxdouble) * (ThermicPointList.this.get(position).getActualTemperature() - etc.getEastThermicPoint().getActualTemperature()));
-/*
-if( null != xE ){
-	ThermicPointList.this.get(position).setExtraEastCurrent( dYNormal * xE.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - xE.getAirTemperature()));
-}
-*/			
-			// Termikus Pont - Szabad felszin
+			
+		// Termikus Pont - Szabad felszin
 		} else if (cE instanceof OpenEdgeThermicConnector) {
 
-			ThermicPointList.this.get(position).setEastCurrent(dydouble * ((OpenEdgeThermicConnector) cE).getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - ((OpenEdgeThermicConnector) cE).getAirTemperature()));
+			//Meg kell keresnem a NY-i termikus pontot, ha van
+			if (cW instanceof XThermicPointThermicConnector) {	
 
-			// Termikus Pont - szimmetrikus kapcsolat
+				wtc = (XThermicPointThermicConnector) cW;
+				tf = ( 3 * ThermicPointList.this.get(position).getActualTemperature() - wtc.getWestThermicPoint().getActualTemperature() ) / 2;
+
+			//Ha NY-fele nincs termikus pont - elvileg nem lehet
+			}else{
+				
+				//Akkor ugy veszem mintha lenne, de a homerseklete egyenlo a vizsgalt pont homersekletevel
+				tf = ThermicPointList.this.get(position).getActualTemperature();
+			}
+			
+			ThermicPointList.this.get(position).setEastCurrent(
+					dydouble * 
+					((OpenEdgeThermicConnector) cE).getAlpha() * 
+					(tf - ((OpenEdgeThermicConnector) cE).getAirTemperature())
+			);
+
+		// Termikus Pont - szimmetrikus kapcsolat
 		} else if (cE instanceof SymmetricEdgeThermicConnector) {
 
 			ThermicPointList.this.get(position).setEastCurrent(0.0);
 
-			// Hiba-Nem lehet, hogy egy pontot nem zar le Connector
+		// Hiba-Nem lehet, hogy egy pontot nem zar le Connector
 		} else {
 			throw new Error("Nem szabad elofordulnia ennek az esetnek.\n East fele nincs kapcsolata a kovetkezo termikus pontnak: " + cE);
 		}
@@ -825,37 +803,37 @@ if( null != xE ){
 		// Termikus Pont-Termikus Pont
 		if (cW instanceof XThermicPointThermicConnector) {
 
-			XThermicPointThermicConnector wtc = (XThermicPointThermicConnector) cW;
-/*
-			IThermicConnector ntc = wtc.getWestThermicPoint().getNorthThermicConnector();
-			IThermicConnector stc = wtc.getWestThermicPoint().getSouthThermicConnector();
-			if (ntc instanceof YThermicPointThermicConnector) {
-				dWY += ((YThermicPointThermicConnector) ntc).getDelta().doubleValue() / 2;
-			}
-			if (stc instanceof YThermicPointThermicConnector) {
-				dWY += ((YThermicPointThermicConnector) stc).getDelta().doubleValue() / 2;
-			}
-			dYNormal = Math.min(dWY, dY);
-*/
-			//ThermicPointList.this.get(position).setWestCurrent(dYNormal * (wtc.getLambda() / wtc.getDelta().doubleValue()) * (ThermicPointList.this.get(position).getActualTemperature() - wtc.getWestThermicPoint().getActualTemperature()));
+			wtc = (XThermicPointThermicConnector) cW;
+
 			ThermicPointList.this.get(position).setWestCurrent(dydouble * (wtc.getLambda() / dxdouble) * (ThermicPointList.this.get(position).getActualTemperature() - wtc.getWestThermicPoint().getActualTemperature()));
-/*
-if( null != xW ){
-	ThermicPointList.this.get(position).setExtraWestCurrent( dYNormal * xW.getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - xW.getAirTemperature() ) );
-}
-*/			
-			// Termikus Pont - Szabad felszin
+			
+		// Termikus Pont - Szabad felszin
 		} else if (cW instanceof OpenEdgeThermicConnector) {
 
-//			ThermicPointList.this.get(position).setWestCurrent(dY * ((OpenEdgeThermicConnector) cW).getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - ((OpenEdgeThermicConnector) cW).getAirTemperature()));
-			ThermicPointList.this.get(position).setWestCurrent(dydouble * ((OpenEdgeThermicConnector) cW).getAlpha() * (ThermicPointList.this.get(position).getActualTemperature() - ((OpenEdgeThermicConnector) cW).getAirTemperature()));
+			//Meg kell keresnem a K-i termikus pontot, ha van
+			if (cE instanceof XThermicPointThermicConnector) {	
 
-			// Termikus Pont - szimmetrikus kapcsolat
+				etc = (XThermicPointThermicConnector) cE;
+				tf = ( 3 * ThermicPointList.this.get(position).getActualTemperature() - etc.getEastThermicPoint().getActualTemperature() ) / 2;
+
+			//Ha K-fele nincs termikus pont - elvileg nem lehet
+			}else{
+				
+				//Akkor ugy veszem mintha lenne, de a homerseklete egyenlo a vizsgalt pont homersekletevel
+				tf = ThermicPointList.this.get(position).getActualTemperature();
+			}
+			
+			ThermicPointList.this.get(position).setWestCurrent(
+					dydouble * 
+					((OpenEdgeThermicConnector) cW).getAlpha() * 
+					(tf - ((OpenEdgeThermicConnector) cW).getAirTemperature()));
+
+		// Termikus Pont - szimmetrikus kapcsolat
 		} else if (cW instanceof SymmetricEdgeThermicConnector) {
 
 			ThermicPointList.this.get(position).setWestCurrent(0.0);
 
-			// Hiba-Nem lehet, hogy egy pontot nem zar le Connector
+		// Hiba-Nem lehet, hogy egy pontot nem zar le Connector
 		} else {
 			throw new Error("Nem szabad elofordulnia ennek az esetnek.\n West fele nincs kapcsolata a kovetkezo termikus pontnak: " + cW);
 		}
@@ -911,7 +889,21 @@ if( null != xW ){
 
 				double alphadelta = ((OpenEdgeThermicConnector) cN).getAlpha() * dxdouble;
 				szamlalo += alphadelta * ((OpenEdgeThermicConnector) cN).getAirTemperature();
-				nevezo += alphadelta;
+				nevezo += 1.5*alphadelta;
+				
+				//Meg kell keresnem a D-i termikus pontot, ha van
+				if (cS instanceof YThermicPointThermicConnector) {	
+
+					stc = (YThermicPointThermicConnector) cS;
+					szamlalo += 0.5 * alphadelta * stc.getSouthThermicPoint().getActualTemperature();
+
+				//Ha D-fele nincs termikus pont
+				}else{
+					
+					//Akkor ugy veszem mintha lenne, de a homerseklete egyenlo a vizsgalt pont homersekletevel
+					szamlalo += 0.5 * alphadelta * list[i].getActualTemperature();
+									
+				}
 
 			}
 
@@ -937,8 +929,21 @@ if( null != xW ){
 
 				double alphadelta = ((OpenEdgeThermicConnector) cS).getAlpha() * dxdouble;
 				szamlalo += alphadelta * ((OpenEdgeThermicConnector) cS).getAirTemperature();
-				nevezo += alphadelta;
+				nevezo += 1.5*alphadelta;
 
+				//Meg kell keresnem az E-i termikus pontot, ha van
+				if (cN instanceof YThermicPointThermicConnector) {	
+
+					ntc = (YThermicPointThermicConnector) cN;
+					szamlalo += 0.5 * alphadelta * ntc.getNorthThermicPoint().getActualTemperature();
+
+				//Ha E-fele nincs termikus pont
+				}else{
+					
+					//Akkor ugy veszem mintha lenne, de a homerseklete egyenlo a vizsgalt pont homersekletevel
+					szamlalo += 0.5 * alphadelta * list[i].getActualTemperature();
+				
+				}
 			}
 
 
@@ -963,8 +968,21 @@ if( null != xW ){
 
 				double alphadelta = ((OpenEdgeThermicConnector) cE).getAlpha() * dydouble;
 				szamlalo += alphadelta * ((OpenEdgeThermicConnector) cE).getAirTemperature();
-				nevezo += alphadelta;
+				nevezo += 1.5*alphadelta;
 
+				//Meg kell keresnem a NY-i termikus pontot, ha van
+				if (cW instanceof XThermicPointThermicConnector) {	
+
+					wtc = (XThermicPointThermicConnector) cW;
+					szamlalo += 0.5 * alphadelta * wtc.getWestThermicPoint().getActualTemperature();
+
+				//Ha NY-fele nincs termikus pont
+				}else{
+					
+					//Akkor ugy veszem mintha lenne, de a homerseklete egyenlo a vizsgalt pont homersekletevel
+					szamlalo += 0.5 * alphadelta * list[i].getActualTemperature();
+
+				}
 			}
 
 
@@ -989,8 +1007,21 @@ if( null != xW ){
 
 				double alphadelta = ((OpenEdgeThermicConnector) cW).getAlpha() * dydouble;				
 				szamlalo += alphadelta * ((OpenEdgeThermicConnector) cW).getAirTemperature();
-				nevezo += alphadelta;
+				nevezo += 1.5*alphadelta;
 
+				//Meg kell keresnem a K-i termikus pontot, ha van
+				if (cE instanceof XThermicPointThermicConnector) {	
+
+					etc = (XThermicPointThermicConnector) cE;
+					szamlalo += 0.5 * alphadelta * etc.getEastThermicPoint().getActualTemperature();
+
+				//Ha K-fele nincs termikus pont
+				}else{
+					
+					//Akkor ugy veszem mintha lenne, de a homerseklete egyenlo a vizsgalt pont homersekletevel
+					szamlalo += 0.5 * alphadelta * list[i].getActualTemperature();
+					
+				}
 			}
 		
 			list[i].setActualTemperature(szamlalo / nevezo);
@@ -1003,7 +1034,7 @@ if( null != xW ){
 	 * Visszaadja a lista meretet
 	 * 
 	 * @return
-	 */
+	 */	
 	public int getSize() {
 		return position;
 	}
