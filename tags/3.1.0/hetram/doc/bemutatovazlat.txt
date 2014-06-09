@@ -1,0 +1,67 @@
+Alapproblema az epuletenergetikaban
+	Hohidak - tobb dimenzios hoaramok
+	szamitasara nincsenek zart kepletek-csak modellezes
+Feladat
+	erdekesnek latszo epuletszerkezeti kapcsolatok vizsgalata
+	sajat eszkozzel
+kettos cel
+	bemutatni, hogy ezek az eszkozok egyszeru elven mukodnek-nem ordongosseg elkesziteni
+	energetikaban  rutinbol hasznalt eljarasok ellenorzese ezzel a sajat eszkozzel
+	
+Elmelet
+	nehany szo csak
+	-Energetikai homerlegbol kiindulva hotermeles=belso hotermeles + be/kiaramlo ho
+	 Stacioner: Q=0, Forrasmentes: Q1=0   => Qbe=Qki
+	-Hovezetes alapegyenlete: Q=-lambda*A*deltaT/deltaX
+	-Numerikus model: 
+		-Felulet felosztasa veges hosszusagu negyszogek halojara
+		-negyszog kozepere irjuk fel az energia egyenletet
+		-Egy negyszog 4 szomszedos negyszoggel van termikus kapcsaolatban
+	
+Vizsgalt esetek
+	-Futott helyisegek belso-falsarok hoviszonyainak ellenorzese
+	-Teglafal hoatbocsatasanak valtozasa a meretturesen belul
+	-Belso sarok hoszigetelesenek vizsgalata
+	-Falfutes hatekonysaganak vizsgalata
+	-Kulso hoszigeteles kapcsolata az ablakparkannyal
+	-Erkelyfodem vizsgalata
+	
+	Belso sarok hoszigetelesenek vizsgalata
+		-kedvezotlen termikus viszonyok megszuntetese a falsarokban
+		-Cel: noveljuk a falsarok homersekletet
+		-feltetelek:
+			nincs lehetoseg kulso hoszigetelesre
+			meg akarjuk tartani az epulet hotarolo kepesseget
+		-Megoldas lehet: belso falsarok szigetelese
+		
+		Kulonbozo hosszusagu es vastagsagu hoszigetelo anyag elhelyezese-szamitasok
+		Eredmenyek:
+			-A hossz es vastagsag novelesevel csokken a hoveszteseg-nem meglepo
+			-Hossz es a vastagsag novelesevel no a sarok homerseklete-nem meglepo
+			-A novekedes aszimptotikus-nem erdemes minden hataron tul novelni-nem meglepo
+			-A szigeteles utan kozvetlenul a falfelulet az eredeti homerseklete ala csokken -meglepo
+			-Minel hosszabb a szigeteles, annal nagyobb a homerseklet eses.
+		Magyarazat: a falsarkot nem futjuk belulrol, ott a kulso homerseklet dominal.
+	
+	Erkelyfodem vizsgalata
+		-sok peldat lathatunk szigeteletlen erkelyfodemre
+		-Prekoncepcio: karos, minel hoszabb, annal rosszabb
+		Eredmelyek:
+			-Egy adott hosszusag, ~ fodem vastagsag, folott nem szamit a hossz - nem meglepo
+			-Nagy hoatadasi tenyezo eseten nagy a hoveszteseg - nem meglepo
+			-Kis hoatadasi tenyezo eseten kisebb a hoveszteseg - nem meglepo
+			-Nagy hoatadasi tenyezo eseten a fodem hosszanak fuggvenyeben csokken a hoveszteseg -Na ez meglepo
+			-Kis hoatadasi tenyezo eseten a fodem hosszanak fuggvenyeben no a hoveszteseg -Tulajdonkeppen ezt a fuggvenyt vartam
+		Magyarazat: Bordahatasban lehet keresni a magyarazatot. Szamitva a modell es keplet alapjan
+			Eredmeny: 
+				Nagy hoatadasi tenyezo: gyorsan leadja a hot, amit tud a borda elejen-a vege mar nem is szamit-szigetelokent viselkedik
+				Kis hoatadasi tenyezo: lasan egyenletesen adja le a hot (az elejen nem tud megszabadulni a hotol)- A vege is szamit-Legyen minel hoszabb
+
+Osszefoglalas:
+	Ne rutinok alapjan dolgozzunk meg egyszerunek latszo epuletszerkezetek eseten sem.
+	Ronthatunk a helyzeten
+	Linearis differencial egyenletek irjak le az hotranszportot-Ennek a megoldasara a szg-ek alkalmasabbak mint mi. 
+			
+			
+			
+			
