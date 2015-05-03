@@ -79,6 +79,9 @@ import javax.swing.JProgressBar;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -283,6 +286,18 @@ public class MainPanel extends JFrame {
 		this.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		this.createBufferStrategy(1);
 
+		for(LookAndFeelInfo info: UIManager.getInstalledLookAndFeels()){
+			if("Nimbus".equals(info.getName())){
+				try {
+					UIManager.setLookAndFeel(info.getClassName());
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+					e.printStackTrace();
+					System.exit( -1 );
+				}
+				break;
+			}
+		}
+		
 		//
 		// Menu keszites
 		//
