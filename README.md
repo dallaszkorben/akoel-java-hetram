@@ -43,9 +43,9 @@ Advatages:
   * You can check the direction and the relative magnitude of the heat flux in the thermic points
 
 
-Download the actual version: [3.1.1](https://raw.githubusercontent.com/dallaszkorben/hu.akoel.hetram/blob/3.1.1/hetram-3.1.1.jar)
+Download the actual version: [3.1.1](https://cdn.rawgit.com/dallaszkorben/hu.akoel.hetram/fec5e8da/hetram-3.1.1.jar)
 ( _Java 7.0.51 or newer version should be installed._
-To run: **java -jar ./hetram-3.1.1.jar**)
+To run: **java -jar ./[hetram-3.1.1.jar**](https://cdn.rawgit.com/dallaszkorben/hu.akoel.hetram/fec5e8da/hetram-3.1.1.jar))
 
 <table>
 <blockquote><tr>
