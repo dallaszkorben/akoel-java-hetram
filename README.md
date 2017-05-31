@@ -1,3 +1,7 @@
+
+![Alt text](homepages/longwall_colored.png)
+[Wiki](https://github.com/dallaszkorben/hu.akoel.hetram/wiki/2D-modelling-of-steady-state-heat-conduction)
+
 Two dimensional modelling of Steady state Heat Conduction
 
 This program helps you to model the steady-state 2 dimensional heat conduction in a 2D structural cross-section.
